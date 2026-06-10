@@ -1,41 +1,30 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import { supabaseClient as supabase } from '../config/supabase';
 
 export function useTracker() {
-  const location = useLocation();
-
   useEffect(() => {
-	async function trackVisitorSignature() {
-	  // Establish default values in case the api fetch gets blocked
-	  let countryCode = 'SA';
-	  let clientIp = '0.0.0.0';
-
+	async function trackVisitor() {
 	  try {
-		const geoResponse = await fetch('https://ipapi.co/json/');
-		if (geoResponse.ok) {
-		  const geoData = await geoResponse.json();
-		  countryCode = geoData.country_code || 'SA';
-		  clientIp = geoData.ip || '0.0.0.0';
-		}
+		const response = await fetch('https://get.geojs.io/v1/ip/geo.json');
+		const data = await response.json();
+		const countryCode = data.country_code || 'SA';
+
+		// Capture the current browser path
+		const currentPage = window.location.pathname;
+
+		const { error } = await supabase
+		  .from('operix_visitor_logs')
+		  .insert([{ 
+			ip_country: countryCode, 
+			page_visited: currentPage, // Now providing the required field
+			created_at: new Date().toISOString() 
+		  }]);
+
+		if (error) console.error("Tracker Insert Error:", error.message);
 	  } catch (err) {
-		// Quietly catch the block without showing unhandled errors in the console
-		console.log("Privacy shield detected. Using default telemetry routing alignment.");
-	  }
-
-	  // Proceed with writing to Supabase using either live data or safe fallbacks
-	  try {
-		await supabase.from('operix_visitor_logs').insert([{
-		  page_visited: location.pathname,
-		  ip_country: countryCode,
-		  visitor_ip: clientIp,
-		  user_agent: navigator.userAgent
-		}]);
-	  } catch (dbErr) {
-		console.error("Telemetry database write error:", dbErr.message);
+		console.error("Tracker Failure:", err.message);
 	  }
 	}
-
-	trackVisitorSignature();
-  }, [location]);
+	trackVisitor();
+  }, []);
 }
