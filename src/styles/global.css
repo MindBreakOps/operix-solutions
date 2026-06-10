@@ -1,0 +1,257 @@
+/* ─── 1. CORE TAILWIND V4 FRAMEWORK INJECTION ─── */
+@import "tailwindcss";
+
+/* ─── 2. ENTERPRISE BRAND TOKENS (SAMPLED FROM IMIND.JPG) ─── */
+:root {
+  --color-navy: #1e2d40;
+  --color-gold: #c9a84c;
+  --color-bg: #f8fafc;
+  --color-card: #ffffff;
+  --color-text: #1e2d40;
+  --color-muted: #475569;
+}
+
+/* ─── 3. GLOBAL DOCUMENT TYPOGRAPHY & RESET ─── */
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Elegant Editorial Serif (Matches OPERIX Solutions Logotype Style) */
+h1, h2, h3, h4, .brand-heading {
+  font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+  letter-spacing: -0.01em;
+  color: #1e2d40 !important;
+}
+
+p, span, div, li, label {
+  color: #1e2d40;
+}
+
+.text-muted-corporate {
+  color: #475569 !important;
+}
+
+.text-gold-corporate {
+  color: #c9a84c !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* ─── 4. NON-CROWDED RESPONSIVE ADAPTIVE NAVBAR ─── */
+.nav-wrapper {
+  @apply sticky top-0 z-50 bg-white border-b border-slate-200/80 shadow-sm;
+}
+.nav-inner {
+  @apply max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-6 font-sans;
+}
+.nav-brand {
+  @apply flex items-center gap-2.5 text-base font-black tracking-tight text-[#1e2d40] hover:opacity-90 transition-opacity shrink-0;
+}
+.nav-brand-img {
+  @apply w-7 h-7 object-contain;
+}
+
+/* Desktop Navigation Link Track */
+.nav-links-container {
+  @apply hidden xl:flex items-center gap-6 flex-nowrap whitespace-nowrap;
+}
+.nav-link {
+  @apply text-xs font-black uppercase tracking-wider text-slate-400 hover:text-[#1e2d40] transition-colors pb-1 border-b-2 border-transparent;
+}
+.nav-link.active {
+  @apply text-[#c9a84c] border-[#c9a84c];
+}
+.nav-actions {
+  @apply hidden xl:flex items-center gap-4 shrink-0 flex-nowrap;
+}
+.btn-lang {
+  @apply flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-slate-400 hover:text-[#1e2d40] transition-colors;
+}
+.btn-nav-secondary {
+  @apply text-xs font-black uppercase tracking-wider text-slate-500 hover:text-[#1e2d40] transition-colors;
+}
+.btn-nav-primary {
+  @apply bg-[#1e2d40] text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider hover:opacity-90 hover:-translate-y-0.5 transition-all shadow-md shadow-slate-900/5;
+}
+
+/* Mobile Icon Layout rules */
+.mobile-toggle-btn {
+  @apply flex xl:hidden p-2 text-[#1e2d40] outline-none shrink-0;
+}
+.mobile-drawer-tray {
+  @apply xl:hidden fixed top-[65px] left-0 right-0 bg-white border-b border-slate-200 shadow-xl p-6 flex flex-col gap-4 font-sans z-50;
+}
+
+/* ─── 5. HOME SUMMARY & GRID METRICS ─── */
+.hero-wrapper { 
+  @apply px-6 pt-24 pb-12 text-center max-w-5xl mx-auto space-y-6; 
+}
+.hero-tagline { 
+  @apply inline-flex items-center gap-2 border border-slate-200 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest bg-white shadow-sm font-sans; 
+}
+.hero-main-title { 
+  @apply text-5xl font-black leading-[1.05] text-[#1e2d40]; 
+}
+.hero-subtitle-text { 
+  @apply text-lg leading-relaxed max-w-3xl mx-auto font-medium font-sans; 
+}
+
+/* Bulletproof Structural Grid Updates for Stats Section */
+.stats-container { 
+  @apply max-w-5xl mx-auto px-6 py-10 my-12 bg-white border border-slate-200 rounded-3xl shadow-sm;
+  display: grid;
+  grid-template-cols: 1fr;
+  gap: 1.5rem;
+}
+@media (min-width: 640px) {
+  .stats-container {
+	grid-template-cols: repeat(3, 1fr);
+  }
+}
+.stat-item { 
+  @apply text-center space-y-1; 
+}
+.stat-number { 
+  @apply text-4xl font-black text-[#c9a84c] font-mono tracking-tight; 
+}
+.stat-descriptor { 
+  @apply text-[11px] font-extrabold uppercase tracking-widest text-slate-400 font-sans block; 
+}
+
+/* ─── 6. LIVE PRODUCTION PLATFORMS ATLAS ─── */
+.public-map-card {
+  @apply max-w-5xl mx-auto border border-slate-200 bg-white p-6 rounded-3xl shadow-sm mb-12 font-sans text-center space-y-4;
+}
+.public-map-title {
+  @apply text-xs font-black tracking-widest text-[#c9a84c] uppercase;
+}
+#real-telemetry-map {
+  @apply w-full h-96 bg-[#f8fafc] rounded-2xl border border-slate-200 shadow-inner overflow-hidden z-10 my-4;
+}
+.leaflet-popup-content-wrapper {
+  background-color: #ffffff !important;
+  color: #1e2d40 !important;
+  border: 1px solid #c9a84c !important;
+  border-radius: 0.75rem !important;
+  padding: 0.25rem !important;
+  font-family: ui-monospace, monospace !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+}
+.leaflet-popup-tip {
+  background-color: #ffffff !important;
+  border: 1px solid #c9a84c !important;
+}
+
+/* ─── 7. SYSTEM CHANNELS & CARDS ─── */
+.platforms-section { 
+  @apply max-w-7xl mx-auto px-6 py-12 space-y-12; 
+}
+.platform-row-card { 
+  @apply bg-white border border-slate-200 rounded-3xl p-8 grid grid-cols-1 gap-12 items-center transition-all duration-300 hover:shadow-md; 
+}
+@media (min-width: 1024px) { 
+  .platform-row-card { grid-template-cols: repeat(2, 1fr); padding: 3rem; } 
+}
+.platform-info-column { @apply space-y-6 font-sans; }
+.platform-brand-badge { @apply inline-block text-[11px] font-black uppercase tracking-widest text-[#c9a84c] font-sans; }
+.platform-headline { @apply text-3xl font-black text-[#1e2d40] tracking-tight; }
+.platform-paragraph { @apply text-sm leading-relaxed font-medium; }
+.platform-bullet-list { @apply space-y-3 border-t border-slate-100 pt-5; }
+.platform-bullet-item { @apply flex items-center gap-3 text-sm font-semibold; }
+.bullet-dot-gold { @apply w-1.5 h-1.5 bg-[#c9a84c] rounded-full shrink-0; }
+.btn-launch-platform { @apply inline-flex items-center gap-2 bg-[#1e2d40] text-white px-6 py-3.5 rounded-xl font-extrabold text-xs tracking-wider uppercase transition-all hover:opacity-90 hover:-translate-y-0.5 shadow-md font-sans; }
+
+/* Premium Light Mockup Layouts */
+.telemetry-mockup-display {
+  @apply bg-slate-50 text-[#1e2d40] rounded-2xl border border-slate-200 shadow-inner min-h-[260px] flex flex-col justify-between font-mono p-0;
+}
+.mockup-top-bar {
+  @apply bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between text-[10px] font-black text-slate-400 uppercase tracking-wider;
+}
+.mockup-inner-body { @apply p-6 flex-grow space-y-4 text-xs; }
+
+/* ─── 8. PERFECTED ABOUT US & VOLUNTEER WORKSPACES ─── */
+.about-wrapper { @apply max-w-7xl mx-auto px-6 py-20 space-y-16 font-sans; }
+.about-hero { @apply text-center max-w-3xl mx-auto space-y-4; }
+.genesis-panel { @apply bg-white border border-slate-200 rounded-3xl p-8 md:p-12 space-y-4 shadow-sm relative overflow-hidden; }
+.volunteer-section-title { @apply text-3xl font-black text-[#1e2d40] tracking-tight mb-8 text-center; }
+.volunteer-grid { 
+  @apply max-w-5xl mx-auto; 
+  display: grid;
+  grid-template-cols: 1fr;
+  gap: 2rem;
+}
+@media (min-width: 768px) {
+  .volunteer-grid {
+	grid-template-cols: repeat(2, 1fr);
+  }
+}
+.volunteer-card { @apply bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm flex flex-col justify-between transition-all duration-300 hover:border-[#c9a84c] hover:shadow-md; }
+.volunteer-header-row { @apply bg-slate-50 border-b border-slate-200 p-5 flex items-center justify-between text-[11px] font-bold text-slate-400 font-mono; }
+
+/* ─── 9. ADDITIONAL MODULES ─── */
+.projects-wrapper { @apply max-w-7xl mx-auto px-6 py-20 space-y-12 font-sans; }
+.matrix-container { @apply bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm; }
+.app-pill { @apply inline-flex items-center gap-1.5 bg-slate-100 text-slate-700 border border-slate-200 text-[10px] font-black uppercase px-3 py-1 rounded-full; }
+.clients-wrapper { @apply max-w-7xl mx-auto px-6 py-20 space-y-16 font-sans; }
+.white-label-banner { @apply bg-[#1e2d40] text-white rounded-3xl p-8 shadow-xl border border-slate-800 flex flex-col gap-6 items-center justify-between; }
+@media (min-width: 768px) { .white-label-banner { @apply flex-row p-12; } }
+.news-container { @apply max-w-7xl mx-auto px-6 py-20 space-y-12 font-sans; }
+.news-grid { @apply grid grid-cols-1 gap-8; }
+@media (min-width: 640px) { .news-grid { @apply grid-cols-2; } }
+@media (min-width: 1024px) { .news-grid { @apply grid-cols-3; } }
+.news-card { @apply bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md flex flex-col; }
+.news-image-wrapper { @apply relative w-full h-48 bg-slate-100 overflow-hidden; }
+.news-img { @apply w-full h-full object-cover; }
+.news-content { @apply p-6 flex flex-col justify-between flex-grow space-y-3; }
+.contact-wrapper { @apply max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 gap-12 font-sans; }
+@media (min-width: 1024px) { .contact-wrapper { @apply grid-cols-2; } }
+.contact-info-panel { @apply space-y-6; }
+.contact-form-panel { @apply bg-white border border-slate-200 rounded-3xl p-8 shadow-sm; }
+.contact-input { @apply w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-[#1e2d40] outline-none focus:bg-white focus:border-[#c9a84c] font-semibold; }
+.sub-grid-layout { @apply grid grid-cols-1 gap-8 max-w-7xl mx-auto px-6 py-8 font-sans; }
+@media (min-width: 1024px) { .sub-grid-layout { @apply grid-cols-4; } }
+.sub-module-card { @apply bg-white border border-slate-200 rounded-3xl p-6 flex flex-col justify-between transition-all duration-300 shadow-sm; }
+.sub-module-card.active { @apply border-[#c9a84c] ring-1 ring-[#c9a84c]/30 shadow-lg; }
+.feature-check-item { @apply flex items-start gap-2.5 text-sm font-medium text-slate-500; }
+.ledger-table-wrapper { @apply bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm font-sans max-w-7xl mx-auto px-6; }
+.legal-portal-container { @apply max-w-5xl mx-auto px-6 py-20 font-sans space-y-10; }
+.legal-tab-strip { @apply flex gap-2 border-b border-slate-200 pb-2 overflow-x-auto; }
+.legal-tab-btn { @apply px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all border border-transparent whitespace-nowrap text-slate-500 hover:bg-slate-100; }
+.legal-tab-btn.active { @apply bg-[#1e2d40] text-white border-transparent shadow-sm; }
+.legal-document-card { @apply bg-white border border-slate-200/80 rounded-3xl p-8 md:p-12 space-y-6 shadow-sm; }
+.legal-section-title { @apply text-xl font-black text-[#1e2d40] pb-2 border-b border-slate-100 block; }
+.legal-body-text { @apply text-sm text-slate-600 leading-relaxed font-medium block space-y-4; }
+
+/* ─── 12. HIGH-END CORPORATE FOOTER ─── */
+.footer-wrapper { @apply bg-[#1e2d40] text-white border-t border-slate-800 pt-16 pb-8 font-sans; }
+.footer-grid { @apply max-w-7xl mx-auto px-6 grid grid-cols-1 gap-10 border-b border-slate-800 pb-12; }
+@media (min-width: 640px) { .footer-grid { @apply grid-cols-2; } }
+@media (min-width: 1024px) { .footer-grid { @apply grid-cols-4; } }
+.footer-brand-column { @apply space-y-4; }
+.footer-desc-text { @apply text-xs text-slate-400 leading-relaxed font-medium; }
+.footer-column-title { @apply text-[11px] font-black text-[#c9a84c] uppercase tracking-widest mb-4 block; }
+.footer-list { @apply space-y-2.5; }
+.footer-list-link { @apply text-xs text-slate-400 font-bold hover:text-[#c9a84c] transition-colors block; }
+.footer-bottom-bar { @apply max-w-7xl mx-auto px-6 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider; }
+.timeline-container { @apply max-w-4xl mx-auto px-6 py-16 relative space-y-12 font-sans; }
+.timeline-line { @apply absolute left-10 top-20 bottom-20 w-0.5 bg-slate-200; }
+body[dir="rtl"] .timeline-line { @apply left-auto right-10; }
+.phase-row-block { @apply flex gap-8 items-start relative pl-4; }
+body[dir="rtl"] .phase-row-block { @apply pl-0 pr-4; }
+.phase-indicator-dot { @apply w-4 h-4 rounded-full border-4 border-white bg-[#c9a84c] shadow-md shrink-0 mt-1.5 z-10; }
+.phase-content-card { @apply bg-white border border-slate-200 rounded-2xl p-6 flex-grow shadow-sm; }
+.phase-tag { @apply text-[10px] font-black uppercase tracking-widest text-[#c9a84c] block mb-1; }
+.phase-title { @apply text-base font-black text-[#1e2d40] mb-2; }
+.phase-desc { @apply text-xs text-slate-500 leading-relaxed font-medium; }
+.cta-banner-wrapper { @apply max-w-5xl mx-auto px-6 py-16 text-center border border-slate-200 bg-white rounded-3xl my-16 shadow-sm space-y-6; }
