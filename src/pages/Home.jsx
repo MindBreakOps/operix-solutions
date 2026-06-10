@@ -13,7 +13,7 @@ export default function Home() {
   const [mapReady, setMapReady] = useState(false);
   const mapInstanceRef = useRef(null);
 
-  const officialName = "OPERIX Solutions";
+  const brandName = "OPERIX Solutions";
 
   const countryCoordinates = {
 	SA: { lat: 23.8859, lon: 45.0792, name: 'Saudi Arabia' },
@@ -95,7 +95,7 @@ export default function Home() {
   }, [mapReady, activeCountries]);
 
   return (
-	<div className="home-main-view animate-in">
+	<div className="w-full flex flex-col items-center justify-center animate-in">
 	  
 	  {/* ─── HERO ARCHITECTURE SECTION ─── */}
 	  <header className="hero-wrapper">
@@ -106,21 +106,21 @@ export default function Home() {
 
 		<h1 className="hero-main-title">
 		  {isAr ? "تمكين المنشآت الكبرى عبر " : "Empowering Enterprises with "}
-		  <span className="bg-gradient-to-r from-[#1e2d40] to-[#c9a84c] bg-clip-text text-transparent block md:inline ml-1">
-			{officialName}
+		  <span className="bg-gradient-to-r from-[#1e2d40] to-[#c9a84c] bg-clip-text text-transparent block sm:inline ml-1">
+			{brandName}
 		  </span>
 		</h1>
 
 		<p className="hero-subtitle-text text-muted-corporate">
 		  {isAr 
-			? "توحيد إدارة العمليات التشغيلية، الرعاية الطبية، والموارد البشرية في ثلاث منظومات ذكية ومترابطة بسلاسة."
+			? "توحيد إدارة العمليات التشغيلية، الرعاية الطبية، والموارد البشرية في ثلاث منظومة ذكية ومترابطة بسلاسة."
 			: "Unifying Operations, Health Care, and Human Resources into three seamless, intelligent ecosystems."}
 		</p>
 
-		<div className="flex flex-wrap justify-center gap-4 pt-2">
-		  <button onClick={() => navigate('/contact')} className="btn-nav-primary px-8 py-3.5 text-xs">
+		<div className="flex items-center justify-center w-full pt-2">
+		  <button onClick={() => navigate('/contact')} className="btn-nav-primary px-8 py-3.5 text-xs inline-flex items-center justify-center cursor-pointer">
 			{isAr ? "طلب عرض تجريبي" : "SCHEDULE A DEMO"} 
-			{isAr ? <ArrowLeft size={14} className="ml-2 inline" /> : <ArrowRight size={14} className="ml-2 inline" />}
+			{isAr ? <ArrowLeft size={14} className="ml-2" /> : <ArrowRight size={14} className="ml-2" />}
 		  </button>
 		</div>
 	  </header>
@@ -141,14 +141,14 @@ export default function Home() {
 		</div>
 	  </section>
 
-	  {/* ─── GEOGRAPHIC TELEMETRY ATLAS MODULE ─── */}
+	  {/* ─── INTERACTIVE MAP TELEMETRY MODULE ─── */}
 	  <section className="public-map-card">
 		<div className="public-map-title flex items-center justify-center gap-2">
 		  <Globe2 size={13} className="text-gold-corporate" />
 		  <span>{isAr ? "خريطة البث ومصفوفة الموقع الجغرافي اللحظي" : "Global Live Visitor Signal Map"}</span>
 		</div>
 		
-		<div className="text-sm font-medium text-muted-corporate">
+		<div className="text-sm font-medium text-muted-corporate text-center">
 		  {isAr ? "إجمالي طلبات الاتصال بقاعدة البيانات التشغيلية:" : "Total active data telemetry hits recorded:"}{" "}
 		  <span className="font-mono font-black text-base bg-slate-100 px-3 py-1 rounded-lg ml-1">
 			{hits.toLocaleString()}
@@ -159,24 +159,24 @@ export default function Home() {
 	  </section>
 
 	  {/* ─── THE ECOSYSTEM OVERVIEW ─── */}
-	  <section className="max-w-4xl mx-auto text-center px-6 py-4 space-y-4 font-sans">
-		<h2 className="text-xl font-black uppercase tracking-wider">
-		  The {officialName} Ecosystem
+	  <section className="max-w-4xl mx-auto text-center px-6 py-4 space-y-4 font-sans flex flex-col items-center">
+		<h2 className="text-xl font-black uppercase tracking-wider text-center">
+		  The {brandName} Ecosystem
 		</h2>
-		<p className="text-muted-corporate text-sm md:text-base leading-relaxed font-medium">
+		<p className="text-muted-corporate text-sm md:text-base leading-relaxed font-medium text-center max-w-3xl">
 		  {isAr
-			? `تستبدل ${officialName} الأنظمة القديمة والمشتتة بمركز قيادة رقمي موحد. نحن نقدم منصات متخصصة لعمليات الشركات، وإدارة الرعاية الصحية السريرية المتقدمة، والتتبع الكامل لدورة حياة الموارد البشرية.`
-			: `${officialName} replaces fragmented legacy systems with a unified digital command center. We provide specialized platforms for enterprise operations, advanced clinical health care management, and complete human resource life-cycle tracking.`}
+			? `تستبدل ${brandName} الأنظمة القديمة والمشتتة بمركز قيادة رقمي موحد. نحن نقدم منصات متخصصة لعمليات الشركات، وإدارة الرعاية الصحية السريرية المتقدمة، والتتبع الكامل لدورة حياة الموارد البشرية.`
+			: `${brandName} replaces fragmented legacy systems with a unified digital command center. We provide specialized platforms for enterprise operations, advanced clinical health care management, and complete human resource life-cycle tracking.`}
 		</p>
 	  </section>
 
-	  {/* ─── PLATFORMS SHOWCASE CARDS ─── */}
+	  {/* ─── ECOSYSTEM SHOWCASE CARDS ─── */}
 	  <section className="platforms-section">
 		
 		{/* ROW A: OPERIX OPERATIONS */}
 		<div className="platform-row-card">
 		  <div className="platform-info-column">
-			<span className="platform-brand-badge text-gold-corporate">OPERIX SOLUTIONS · OPS</span>
+			<span className="platform-brand-badge text-gold-corporate font-black">OPERIX SOLUTIONS · OPS</span>
 			<h3 className="platform-headline">OPERIX Operations</h3>
 			<p className="platform-paragraph text-muted-corporate">
 			  {isAr
@@ -188,7 +188,7 @@ export default function Home() {
 			  <li className="platform-bullet-item"><span className="bullet-dot-gold"/> {isAr ? "تتبع أداء القوى العاملة المؤقتة وسائقي خدمة السيارات" : "Gig workforce & Valet performance tracking"}</li>
 			  <li className="platform-bullet-item"><span className="bullet-dot-gold"/> {isAr ? "توليد تلقائي للتذاكر والفواتير الرقمية عبر رمز QR" : "Automated ticket & QR invoice generation"}</li>
 			</ul>
-			<div className="pt-4">
+			<div className="pt-2 text-left">
 			  <a href="https://operix-operations.vercel.app" target="_blank" rel="noopener noreferrer" className="btn-launch-platform">
 				{isAr ? "تشغيل المنصة المباشرة" : "LAUNCH PLATFORM"} <ExternalLink size={12} className="inline ml-1" />
 			  </a>
@@ -200,7 +200,7 @@ export default function Home() {
 			  <span>OPERIX OPS · COMMAND CENTER</span>
 			  <span className="text-emerald-600 font-sans font-bold">● LIVE TELEMETRY</span>
 			</div>
-			<div className="mockup-inner-body text-xs font-mono space-y-3">
+			<div className="mockup-inner-body text-xs font-mono space-y-3 text-[#1e2d40] text-left">
 			  <div className="p-3 bg-white border border-slate-200 rounded-xl flex items-center justify-between shadow-sm">
 				<div>
 				  <div className="text-slate-400 tracking-wider font-bold text-[10px]">ANPR · GATE A</div>
@@ -222,7 +222,7 @@ export default function Home() {
 		{/* ROW B: OPERIX CARE */}
 		<div className="platform-row-card">
 		  <div className="platform-info-column">
-			<span className="platform-brand-badge text-gold-corporate">OPERIX SOLUTIONS · CARE</span>
+			<span className="platform-brand-badge text-gold-corporate font-black">OPERIX SOLUTIONS · CARE</span>
 			<h3 className="platform-headline">OPERIX Health Care</h3>
 			<p className="platform-paragraph text-muted-corporate">
 			  {isAr
@@ -234,7 +234,7 @@ export default function Home() {
 			  <li className="platform-bullet-item"><span className="bullet-dot-gold"/> {isAr ? "تاريخ إلكتروني طبي متكامل وشامل للمريض" : "Complete electronic patient history"}</li>
 			  <li className="platform-bullet-item"><span className="bullet-dot-gold"/> {isAr ? "بوابات أمنة ومشفرة بالكامل للأطباء وطاقم التمريض" : "Secure portals for doctors and nurses"}</li>
 			</ul>
-			<div className="pt-4">
+			<div className="pt-2 text-left">
 			  <a href="https://operix-care.vercel.app" target="_blank" rel="noopener noreferrer" className="btn-launch-platform">
 				{isAr ? "تشغيل المنصة المباشرة" : "LAUNCH PLATFORM"} <ExternalLink size={12} className="inline ml-1" />
 			  </a>
@@ -246,7 +246,7 @@ export default function Home() {
 			  <span>OPERIX CARE · CLINICAL WORKSPACE</span>
 			  <span className="text-rose-500 font-sans font-bold">● LIVE VITALS</span>
 			</div>
-			<div className="mockup-inner-body text-xs font-mono space-y-3">
+			<div className="mockup-inner-body text-xs font-mono space-y-3 text-[#1e2d40] text-left">
 			  <div className="flex justify-between items-center bg-white border border-slate-200 p-3 rounded-xl shadow-sm">
 				<div>
 				  <div className="font-black text-sm">Ahmad Y.</div>
@@ -260,7 +260,7 @@ export default function Home() {
 		{/* ROW C: OPERIX HRIS */}
 		<div className="platform-row-card">
 		  <div className="platform-info-column">
-			<span className="platform-brand-badge text-gold-corporate">OPERIX SOLUTIONS · HRIS</span>
+			<span className="platform-brand-badge text-gold-corporate font-black">OPERIX SOLUTIONS · HRIS</span>
 			<h3 className="platform-headline">OPERIX HRIS</h3>
 			<p className="platform-paragraph text-muted-corporate">
 			  {isAr
@@ -272,7 +272,7 @@ export default function Home() {
 			  <li className="platform-bullet-item"><span className="bullet-dot-gold"/> {isAr ? "محرك احتساب تلقائي للمستحقات والاستقطاعات الشهرية" : "Auto salary deduction engine"}</li>
 			  <li className="platform-bullet-item"><span className="bullet-dot-gold"/> {isAr ? "جداول المناوبات المرنة والدليل الرئيسي للموظفين" : "Shift scheduling & master directory"}</li>
 			</ul>
-			<div className="pt-4">
+			<div className="pt-2 text-left">
 			  <a href="https://operix-hris.vercel.app" target="_blank" rel="noopener noreferrer" className="btn-launch-platform">
 				{isAr ? "تشغيل المنصة المباشرة" : "LAUNCH PLATFORM"} <ExternalLink size={12} className="inline ml-1" />
 			  </a>
@@ -284,7 +284,7 @@ export default function Home() {
 			  <span>OPERIX HRIS · WORKFORCE BOARD</span>
 			  <span className="text-indigo-600 font-sans font-bold">● LIVE FEED</span>
 			</div>
-			<div className="mockup-inner-body text-xs font-mono space-y-2">
+			<div className="mockup-inner-body text-xs font-mono space-y-2 text-[#1e2d40] text-left">
 			  <div className="bg-white border border-slate-200 p-3 rounded-xl flex justify-between text-[11px] shadow-sm font-sans font-semibold">
 				<span className="text-slate-400 uppercase tracking-wider text-[10px] font-black">GPS Fence Status</span>
 				<span className="text-indigo-600 font-bold">Site A · Active</span>
@@ -294,8 +294,8 @@ export default function Home() {
 		</div>
 	  </section>
 
-	  {/* ─── THE PATH TO TRANSFORMATION TIMELINE ─── */}
-	  <section className="bg-white border-t border-slate-200 py-12">
+	  {/* ─── TRANSFORMATION TIMELINE ─── */}
+	  <section className="bg-white border-t border-slate-200 py-12 w-full flex flex-col items-center justify-center">
 		<div className="max-w-3xl mx-auto text-center px-6 mb-8">
 		  <h2 className="text-2xl md:text-3xl font-black">
 			{isAr ? "مسار التحول التشغيلي" : "The Path to Transformation"}
@@ -343,7 +343,7 @@ export default function Home() {
 		</div>
 	  </section>
 
-	  {/* ─── CALL TO ACTION ─── */}
+	  {/* ─── CALL TO ACTION ENTRANCE ─── */}
 	  <section className="cta-banner-wrapper">
 		<h2 className="text-3xl font-black">
 		  {isAr ? "هل أنت مستعد لرفع كفاءة منشأتك؟" : "Ready to Elevate Your Enterprise?"}
@@ -353,9 +353,9 @@ export default function Home() {
 			? "اطلب عرضاً توضيحياً حياً ومباشراً لمنظومة أوبيريكس المتكاملة المصممة خصيصاً لتلبية متطلبات شركتك."
 			: "Request a live demonstration of the OPERIX suite tailored for your organization."}
 		</p>
-		<div className="pt-2">
-		  <button onClick={() => navigate('/contact')} className="btn-nav-primary px-8 py-3.5 text-xs inline-flex mx-auto">
-			{isAr ? "طلب العرح الآن" : "SCHEDULE A DEMO"}
+		<div className="pt-2 flex justify-center w-full">
+		  <button onClick={() => navigate('/contact')} className="btn-nav-primary px-8 py-3.5 text-xs inline-flex mx-auto cursor-pointer">
+			{isAr ? "طلب العرض الآن" : "SCHEDULE A DEMO"}
 		  </button>
 		</div>
 	  </section>

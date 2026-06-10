@@ -9,7 +9,8 @@ export default function Navbar() {
   const { toggleLanguage, t, isAr } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
 
-  const brandLabel = "OPERIX Solutions";
+  // Unified official branding title text mapping
+  const brandTitle = "OPERIX Solutions";
 
   const navItems = [
 	{ path: '/', label: t.navHome || 'Home' },
@@ -25,13 +26,13 @@ export default function Navbar() {
 	<nav className="nav-wrapper">
 	  <div className="nav-inner">
 		
-		{/* Brand Identity Slot */}
+		{/* Brand Logotype */}
 		<Link to="/" onClick={() => setIsOpen(false)} className="nav-brand">
-		  <img src="/logo.png" alt={`${brandLabel} Logo`} className="nav-brand-img" />
-		  <span className="font-sans font-black tracking-tight text-sm uppercase text-[#1e2d40]">{brandLabel}</span>
+		  <img src="/logo.png" alt={`${brandTitle} Logo`} className="nav-brand-img" />
+		  <span className="font-sans font-black tracking-tight text-sm uppercase text-[#1e2d40]">{brandTitle}</span>
 		</Link>
 
-		{/* Desktop Tab bar Row */}
+		{/* Desktop Links - Hidden below 1280px to prevent item stacking */}
 		<div className="nav-links-container">
 		  {navItems.map((item) => (
 			<Link 
@@ -44,23 +45,23 @@ export default function Navbar() {
 		  ))}
 		</div>
 
-		{/* Action Elements Panel */}
+		{/* Desktop Action Controls */}
 		<div className="nav-actions">
-		  <button onClick={toggleLanguage} className="btn-lang">
+		  <button onClick={toggleLanguage} className="btn-lang cursor-pointer">
 			<Globe size={13} /> {isAr ? 'English' : 'عربي'}
 		  </button>
-		  <button onClick={() => navigate('/subscription')} className="btn-nav-secondary">
+		  <button onClick={() => navigate('/subscription')} className="btn-nav-secondary cursor-pointer">
 			{t.pricing || 'Pricing'}
 		  </button>
-		  <button onClick={() => navigate('/cms-login')} className="btn-nav-secondary">
+		  <button onClick={() => navigate('/cms-login')} className="btn-nav-secondary cursor-pointer">
 			{t.login || 'Login'}
 		  </button>
-		  <button onClick={() => navigate('/contact')} className="btn-nav-primary">
+		  <button onClick={() => navigate('/contact')} className="btn-nav-primary cursor-pointer">
 			{t.demoBtn || 'Book a Demo'}
 		  </button>
 		</div>
 
-		{/* Mobile menu trigger */}
+		{/* Mobile menu toggle - Visible on all widths below 1280px */}
 		<button onClick={() => setIsOpen(!isOpen)} className="mobile-toggle-btn">
 		  {isOpen ? <X size={22} /> : <Menu size={22} />}
 		</button>
