@@ -9,7 +9,6 @@ export default function Navbar() {
   const { toggleLanguage, t, isAr } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
 
-  // Unified official branding title text mapping
   const brandTitle = "OPERIX Solutions";
 
   const navItems = [
@@ -29,10 +28,10 @@ export default function Navbar() {
 		{/* Brand Logotype */}
 		<Link to="/" onClick={() => setIsOpen(false)} className="nav-brand">
 		  <img src="/logo.png" alt={`${brandTitle} Logo`} className="nav-brand-img" />
-		  <span className="font-sans font-black tracking-tight text-sm uppercase text-[#1e2d40]">{brandTitle}</span>
+		  <span className="font-sans font-black tracking-tight text-xs uppercase text-[#1e2d40]">{brandTitle}</span>
 		</Link>
 
-		{/* Desktop Links - Hidden below 1280px to prevent item stacking */}
+		{/* Desktop Tab Links Track */}
 		<div className="nav-links-container">
 		  {navItems.map((item) => (
 			<Link 
@@ -45,7 +44,7 @@ export default function Navbar() {
 		  ))}
 		</div>
 
-		{/* Desktop Action Controls */}
+		{/* Action Controls Panel */}
 		<div className="nav-actions">
 		  <button onClick={toggleLanguage} className="btn-lang cursor-pointer">
 			<Globe size={13} /> {isAr ? 'English' : 'عربي'}
@@ -61,37 +60,37 @@ export default function Navbar() {
 		  </button>
 		</div>
 
-		{/* Mobile menu toggle - Visible on all widths below 1280px */}
+		{/* Hamburger Menu Icon (Toggles at 1280px width) */}
 		<button onClick={() => setIsOpen(!isOpen)} className="mobile-toggle-btn">
-		  {isOpen ? <X size={22} /> : <Menu size={22} />}
+		  {isOpen ? <X size={20} /> : <Menu size={20} />}
 		</button>
 
 	  </div>
 
-	  {/* Mobile Screen Tray Overlay */}
+	  {/* Mobile Drawer Overlay with Strict Height Boundary */}
 	  {isOpen && (
 		<div className="mobile-drawer-tray animate-in">
 		  {navItems.map((item) => (
 			<button 
 			  key={item.path}
 			  onClick={() => { setIsOpen(false); navigate(item.path); }}
-			  className={`text-sm font-bold text-left py-2.5 w-full border-b border-slate-50 ${location.pathname === item.path ? 'text-[#c9a84c]' : 'text-[#1e2d40]'}`}
+			  className={`text-xs font-black uppercase tracking-wider text-left py-3.5 w-full border-b border-slate-100 ${location.pathname === item.path ? 'text-[#c9a84c]' : 'text-[#1e2d40]'}`}
 			  style={{ textAlign: isAr ? 'right' : 'left' }}
 			>
 			  {item.label}
 			</button>
 		  ))}
-		  <div className="pt-4 flex flex-col gap-4">
-			<button onClick={() => { toggleLanguage(); setIsOpen(false); }} className="btn-lang justify-start text-sm text-[#1e2d40]">
-			  <Globe size={15} /> {isAr ? 'English' : 'عربي'}
+		  <div className="pt-4 flex flex-col gap-4 pb-12">
+			<button onClick={() => { toggleLanguage(); setIsOpen(false); }} className="btn-lang justify-start text-xs text-[#1e2d40]">
+			  <Globe size={14} /> {isAr ? 'English' : 'عربي'}
 			</button>
-			<button onClick={() => { setIsOpen(false); navigate('/subscription'); }} className="text-sm font-bold text-[#1e2d40] text-left" style={{ textAlign: isAr ? 'right' : 'left' }}>
+			<button onClick={() => { setIsOpen(false); navigate('/subscription'); }} className="text-xs font-black uppercase tracking-wider text-[#1e2d40] text-left" style={{ textAlign: isAr ? 'right' : 'left' }}>
 			  {t.pricing || 'Pricing'}
 			</button>
-			<button onClick={() => { setIsOpen(false); navigate('/cms-login'); }} className="text-sm font-bold text-[#1e2d40] text-left" style={{ textAlign: isAr ? 'right' : 'left' }}>
+			<button onClick={() => { setIsOpen(false); navigate('/cms-login'); }} className="text-xs font-black uppercase tracking-wider text-[#1e2d40] text-left" style={{ textAlign: isAr ? 'right' : 'left' }}>
 			  {t.login || 'Login'}
 			</button>
-			<button onClick={() => { setIsOpen(false); navigate('/contact'); }} className="btn-nav-primary text-center py-3 w-full">
+			<button onClick={() => { setIsOpen(false); navigate('/contact'); }} className="btn-nav-primary text-center py-3.5 w-full cursor-pointer">
 			  {t.demoBtn || 'Book a Demo'}
 			</button>
 		  </div>

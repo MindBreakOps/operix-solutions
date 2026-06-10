@@ -11,6 +11,8 @@ export default function Home() {
   const [hits, setHits] = useState(0);
   const [activeCountries, setActiveCountries] = useState({});
   const [mapReady, setMapReady] = useState(false);
+  
+  const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
 
   const brandName = "OPERIX Solutions";
@@ -50,7 +52,9 @@ export default function Home() {
 	  const { data } = await supabase.from('operix_visitor_logs').select('ip_country');
 	  if (data) {
 		const counts = data.reduce((acc, curr) => {
-		  acc[curr.ip_country.toUpperCase()] = (acc[curr.ip_country.toUpperCase()] || 0) + 1;
+		  if (curr.ip_country) {
+			acc[curr.ip_country.toUpperCase()] = (acc[curr.ip_country.toUpperCase()] || 0) + 1;
+		  }
 		  return acc;
 		}, {});
 		setActiveCountries(counts);
@@ -60,14 +64,25 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-	if (!mapReady || !window.L || Object.keys(activeCountries).length === 0 || mapInstanceRef.current) return;
+	if (!mapReady || !window.L || Object.keys(activeCountries).length === 0 || !mapContainerRef.current || mapInstanceRef.current) return;
 
 	const L = window.L;
-	const map = L.map('real-telemetry-map', { zoomControl: true, attributionControl: false }).setView([26.0, 32.0], 2);
+
+	// Enforce solid boundary limits to prevent horizontal tracking replication
+	const map = L.map(mapContainerRef.current, { 
+	  zoomControl: true, 
+	  attributionControl: false,
+	  maxBounds: [[-90, -180], [90, 180]],
+	  maxBoundsViscosity: 1.0
+	}).setView([24.0, 35.0], 2);
+	
 	mapInstanceRef.current = map;
 
+	// Set noWrap to true to completely block duplicate world rendering
 	L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
 	  maxZoom: 18,
+	  minZoom: 2,
+	  noWrap: true
 	}).addTo(map);
 
 	Object.entries(activeCountries).forEach(([code, count]) => {
@@ -95,7 +110,7 @@ export default function Home() {
   }, [mapReady, activeCountries]);
 
   return (
-	<div className="w-full flex flex-col items-center justify-center animate-in">
+	<div className="w-full flex flex-col items-center justify-center animate-in px-4">
 	  
 	  {/* ─── HERO ARCHITECTURE SECTION ─── */}
 	  <header className="hero-wrapper">
@@ -141,7 +156,7 @@ export default function Home() {
 		</div>
 	  </section>
 
-	  {/* ─── INTERACTIVE MAP TELEMETRY MODULE ─── */}
+	  {/* ─── GEOGRAPHIC TELEMETRY ATLAS MODULE ─── */}
 	  <section className="public-map-card">
 		<div className="public-map-title flex items-center justify-center gap-2">
 		  <Globe2 size={13} className="text-gold-corporate" />
@@ -155,15 +170,19 @@ export default function Home() {
 		  </span>
 		</div>
 
-		<div id="real-telemetry-map" />
+		<div 
+		  ref={mapContainerRef} 
+		  className="rounded-2xl border border-slate-200 shadow-inner overflow-hidden z-10 my-4"
+		  style={{ width: '100%', height: '380px', backgroundColor: '#f1f5f9' }}
+		/>
 	  </section>
 
 	  {/* ─── THE ECOSYSTEM OVERVIEW ─── */}
-	  <section className="max-w-4xl mx-auto text-center px-6 py-4 space-y-4 font-sans flex flex-col items-center">
+	  <section className="max-w-4xl mx-auto text-center py-4 space-y-4 font-sans flex flex-col items-center">
 		<h2 className="text-xl font-black uppercase tracking-wider text-center">
 		  The {brandName} Ecosystem
 		</h2>
-		<p className="text-muted-corporate text-sm md:text-base leading-relaxed font-medium text-center max-w-3xl">
+		<p className="text-muted-corporate text-sm md:text-base leading-relaxed font-medium text-center max-w-2xl">
 		  {isAr
 			? `تستبدل ${brandName} الأنظمة القديمة والمشتتة بمركز قيادة رقمي موحد. نحن نقدم منصات متخصصة لعمليات الشركات، وإدارة الرعاية الصحية السريرية المتقدمة، والتتبع الكامل لدورة حياة الموارد البشرية.`
 			: `${brandName} replaces fragmented legacy systems with a unified digital command center. We provide specialized platforms for enterprise operations, advanced clinical health care management, and complete human resource life-cycle tracking.`}
@@ -268,9 +287,9 @@ export default function Home() {
 				: "Complete HR automation — GPS-enforced attendance tracking, automated salary deductions, and seamless employee self-service."}
 			</p>
 			<ul className="platform-bullet-list">
-			  <li className="platform-bullet-item"><span className="bullet-dot-gold"/> {isAr ? "فرض تسجيل الدخول والخروج بنطاق جغرافي محدد مشفر" : "GPS-fenced check-in/out enforcement"}</li>
-			  <li className="platform-bullet-item"><span className="bullet-dot-gold"/> {isAr ? "محرك احتساب تلقائي للمستحقات والاستقطاعات الشهرية" : "Auto salary deduction engine"}</li>
-			  <li className="platform-bullet-item"><span className="bullet-dot-gold"/> {isAr ? "جداول المناوبات المرنة والدليل الرئيسي للموظفين" : "Shift scheduling & master directory"}</li>
+			  <li className="platform-bullet-item"><span className="bullet-dot-gold"/> {isAr ? "التعرف على لوحة لوحات المركبات الحية" : "GPS-fenced check-in/out enforcement"}</li>
+			  <li className="platform-bullet-item"><span className="bullet-dot-gold"/> {isAr ? "محرك احتساب الاستقطاعات التلقائي" : "Auto salary deduction engine"}</li>
+			  <li className="platform-bullet-item"><span className="bullet-dot-gold"/> {isAr ? "جداول المناوبات المرنة والدليل الرئيسي" : "Shift scheduling & master directory"}</li>
 			</ul>
 			<div className="pt-2 text-left">
 			  <a href="https://operix-hris.vercel.app" target="_blank" rel="noopener noreferrer" className="btn-launch-platform">
@@ -294,7 +313,7 @@ export default function Home() {
 		</div>
 	  </section>
 
-	  {/* ─── TRANSFORMATION TIMELINE ─── */}
+	  {/* ─── TRANSFORMATION ROADMAP TIMELINE ─── */}
 	  <section className="bg-white border-t border-slate-200 py-12 w-full flex flex-col items-center justify-center">
 		<div className="max-w-3xl mx-auto text-center px-6 mb-8">
 		  <h2 className="text-2xl md:text-3xl font-black">

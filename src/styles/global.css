@@ -1,7 +1,7 @@
 /* ─── 1. CORE TAILWIND V4 FRAMEWORK INJECTION ─── */
 @import "tailwindcss";
 
-/* ─── 2. ENTERPRISE BRAND TOKENS (SAMPLED FROM IMIND.JPG) ─── */
+/* ─── 2. ENTERPRISE BRAND TOKENS (SAMPLED FROM LOGO) ─── */
 :root {
   --color-navy: #1e2d40;
   --color-gold: #c9a84c;
@@ -11,53 +11,61 @@
   --color-muted: #475569;
 }
 
-/* ─── 3. GLOBAL DOCUMENT RESTORATION & TEXT ALIGNMENT ─── */
-body {
+/* ─── 3. GLOBAL DOCUMENT RESTORATION & STRICT VIEWPORT RESET ─── */
+html, body {
+  @apply max-w-full overflow-x-hidden m-0 p-0;
   background-color: var(--color-bg);
   color: var(--color-text);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
-  width: 100%;
-  overflow-x: hidden;
 }
 
-/* Elegant Editorial Serif Headings */
-h1, h2, h3, h4, .brand-heading {
-  font-family: Georgia, Cambria, "Times New Roman", Times, serif;
-  letter-spacing: -0.01em;
+/* Stable Institutional Typography Scaling Matrix */
+h1 { 
+  @apply !text-3xl sm:!text-4xl md:!text-5xl !font-black !tracking-tight; 
   color: #1e2d40 !important;
+  font-family: Georgia, Cambria, "Times New Roman", Times, serif; 
 }
 
-p, span, div, li, label {
+h2 { 
+  @apply !text-2xl sm:!text-3xl !font-black; 
+  color: #1e2d40 !important;
+  font-family: Georgia, Cambria, "Times New Roman", Times, serif; 
+}
+
+h3 { 
+  @apply !text-xl sm:!text-2xl !font-black; 
+  color: #1e2d40 !important;
+  font-family: Georgia, Cambria, "Times New Roman", Times, serif; 
+}
+
+h4 { 
+  @apply !text-sm sm:!text-base !font-black; 
+  color: #1e2d40 !important;
+  font-family: Georgia, Cambria, "Times New Roman", Times, serif; 
+}
+
+p, span, div, li, label, select, input, textarea {
   color: #1e2d40;
 }
-
 .text-muted-corporate { color: #475569 !important; }
 .text-gold-corporate { color: #c9a84c !important; }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.animate-in {
-  animation: fadeIn 0.4s ease-out forwards;
-}
-
-/* ─── 4. NON-CROWDED ADAPTIVE NAVBAR ─── */
+/* ─── 4. NON-CROWDED RESPONSIVE TAB NAVBAR ─── */
 .nav-wrapper {
   @apply sticky top-0 z-50 bg-white border-b border-slate-200/80 shadow-sm w-full;
 }
 .nav-inner {
-  @apply max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4 font-sans;
+  @apply max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-6 font-sans;
 }
 .nav-brand {
-  @apply flex items-center gap-2.5 text-sm font-black tracking-tight text-[#1e2d40] hover:opacity-90 transition-opacity shrink-0;
+  @apply flex items-center gap-2 text-sm font-black tracking-tight text-[#1e2d40] shrink-0;
 }
 .nav-brand-img {
-  @apply w-7 h-7 object-contain;
+  @apply w-6 h-6 object-contain;
 }
 
-/* Desktop Link Bar (Only displays on large displays to prevent button clipping) */
+/* Desktop Horizontal Viewport links (Locked to XL screen size to avoid crowding) */
 .nav-links-container {
   @apply hidden xl:flex items-center gap-5 flex-nowrap whitespace-nowrap justify-center flex-1;
 }
@@ -80,34 +88,34 @@ p, span, div, li, label {
   @apply bg-[#1e2d40] text-white px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-wider hover:opacity-90 hover:-translate-y-0.5 transition-all shadow-md shadow-slate-900/5 shrink-0;
 }
 
-/* Menu Toggle Controls - Displays on all tablet/laptop screens below 1280px */
+/* Mobile Toggle Layout Rules */
 .mobile-toggle-btn {
   @apply flex xl:hidden p-2 text-[#1e2d40] outline-none shrink-0 cursor-pointer;
 }
+
+/* Fixed Height and Scroll Container for Mobile Tray to Prevent Layout Cutoffs */
 .mobile-drawer-tray {
-  @apply xl:hidden fixed top-[65px] left-0 right-0 bg-white border-b border-slate-200 shadow-xl p-6 flex flex-col gap-4 font-sans z-50;
+  @apply xl:hidden fixed top-[65px] left-0 right-0 bg-white border-b border-slate-200 shadow-xl p-6 flex flex-col gap-4 font-sans z-50 overflow-y-auto;
+  height: calc(100vh - 65px);
 }
 
-/* ─── 5. CENTERED HERO & METRICS GRID ─── */
+/* ─── 5. BALANCED HERO & STATS SYSTEM ─── */
 .hero-wrapper { 
-  @apply px-6 pt-24 pb-12 text-center max-w-4xl mx-auto space-y-6 flex flex-col items-center justify-center; 
+  @apply px-6 pt-16 pb-8 text-center max-w-4xl mx-auto space-y-6 flex flex-col items-center justify-center; 
 }
 .hero-tagline { 
   @apply inline-flex items-center gap-2 border border-slate-200 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest bg-white shadow-sm font-sans mx-auto; 
-}
-.hero-main-title { 
-  @apply text-4xl sm:text-5xl md:text-6xl font-black leading-[1.1] text-[#1e2d40] text-center w-full; 
 }
 .hero-subtitle-text { 
   @apply text-base sm:text-lg leading-relaxed max-w-2xl mx-auto font-medium font-sans text-center; 
 }
 
-/* Explicit Grid Alignment Configuration */
+/* Controlled Centered Stats Matrix Wrapper */
 .stats-container { 
-  @apply max-w-5xl mx-auto px-6 py-10 my-12 bg-white border border-slate-200 rounded-3xl shadow-sm w-full;
+  @apply max-w-4xl mx-auto px-6 py-8 my-8 bg-white border border-slate-200 rounded-2xl shadow-sm w-full;
   display: grid;
   grid-template-cols: 1fr;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 @media (min-width: 640px) {
   .stats-container {
@@ -115,75 +123,61 @@ p, span, div, li, label {
   }
 }
 .stat-item { 
-  @apply text-center flex flex-col items-center justify-center space-y-1 w-full; 
+  @apply text-center flex flex-col items-center justify-center space-y-0.5 w-full; 
 }
 .stat-number { 
-  @apply text-4xl font-black text-[#c9a84c] font-mono tracking-tight text-center; 
+  @apply text-3xl font-black text-[#c9a84c] font-mono tracking-tight text-center; 
 }
 .stat-descriptor { 
   @apply text-[10px] font-extrabold uppercase tracking-widest text-slate-400 font-sans block text-center; 
 }
 
-/* ─── 6. INTERACTIVE OPENSTREETMAP ATLAS ─── */
+/* ─── 6. INTERACTIVE ATLAS MODULE ─── */
 .public-map-card {
-  @apply max-w-5xl mx-auto border border-slate-200 bg-white p-6 rounded-3xl shadow-sm mb-12 font-sans text-center space-y-4 w-full;
+  @apply max-w-4xl mx-auto border border-slate-200 bg-white p-6 rounded-3xl shadow-sm mb-12 font-sans text-center space-y-4 w-full;
 }
 .public-map-title {
   @apply text-xs font-black tracking-widest text-[#c9a84c] uppercase text-center block;
 }
-#real-telemetry-map {
-  @apply w-full h-96 bg-[#f8fafc] rounded-2xl border border-slate-200 shadow-inner overflow-hidden z-10 my-4;
-}
-.leaflet-popup-content-wrapper {
-  background-color: #ffffff !important;
-  color: #1e2d40 !important;
-  border: 1px solid #c9a84c !important;
-  border-radius: 0.75rem !important;
-  padding: 0.25rem !important;
-  font-family: ui-monospace, monospace !important;
-  font-size: 11px !important;
-  font-weight: 700 !important;
-}
 
-/* ─── 7. SYSTEM PLATFORMS MATRIX ─── */
-.platforms-section { @apply max-w-7xl mx-auto px-6 py-12 space-y-12 w-full; }
-.platform-row-card { @apply bg-white border border-slate-200 rounded-3xl p-8 grid grid-cols-1 gap-12 items-center transition-all duration-300 hover:shadow-md w-full; }
+/* ─── 7. SYSTEM PLATFORMS GRID ─── */
+.platforms-section { @apply max-w-5xl mx-auto px-6 py-6 space-y-10 w-full; }
+.platform-row-card { @apply bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 grid grid-cols-1 gap-8 items-center transition-all duration-300 hover:shadow-md w-full; }
 @media (min-width: 1024px) { 
-  .platform-row-card { grid-template-cols: repeat(2, 1fr); padding: 3rem; } 
+  .platform-row-card { grid-template-cols: repeat(2, 1fr); padding: 2.5rem; } 
 }
-.platform-info-column { @apply space-y-6 font-sans text-left; }
-.platform-brand-badge { @apply inline-block text-[11px] font-black uppercase tracking-widest text-[#c9a84c] font-sans; }
-.platform-headline { @apply text-3xl font-black text-[#1e2d40] tracking-tight; }
-.platform-paragraph { @apply text-sm leading-relaxed font-medium text-slate-500; }
-.platform-bullet-list { @apply space-y-3 border-t border-slate-100 pt-5 p-0 m-0 list-none; }
-.platform-bullet-item { @apply flex items-center gap-3 text-sm font-semibold text-slate-600; }
+.platform-info-column { @apply space-y-4 font-sans text-left; }
+.platform-brand-badge { @apply inline-block text-[10px] font-black uppercase tracking-widest text-[#c9a84c] font-sans; }
+.platform-paragraph { @apply text-xs sm:text-sm leading-relaxed font-medium text-slate-500; }
+.platform-bullet-list { @apply space-y-2 border-t border-slate-100 pt-4 p-0 m-0 list-none; }
+.platform-bullet-item { @apply flex items-center gap-2 text-xs font-semibold text-slate-600; }
 .bullet-dot-gold { @apply w-1.5 h-1.5 bg-[#c9a84c] rounded-full shrink-0; }
-.btn-launch-platform { @apply inline-flex items-center gap-2 bg-[#1e2d40] text-white px-6 py-3.5 rounded-xl font-extrabold text-xs tracking-wider uppercase transition-all hover:opacity-90 hover:-translate-y-0.5 shadow-md font-sans cursor-pointer; }
+.btn-launch-platform { @apply inline-flex items-center gap-2 bg-[#1e2d40] text-white px-5 py-3 rounded-xl font-extrabold text-[11px] tracking-wider uppercase transition-all hover:opacity-90 hover:-translate-y-0.5 shadow-md font-sans cursor-pointer; }
 
-.telemetry-mockup-display { @apply bg-slate-50 text-[#1e2d40] rounded-2xl border border-slate-200 shadow-inner min-h-[260px] flex flex-col justify-between font-mono p-0 overflow-hidden; }
-.mockup-top-bar { @apply bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between text-[10px] font-black text-slate-400 uppercase tracking-wider; }
-.mockup-inner-body { @apply p-6 flex-grow space-y-4 text-xs; }
+.telemetry-mockup-display { @apply bg-slate-50 text-[#1e2d40] rounded-xl border border-slate-200 shadow-inner min-h-[200px] flex flex-col justify-between font-mono p-0 overflow-hidden; }
+.mockup-top-bar { @apply bg-white border-b border-slate-200 px-4 py-2.5 flex items-center justify-between text-[9px] font-black text-slate-400 uppercase tracking-wider; }
+.mockup-inner-body { @apply p-4 flex-grow space-y-3 text-xs; }
 
 /* ─── 8. ROADMAP TIMELINE & FOOTER ─── */
-.timeline-container { @apply max-w-4xl mx-auto px-6 py-16 relative space-y-12 font-sans w-full; }
-.timeline-line { @apply absolute left-10 top-20 bottom-20 w-0.5 bg-slate-200; }
+.timeline-container { @apply max-w-3xl mx-auto px-6 py-10 relative space-y-10 font-sans w-full; }
+.timeline-line { @apply absolute left-10 top-16 bottom-16 w-0.5 bg-slate-200; }
 body[dir="rtl"] .timeline-line { @apply left-auto right-10; }
-.phase-row-block { @apply flex gap-8 items-start relative pl-4 w-full; }
+.phase-row-block { @apply flex gap-6 items-start relative pl-4 w-full; }
 body[dir="rtl"] .phase-row-block { @apply pl-0 pr-4; }
-.phase-indicator-dot { @apply w-4 h-4 rounded-full border-4 border-white bg-[#c9a84c] shadow-md shrink-0 mt-1.5 z-10; }
-.phase-content-card { @apply bg-white border border-slate-200 rounded-2xl p-6 flex-grow shadow-sm text-left; }
-.phase-tag { @apply text-[10px] font-black uppercase tracking-widest text-[#c9a84c] block mb-1; }
-.phase-title { @apply text-base font-black text-[#1e2d40] mb-2; }
+.phase-indicator-dot { @apply w-3.5 h-3.5 rounded-full border-4 border-white bg-[#c9a84c] shadow-md shrink-0 mt-1 z-10; }
+.phase-content-card { @apply bg-white border border-slate-200 rounded-xl p-5 flex-grow shadow-sm text-left; }
+.phase-tag { @apply text-[9px] font-black uppercase tracking-widest text-[#c9a84c] block mb-0.5; }
+.phase-title { @apply text-sm font-black text-[#1e2d40] mb-1; }
 .phase-desc { @apply text-xs text-slate-500 leading-relaxed font-medium; }
-.cta-banner-wrapper { @apply max-w-5xl mx-auto px-6 py-16 text-center border border-slate-200 bg-white rounded-3xl my-16 shadow-sm space-y-6 w-full flex flex-col items-center justify-center; }
+.cta-banner-wrapper { @apply max-w-4xl mx-auto px-6 py-12 text-center border border-slate-200 bg-white rounded-2xl my-12 shadow-sm space-y-5 w-full flex flex-col items-center justify-center; }
 
-.footer-wrapper { @apply bg-[#1e2d40] text-white border-t border-slate-800 pt-16 pb-8 font-sans w-full; }
-.footer-grid { @apply max-w-7xl mx-auto px-6 grid grid-cols-1 gap-10 border-b border-slate-800 pb-12; }
+.footer-wrapper { @apply bg-[#1e2d40] text-white border-t border-slate-800 pt-12 pb-6 font-sans w-full; }
+.footer-grid { @apply max-w-7xl mx-auto px-6 grid grid-cols-1 gap-8 border-b border-slate-800 pb-10; }
 @media (min-width: 640px) { .footer-grid { @apply grid-cols-2; } }
 @media (min-width: 1024px) { .footer-grid { @apply grid-cols-4; } }
-.footer-brand-column { @apply space-y-4 text-left; }
+.footer-brand-column { @apply space-y-3 text-left; }
 .footer-desc-text { @apply text-xs leading-relaxed font-medium; }
-.footer-column-title { @apply text-[11px] font-black uppercase tracking-widest mb-4 block; }
-.footer-list { @apply space-y-2.5 list-none p-0 m-0; }
+.footer-column-title { @apply text-[10px] font-black uppercase tracking-widest mb-3 block; }
+.footer-list { @apply space-y-2 list-none p-0 m-0; }
 .footer-list-link { @apply text-xs font-bold transition-colors block text-left; }
-.footer-bottom-bar { @apply max-w-7xl mx-auto px-6 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-bold uppercase tracking-wider; }
+.footer-bottom-bar { @apply max-w-7xl mx-auto px-6 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] font-bold uppercase tracking-wider; }
