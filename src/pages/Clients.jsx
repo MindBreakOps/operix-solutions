@@ -1,12 +1,9 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { ExternalLink } from 'lucide-react';
 
 export default function Clients() {
   const { isAr } = useLanguage();
 
-  // ─── CMS READY DATA ARRAY ───
-  // Replace this with: const [clientsData, setClientsData] = useState([]); useEffect(() => fetch(...))
   const clientsData = [
 	{
 	  id: 1,
@@ -18,7 +15,7 @@ export default function Clients() {
 	  id: 2,
 	  name: isAr ? "مؤسسة مامي" : "Mamey Enterprise",
 	  contractDetails: isAr ? "تجارة عامة واستثمار ولوجستيات" : "General Trading, Investment & Logistics",
-	  logoUrl: "/projects/mamey.png" // Using the image you uploaded
+	  logoUrl: "/projects/mamey.png" 
 	},
 	{
 	  id: 3,
@@ -27,7 +24,7 @@ export default function Clients() {
 	  logoUrl: "/projects/abbas.png"
 	},
 	{
-	id: 3,
+	  id: 4,
 	  name: isAr ? "Mind Break Cafe" : "VIP VALET SERVICE",
 	  contractDetails: isAr ? "خدمة صف سيارات وادارة مواقف ذكية" : "VIP VALET SERVICE and Parking System ANPR",
 	  logoUrl: "/projects/valet.png"
@@ -39,7 +36,8 @@ export default function Clients() {
 	  <div className="max-w-6xl mx-auto space-y-16">
 		
 		<div className="text-center space-y-4">
-		  <h1 className="text-4xl md:text-5xl font-black text-[#1e2d40] font-serif tracking-tight">
+		  {/* Navy to Gold Gradient Header */}
+		  <h1 className="text-4xl md:text-5xl font-black font-serif tracking-tight bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent pb-2">
 			{isAr ? "شركاء النجاح والمنظومات" : "Clients & Corporate Partners"}
 		  </h1>
 		  <p className="text-slate-600 text-sm md:text-base font-medium">
@@ -49,22 +47,26 @@ export default function Clients() {
 		  </p>
 		</div>
 
-		{/* DYNAMIC CMS GRID */}
-		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 		  {clientsData.map((client) => (
-			<div key={client.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all group">
-			  <div className="h-40 bg-slate-100 flex items-center justify-center p-6 border-b border-slate-100">
+			<div key={client.id} className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl hover:border-[#d4af37]/50 transition-all duration-300 group flex flex-col">
+			  
+			  <div className="h-56 bg-[#1e2d40] relative overflow-hidden">
 				<img 
 				  src={client.logoUrl} 
 				  alt={client.name} 
-				  className="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500" 
-				  onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.innerHTML = '<div class="text-slate-300 font-black tracking-widest uppercase">LOGO</div>'; }}
+				  className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-transform duration-500" 
+				  onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.innerHTML = '<div class="w-full h-full flex items-center justify-center text-slate-500 font-black tracking-widest uppercase bg-slate-100">IMAGE</div>'; }}
 				/>
+				<div className="absolute inset-0 bg-gradient-to-t from-[#1e2d40]/40 to-transparent opacity-60"></div>
 			  </div>
-			  <div className="p-6 space-y-2">
-				<h3 className="text-lg font-black text-[#1e2d40]">{client.name}</h3>
-				<p className="text-xs text-slate-500 font-medium leading-relaxed uppercase tracking-wider">{client.contractDetails}</p>
+
+			  <div className="p-8 flex flex-col flex-grow relative bg-white">
+				<div className="absolute top-0 right-8 -translate-y-1/2 w-10 h-1.5 bg-[#d4af37] rounded-full shadow-sm"></div>
+				<h3 className="text-xl font-black mb-2 bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent pb-1">{client.name}</h3>
+				<p className="text-xs text-slate-500 font-bold leading-relaxed uppercase tracking-wider">{client.contractDetails}</p>
 			  </div>
+			  
 			</div>
 		  ))}
 		</div>

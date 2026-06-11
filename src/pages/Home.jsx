@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabaseClient as supabase } from '../config/supabase';
 import { useLanguage } from '../context/LanguageContext';
 import { ArrowRight, ArrowLeft, ExternalLink, Globe2, Building2, Car, Users, BadgeCheck } from 'lucide-react';
+import ReviewsSection from './ReviewsSection';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -108,40 +109,39 @@ export default function Home() {
   }, [mapReady, activeCountries]);
 
   return (
-	<div className="w-full flex flex-col items-center justify-center animate-in px-4 md:px-6 font-sans pb-20">
+	<div className="w-full flex flex-col items-center justify-center animate-in font-sans">
 	  
 	  {/* ─── HERO ARCHITECTURE ─── */}
-		<header className="px-6 pt-16 md:pt-24 pb-12 text-center max-w-3xl mx-auto space-y-6">
-		  <div className="inline-flex items-center gap-2 border border-slate-200 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest bg-white shadow-sm mx-auto">
-			<span className="w-1.5 h-1.5 bg-[#c9a84c] rounded-full" />
-			{isAr ? "برمجيات وإدارة تشغيلية متكاملة" : "SOFTWARE & FULL-PHASE OPERATIONS"}
-		  </div>
-		  
-		  {/* Scaled down the text from 6xl to 5xl for a crisper desktop feel */}
-		  <h1 className="text-3xl md:text-4xl lg:text-5xl font-black leading-[1.15] text-[#1e2d40] tracking-tight">
-			{isAr ? "تمكين المنشآت الكبرى عبر " : "Empowering Enterprises with "}
-			<span className="bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent block sm:inline ml-1">
-			  {brandName}
-			</span>
-		  </h1>
-		  
-		  <p className="text-sm md:text-base leading-relaxed max-w-2xl mx-auto font-medium text-slate-500">
-			{isAr 
-			  ? "نحن لا نكتفي ببناء الأنظمة الذكية فحسب، بل نوفر الكوادر الخبيرة لتشغيل وإدارة المرافق، مواقف السيارات، والفعاليات الكبرى على أرض الواقع."
-			  : "We don't just build intelligent systems. We deploy the expert personnel to run your facilities, parking grids, and large-scale events flawlessly on the ground."}
-		  </p>
-		  
-		  <div className="pt-4">
-			<button onClick={() => navigate('/contact')} className="bg-[#1e2d40] hover:bg-[#d4af37] transition-colors text-white px-8 py-3.5 rounded-xl text-xs font-black tracking-wider uppercase inline-flex items-center shadow-md cursor-pointer">
-			  {isAr ? "طلب عرض تجريبي" : "SCHEDULE A DEMO"} 
-			  {isAr ? <ArrowLeft size={14} className="ml-2" /> : <ArrowRight size={14} className="ml-2" />}
-			</button>
-		  </div>
-		</header>
-	  {/* ─── NEW SECTION: FULL PHASE OPERATIONS & MANAGEMENT ─── */}
-	  <section className="max-w-6xl mx-auto w-full my-12 space-y-10">
+	  <header className="px-6 pt-16 md:pt-24 pb-12 text-center max-w-3xl mx-auto space-y-6 w-full">
+		<div className="inline-flex items-center gap-2 border border-slate-200 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest bg-white shadow-sm mx-auto">
+		  <span className="w-1.5 h-1.5 bg-[#c9a84c] rounded-full" />
+		  {isAr ? "برمجيات وإدارة تشغيلية متكاملة" : "SOFTWARE & FULL-PHASE OPERATIONS"}
+		</div>
+		
+		{/* Navy to Gold Gradient Header */}
+		<h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.15] tracking-tight bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent pb-2">
+		  {isAr ? "تمكين المنشآت الكبرى عبر " : "Empowering Enterprises with "}
+		  <span className="block sm:inline ml-1">{brandName}</span>
+		</h1>
+		
+		<p className="text-sm md:text-base leading-relaxed max-w-2xl mx-auto font-medium text-slate-500">
+		  {isAr 
+			? "نحن لا نكتفي ببناء الأنظمة الذكية فحسب، بل نوفر الكوادر الخبيرة لتشغيل وإدارة المرافق، مواقف السيارات، والفعاليات الكبرى على أرض الواقع."
+			: "We don't just build intelligent systems. We deploy the expert personnel to run your facilities, parking grids, and large-scale events flawlessly on the ground."}
+		</p>
+		
+		<div className="pt-4">
+		  <button onClick={() => navigate('/contact')} className="bg-[#1e2d40] hover:bg-[#d4af37] transition-colors text-white px-8 py-3.5 rounded-xl text-xs font-black tracking-wider uppercase inline-flex items-center shadow-md cursor-pointer">
+			{isAr ? "طلب عرض تجريبي" : "SCHEDULE A DEMO"} 
+			{isAr ? <ArrowLeft size={14} className="ml-2" /> : <ArrowRight size={14} className="ml-2" />}
+		  </button>
+		</div>
+	  </header>
+
+	  {/* ─── FULL PHASE OPERATIONS & MANAGEMENT ─── */}
+	  <section className="max-w-6xl mx-auto w-full my-12 space-y-10 px-6">
 		<div className="text-center space-y-4 mb-8">
-		  <h2 className="text-2xl md:text-3xl font-black uppercase tracking-wider text-[#1e2d40]">
+		  <h2 className="text-2xl md:text-3xl font-black uppercase tracking-wider bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent pb-1">
 			{isAr ? "ما بعد البرمجيات: إدارة تشغيلية متكاملة" : "Beyond Software: Operational Excellence"}
 		  </h2>
 		  <p className="text-slate-500 text-sm md:text-base leading-relaxed font-medium max-w-3xl mx-auto">
@@ -156,7 +156,7 @@ export default function Home() {
 			<div className="w-14 h-14 bg-[#1e2d40] text-white rounded-2xl flex items-center justify-center shadow-md">
 			  <Building2 size={24} />
 			</div>
-			<h3 className="text-lg font-black text-[#1e2d40]">
+			<h3 className="text-lg font-black bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent pb-1">
 			  {isAr ? "إدارة المرافق والمواقف" : "Facility & Parking Management"}
 			</h3>
 			<p className="text-sm text-slate-500 font-medium leading-relaxed">
@@ -170,7 +170,7 @@ export default function Home() {
 			<div className="w-14 h-14 bg-[#c9a84c] text-white rounded-2xl flex items-center justify-center shadow-md">
 			  <Car size={24} />
 			</div>
-			<h3 className="text-lg font-black text-[#1e2d40]">
+			<h3 className="text-lg font-black bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent pb-1">
 			  {isAr ? "خدمة الفالي والفعاليات" : "VIP Valet & Event Operations"}
 			</h3>
 			<p className="text-sm text-slate-500 font-medium leading-relaxed">
@@ -181,10 +181,10 @@ export default function Home() {
 		  </div>
 
 		  <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center space-y-4">
-			<div className="w-14 h-14 bg-emerald-700 text-white rounded-2xl flex items-center justify-center shadow-md">
+			<div className="w-14 h-14 bg-[#1e2d40] text-white rounded-2xl flex items-center justify-center shadow-md">
 			  <BadgeCheck size={24} />
 			</div>
-			<h3 className="text-lg font-black text-[#1e2d40]">
+			<h3 className="text-lg font-black bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent pb-1">
 			  {isAr ? "كوادر بشرية خبيرة" : "Expert Human Capital"}
 			</h3>
 			<p className="text-sm text-slate-500 font-medium leading-relaxed">
@@ -197,35 +197,37 @@ export default function Home() {
 	  </section>
 
 	  {/* ─── ATLAS MODULE ─── */}
-	  <section className="max-w-5xl mx-auto border border-slate-200 bg-white p-6 md:p-8 rounded-3xl shadow-sm my-16 w-full space-y-4">
-		<div className="flex items-center justify-center gap-2 text-xs font-black tracking-widest text-[#c9a84c] uppercase">
-		  <Globe2 size={14} />
-		  <span>{isAr ? "خريطة البث ومصفوفة الموقع الجغرافي اللحظي" : "Global Live Visitor Signal Map"}</span>
-		</div>
-		<div className="text-sm font-medium text-slate-500 text-center">
-		  {isAr ? "إجمالي طلبات الاتصال بقاعدة البيانات التشغيلية:" : "Total active data telemetry hits recorded:"}{" "}
-		  <span className="font-mono font-black text-base bg-slate-100 px-3 py-1 rounded-lg ml-1 text-[#1e2d40]">
-			{hits.toLocaleString()}
-		  </span>
-		</div>
-		<div 
-		  ref={mapContainerRef} 
-		  className="rounded-2xl border border-slate-200 shadow-inner overflow-hidden z-10 my-4"
-		  style={{ width: '100%', height: '380px', backgroundColor: '#f8fafc' }}
-		/>
-	  </section>
+	  <div className="w-full px-6">
+		<section className="max-w-5xl mx-auto border border-slate-200 bg-white p-6 md:p-8 rounded-3xl shadow-sm my-16 w-full space-y-4">
+		  <div className="flex items-center justify-center gap-2 text-xs font-black tracking-widest text-[#c9a84c] uppercase">
+			<Globe2 size={14} />
+			<span>{isAr ? "خريطة البث ومصفوفة الموقع الجغرافي اللحظي" : "Global Live Visitor Signal Map"}</span>
+		  </div>
+		  <div className="text-sm font-medium text-slate-500 text-center">
+			{isAr ? "إجمالي طلبات الاتصال بقاعدة البيانات التشغيلية:" : "Total active data telemetry hits recorded:"}{" "}
+			<span className="font-mono font-black text-base bg-slate-100 px-3 py-1 rounded-lg ml-1 text-[#1e2d40]">
+			  {hits.toLocaleString()}
+			</span>
+		  </div>
+		  <div 
+			ref={mapContainerRef} 
+			className="rounded-2xl border border-slate-200 shadow-inner overflow-hidden z-10 my-4"
+			style={{ width: '100%', height: '380px', backgroundColor: '#f8fafc' }}
+		  />
+		</section>
+	  </div>
 
 	  {/* ─── THE ECOSYSTEM OVERVIEW ─── */}
-	  <section className="max-w-6xl mx-auto space-y-12 w-full">
+	  <section className="max-w-6xl mx-auto space-y-12 w-full px-6">
 		<div className="text-center space-y-4 mb-10">
-		  <h2 className="text-2xl md:text-3xl font-black uppercase tracking-wider text-[#1e2d40]">The {brandName} Ecosystem</h2>
+		  <h2 className="text-2xl md:text-3xl font-black uppercase tracking-wider bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent pb-1">The {brandName} Ecosystem</h2>
 		</div>
 		
-		{/* ROW A: OPERIX OPERATIONS (Matching exact image provided) */}
+		{/* ROW A: OPERIX OPERATIONS */}
 		<div className="bg-white border border-slate-200 rounded-3xl p-8 lg:p-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center shadow-sm hover:shadow-md transition-shadow">
 		  <div className="space-y-6 order-2 md:order-1">
 			<span className="text-[10px] font-black uppercase tracking-widest text-[#1e2d40] bg-slate-100 px-3 py-1.5 rounded-md">OPERIX SOLUTIONS · OPS</span>
-			<h3 className="text-3xl font-black text-[#1e2d40] tracking-tight font-serif">OPERIX Operations</h3>
+			<h3 className="text-3xl font-black font-serif bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent pb-1">OPERIX Operations</h3>
 			<p className="text-sm leading-relaxed font-medium text-slate-500">
 			  {isAr
 				? "محور العمليات الأساسي الذي يحل محل دفاتر السجلات اليدوية. إدارة متكاملة لمواقف السيارات بكاميرات التعرف الذكي (ANPR)، تنظيم خدمة السيارات (Valet)، والتشغيل الفوري للقوى العاملة المؤقتة والميدانية."
@@ -243,26 +245,18 @@ export default function Home() {
 			</div>
 		  </div>
 
-		  {/* Premium Dark Navy Mockup matching user image perfectly */}
 		  <div className="bg-[#1a2332] rounded-2xl overflow-hidden shadow-2xl flex flex-col min-h-[280px] order-1 md:order-2 border border-slate-800 p-6 md:p-8">
 			<div className="flex justify-between items-center text-[9px] font-black text-slate-500 uppercase tracking-widest mb-6">
 			  <span>OPERIX OPS · COMMAND CENTER</span>
 			  <span className="text-emerald-400 flex items-center gap-2"><div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"/> LIVE</span>
 			</div>
-			
 			<div className="flex-grow flex flex-col justify-center space-y-4 font-mono">
 			  <div className="bg-white/5 p-5 rounded-xl border border-white/10 flex justify-between items-center">
 				<div>
 				  <div className="text-[10px] text-slate-500 font-bold mb-1 tracking-wider uppercase">ANPR · GATE A</div>
-				  <div className="text-2xl font-black text-slate-300 tracking-widest">ABC 1234</div>
+				  <div className="text-2xl font-black text-[#d4af37] tracking-widest">ABC 1234</div>
 				</div>
 				<div className="text-[9px] font-black text-amber-500 border border-amber-500/30 px-3 py-1.5 rounded-full uppercase tracking-widest">TICKET GENERATED</div>
-			  </div>
-			  
-			  <div className="grid grid-cols-3 gap-3 text-[9px] font-bold text-slate-500 uppercase tracking-widest">
-				<div className="bg-white/5 p-4 rounded-xl border border-white/10 text-center flex flex-col gap-2"><span>PLATE</span><span className="text-slate-400">ABC 1234</span></div>
-				<div className="bg-white/5 p-4 rounded-xl border border-white/10 text-center flex flex-col gap-2"><span>TIME</span><span className="text-slate-400">14:32:00</span></div>
-				<div className="bg-white/5 p-4 rounded-xl border border-white/10 text-center flex flex-col gap-2"><span>VALET</span><span className="text-slate-400">KHALID A.</span></div>
 			  </div>
 			</div>
 		  </div>
@@ -272,7 +266,7 @@ export default function Home() {
 		<div className="bg-white border border-slate-200 rounded-3xl p-8 lg:p-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center shadow-sm hover:shadow-md transition-shadow">
 		  <div className="space-y-6 order-2 md:order-2">
 			<span className="text-[10px] font-black uppercase tracking-widest text-[#1e2d40] bg-slate-100 px-3 py-1.5 rounded-md">OPERIX SOLUTIONS · CARE</span>
-			<h3 className="text-3xl font-black text-[#1e2d40] tracking-tight font-serif">OPERIX Health Care</h3>
+			<h3 className="text-3xl font-black font-serif bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent pb-1">OPERIX Health Care</h3>
 			<p className="text-sm leading-relaxed font-medium text-slate-500">
 			  {isAr
 				? "منظومة الإدارة الطبية المتقدمة التي تضم بوابات تفاعلية للأطباء، ملفات شاملة لتاريخ المرضى المرضي، وميزة الإدخال الصوتي التلقائي للملاحظات السريرية وتحويلها إلى نصوص."
@@ -314,7 +308,7 @@ export default function Home() {
 		<div className="bg-white border border-slate-200 rounded-3xl p-8 lg:p-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center shadow-sm hover:shadow-md transition-shadow">
 		  <div className="space-y-6 order-2 md:order-1">
 			<span className="text-[10px] font-black uppercase tracking-widest text-[#1e2d40] bg-slate-100 px-3 py-1.5 rounded-md">OPERIX SOLUTIONS · HRIS</span>
-			<h3 className="text-3xl font-black text-[#1e2d40] tracking-tight font-serif">OPERIX HRIS</h3>
+			<h3 className="text-3xl font-black font-serif bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent pb-1">OPERIX HRIS</h3>
 			<p className="text-sm leading-relaxed font-medium text-slate-500">
 			  {isAr
 				? "أتمتة كاملة للموارد البشرية — تسجيل الحضور والغياب المدعوم بنطاق الحماية الجغرافي (GPS)، محرك احتساب الاستقطاعات التلقائي، والخدمة الذاتية المتكاملة للموظفين لتنظيم الرواتب والعمليات."
@@ -351,87 +345,70 @@ export default function Home() {
 		</div>
 	  </section>
 
-	 {/* ─── TRANSFORMATION ROADMAP TIMELINE (PURE TAILWIND) ─── */}
-		   <section className="w-full bg-white border-t border-slate-200 py-20 mt-16 font-sans">
-			 <div className="max-w-4xl mx-auto px-6">
-			   <h2 className="text-3xl md:text-4xl font-black text-[#1e2d40] text-center mb-16 font-serif">
-				 {isAr ? "مسار التحول التشغيلي" : "The Path to Transformation"}
-			   </h2>
-	 
-			   <div className="space-y-10 relative">
-				 {/* Desktop Vertical Line */}
-				 <div className="hidden md:block absolute left-[110px] top-4 bottom-4 w-0.5 bg-slate-200"></div>
-	 
-				 {/* PHASE 1 */}
-				 <div className="flex flex-col md:flex-row gap-4 md:gap-12 relative z-10">
-				   <div className="md:w-[90px] shrink-0 text-left md:text-right pt-1">
-					 <span className="text-[10px] font-black uppercase tracking-widest text-[#1e2d40] bg-slate-100 px-2 py-1 rounded">PHASE 01</span>
-				   </div>
-				   <div className="flex-grow bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-sm">
-					 <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">DISCOVERY</div>
-					 <h4 className="text-lg font-black text-[#1e2d40] mb-2 font-serif">{isAr ? "تدقيق وفحص البنية التحتية" : "Architecture Audit"}</h4>
-					 <p className="text-sm text-slate-500 font-medium leading-relaxed">
-					   {isAr 
-						 ? "نقوم بتحليل آليات العمل الحالية لديك، قواعد البيانات المشتتة، والاختناقات التشغيلية لتصميم استراتيجية تنفيذ مخصصة لمنظومة أوبيريكس بما يناسب قطاع عملك."
-						 : "We analyze your existing workflows, fragmented databases, and operational bottlenecks to design a custom OPERIX implementation strategy tailored to your industry."}
-					 </p>
-				   </div>
-				 </div>
-	 
-				 {/* PHASE 2 */}
-				 <div className="flex flex-col md:flex-row gap-4 md:gap-12 relative z-10">
-				   <div className="md:w-[90px] shrink-0 text-left md:text-right pt-1">
-					 <span className="text-[10px] font-black uppercase tracking-widest text-[#1e2d40] bg-slate-100 px-2 py-1 rounded">PHASE 02</span>
-				   </div>
-				   <div className="flex-grow bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-sm">
-					 <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">DEPLOYMENT</div>
-					 <h4 className="text-lg font-black text-[#1e2d40] mb-2 font-serif">{isAr ? "تكامل ومزامنة الأنظمة والكوادر" : "System & Team Integration"}</h4>
-					 <p className="text-sm text-slate-500 font-medium leading-relaxed">
-					   {isAr
-						 ? "ترحيل آمن وسلس لبياناتك بداخل إطار أوبيريكس الموحد، مع توفير الكوادر البشرية الخبيرة لتدريب الموظفين وبدء عمليات التشغيل الميداني."
-						 : "Seamless migration of your data into the OPERIX framework, while our expert human capital is deployed to train staff and launch field operations."}
-					 </p>
-				   </div>
-				 </div>
-	 
-				 {/* PHASE 3 */}
-				 <div className="flex flex-col md:flex-row gap-4 md:gap-12 relative z-10">
-				   <div className="md:w-[90px] shrink-0 text-left md:text-right pt-1">
-					 <span className="text-[10px] font-black uppercase tracking-widest text-[#1e2d40] bg-slate-100 px-2 py-1 rounded">PHASE 03</span>
-				   </div>
-				   <div className="flex-grow bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-sm">
-					 <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">COMMAND</div>
-					 <h4 className="text-lg font-black text-[#1e2d40] mb-2 font-serif">{isAr ? "القيادة والتحكم اللحظي" : "Live Telemetry & Execution"}</h4>
-					 <p className="text-sm text-slate-500 font-medium leading-relaxed">
-					   {isAr
-						 ? "يحصل المديرون على وصول كامل لمركز القيادة الموحد، بينما يتولى خبراؤنا إدارة العمليات الميدانية اليومية لضمان كفاءة لا مثيل لها."
-						 : "Executives gain access to the Global Command Center, while our specialists manage day-to-day field operations to guarantee unparalleled efficiency."}
-					 </p>
-				   </div>
-				 </div>
-			   </div>
-			 </div>
-		   </section>
-	 
-		   {/* ─── CALL TO ACTION ENTRANCE (PURE TAILWIND) ─── */}
-		   <section className="w-full bg-[#f8fafc] py-24 px-6 text-center font-sans border-t border-slate-200">
-			 <div className="max-w-3xl mx-auto space-y-6">
-			   <h2 className="text-3xl md:text-4xl font-black text-[#1e2d40] font-serif">
-				 {isAr ? "هل أنت مستعد لرفع كفاءة منشأتك؟" : "Ready to Elevate Your Enterprise?"}
-			   </h2>
-			   <p className="text-sm md:text-base text-slate-500 font-medium">
-				 {isAr 
-				   ? "اطلب عرضاً توضيحياً حياً ومباشراً للأنظمة، وتعرف على كيفية إدارة فرقنا لمشروعك على أرض الواقع."
-				   : "Request a live demonstration of the OPERIX suite and learn how our teams can manage your project on the ground."}
-			   </p>
-			   <div className="pt-4">
-				 <button onClick={() => navigate('/contact')} className="bg-[#151c28] text-white px-8 py-3.5 rounded-lg text-xs font-black uppercase tracking-widest shadow-md hover:bg-[#c9a84c] transition-colors cursor-pointer">
-				   {isAr ? "طلب العرض الآن" : "SCHEDULE A DEMO"}
-				 </button>
-			   </div>
-			 </div>
-		   </section>
-	 
-		 </div>
-	   );
-	 }
+	  {/* ─── TRANSFORMATION ROADMAP TIMELINE ─── */}
+	  <section className="w-full bg-white border-t border-slate-200 py-20 mt-16 font-sans">
+		<div className="max-w-4xl mx-auto px-6">
+		  <h2 className="text-3xl md:text-4xl font-black text-center mb-16 font-serif bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent pb-2">
+			{isAr ? "مسار التحول التشغيلي" : "The Path to Transformation"}
+		  </h2>
+
+		  <div className="space-y-10 relative">
+			<div className="hidden md:block absolute left-[110px] top-4 bottom-4 w-0.5 bg-slate-200"></div>
+
+			<div className="flex flex-col md:flex-row gap-4 md:gap-12 relative z-10">
+			  <div className="md:w-[90px] shrink-0 text-left md:text-right pt-1">
+				<span className="text-[10px] font-black uppercase tracking-widest text-[#1e2d40] bg-slate-100 px-2 py-1 rounded">PHASE 01</span>
+			  </div>
+			  <div className="flex-grow bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-sm">
+				<div className="text-[10px] font-black uppercase tracking-widest text-[#d4af37] mb-1">DISCOVERY</div>
+				<h4 className="text-lg font-black text-[#1e2d40] mb-2 font-serif">{isAr ? "تدقيق وفحص البنية التحتية" : "Architecture Audit"}</h4>
+				<p className="text-sm text-slate-500 font-medium leading-relaxed">
+				  {isAr 
+					? "نقوم بتحليل آليات العمل الحالية لديك، قواعد البيانات المشتتة، والاختناقات التشغيلية لتصميم استراتيجية تنفيذ مخصصة لمنظومة أوبيريكس بما يناسب قطاع عملك."
+					: "We analyze your existing workflows, fragmented databases, and operational bottlenecks to design a custom OPERIX implementation strategy tailored to your industry."}
+				</p>
+			  </div>
+			</div>
+
+			<div className="flex flex-col md:flex-row gap-4 md:gap-12 relative z-10">
+			  <div className="md:w-[90px] shrink-0 text-left md:text-right pt-1">
+				<span className="text-[10px] font-black uppercase tracking-widest text-[#1e2d40] bg-slate-100 px-2 py-1 rounded">PHASE 02</span>
+			  </div>
+			  <div className="flex-grow bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-sm">
+				<div className="text-[10px] font-black uppercase tracking-widest text-[#d4af37] mb-1">DEPLOYMENT</div>
+				<h4 className="text-lg font-black text-[#1e2d40] mb-2 font-serif">{isAr ? "تكامل ومزامنة الأنظمة والكوادر" : "System & Team Integration"}</h4>
+				<p className="text-sm text-slate-500 font-medium leading-relaxed">
+				  {isAr
+					? "ترحيل آمن وسلس لبياناتك بداخل إطار أوبيريكس الموحد، مع توفير الكوادر البشرية الخبيرة لتدريب الموظفين وبدء عمليات التشغيل الميداني."
+					: "Seamless migration of your data into the OPERIX framework, while our expert human capital is deployed to train staff and launch field operations."}
+				</p>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </section>
+
+	  <ReviewsSection />
+
+	  {/* ─── CALL TO ACTION ENTRANCE ─── */}
+	  <section className="w-full bg-[#f8fafc] py-24 px-6 text-center font-sans border-t border-slate-200">
+		<div className="max-w-3xl mx-auto space-y-6">
+		  <h2 className="text-3xl md:text-4xl font-black font-serif bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent pb-2">
+			{isAr ? "هل أنت مستعد لرفع كفاءة منشأتك؟" : "Ready to Elevate Your Enterprise?"}
+		  </h2>
+		  <p className="text-sm md:text-base text-slate-500 font-medium">
+			{isAr 
+			  ? "اطلب عرضاً توضيحياً حياً ومباشراً للأنظمة، وتعرف على كيفية إدارة فرقنا لمشروعك على أرض الواقع."
+			  : "Request a live demonstration of the OPERIX suite and learn how our teams can manage your project on the ground."}
+		  </p>
+		  <div className="pt-4">
+			<button onClick={() => navigate('/contact')} className="bg-[#151c28] text-white px-8 py-3.5 rounded-lg text-xs font-black uppercase tracking-widest shadow-md hover:bg-[#d4af37] transition-colors cursor-pointer">
+			  {isAr ? "طلب العرض الآن" : "SCHEDULE A DEMO"}
+			</button>
+		  </div>
+		</div>
+	  </section>
+
+	</div>
+  );
+}
