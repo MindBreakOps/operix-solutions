@@ -111,7 +111,7 @@ export default function Home() {
 	  }}
 	>
 	  {/* ─── GLASS OVERLAY (Keeps text perfectly readable while showing your background) ─── */}
-	  <div className="absolute inset-0 z-0 bg-slate-50/95 backdrop-blur-md pointer-events-none" />
+	  <div className="absolute inset-0 z-0 bg-slate-50/40 backdrop-blur-sm pointer-events-none" />
 
 	  {/* ─── STRICT GLOBAL WRAPPER: max-w-7xl perfectly aligns content ─── */}
 	  <main className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-10 py-10">
