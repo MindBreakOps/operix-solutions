@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
-import { Analytics } from "@vercel/analytics/next"
+
 // Core Structure Template Layout
 import GlobalLayout from './components/GlobalLayout';
 
