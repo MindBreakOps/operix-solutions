@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import { useTracker } from '../hooks/useTracker'; // Import analytics engine
+import { useTracker } from '../hooks/useTracker'; 
+import { Analytics } from '@vercel/analytics/react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
