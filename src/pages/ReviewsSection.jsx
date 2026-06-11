@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { Star, Send, User, Building2, MessageSquare } from 'lucide-react';
+import { Star, Send, User, Building2, MessageSquare, Loader2 } from 'lucide-react';
 import { supabaseClient as supabase } from '../config/supabase';
 
 export default function ReviewsSection() {
@@ -8,75 +8,85 @@ export default function ReviewsSection() {
   
   // States
   const [reviews, setReviews] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [rating, setRating] = useState(5);
   const [hoveredStar, setHoveredStar] = useState(0);
   const [formData, setFormData] = useState({ name: '', company: '', comment: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
 
-  // 1. Initial Mock Data (Until you connect the database)
-  const initialReviews = [
-	{
-	  id: 1,
-	  name: isAr ? "أحمد الراجحي" : "Ahmed Al-Rajhi",
-	  company: isAr ? "مجموعة الراجحي" : "Al-Rajhi Group",
-	  rating: 5,
-	  comment: isAr 
-		? "أوبيريكس غيّرت الطريقة التي ندير بها عملياتنا بالكامل. النظام متكامل، سريع، والدعم الفني استثنائي." 
-		: "OPERIX completely transformed how we manage our operations. The system is seamless, fast, and the support is exceptional.",
-	  date: "2026-05-12"
-	},
-	{
-	  id: 2,
-	  name: isAr ? "سارة المهنا" : "Sarah Al-Muhanna",
-	  company: isAr ? "النسيم لإدارة المرافق" : "Naseem Facility Mgt",
-	  rating: 5,
-	  comment: isAr 
-		? "أفضل بنية تحتية رقمية تعاملنا معها. أتمتة الرواتب وتتبع القوى العاملة تعمل بدقة متناهية 100%." 
-		: "The best digital infrastructure we've worked with. Payroll automation and workforce tracking are 100% accurate.",
-	  date: "2026-06-01"
-	},
-	{
-	  id: 3,
-	  name: isAr ? "د. خالد السعيد" : "Dr. Khalid Al-Saeed",
-	  company: isAr ? "مجمع العناية الطبي" : "Care Medical Complex",
-	  rating: 4,
-	  comment: isAr 
-		? "نظام إدارة المستشفيات (HIS) وفّر علينا مئات الساعات من العمل اليدوي. ربط الزكاة يعمل بسلاسة." 
-		: "The HIS architecture saved us hundreds of manual hours. The ZATCA integration runs flawlessly.",
-	  date: "2026-06-08"
-	}
-  ];
-
+  // ─── LIVE DATABASE FETCH ───
   useEffect(() => {
-	// CMS Hook: Replace initialReviews with a Supabase fetch call later
-	// async function fetchReviews() { const { data } = await supabase.from('operix_reviews').select('*').order('created_at', { ascending: false }); setReviews(data); }
-	setReviews(initialReviews);
+	async function fetchReviews() {
+	  try {
+		const { data, error } = await supabase
+		  .from('operix_reviews')
+		  .select('*')
+		  .order('created_at', { ascending: false });
+
+		if (error) {
+		  console.error("Supabase Fetch Error:", error);
+		} else if (data) {
+		  setReviews(data);
+		}
+	  } catch (err) {
+		console.error("Unexpected error fetching reviews:", err);
+	  } finally {
+		setIsLoading(false);
+	  }
+	}
+	
+	fetchReviews();
   }, []);
 
+  // ─── LIVE DATABASE INSERT ───
   const handleSubmit = async (e) => {
 	e.preventDefault();
 	setIsSubmitting(true);
+	setSubmitStatus(null);
 	
-	// Simulate API Call / Supabase Insert
-	setTimeout(() => {
-	  const newReview = {
-		id: Date.now(),
-		name: formData.name,
-		company: formData.company,
-		rating: rating,
-		comment: formData.comment,
-		date: new Date().toISOString().split('T')[0]
-	  };
-	  
-	  setReviews([newReview, ...reviews]);
-	  setFormData({ name: '', company: '', comment: '' });
-	  setRating(5);
-	  setSubmitStatus('success');
+	const newReview = {
+	  name: formData.name,
+	  company: formData.company,
+	  rating: rating,
+	  comment: formData.comment
+	};
+
+	try {
+	  const { data, error } = await supabase
+		.from('operix_reviews')
+		.insert([newReview])
+		.select(); // Returns the newly inserted row
+
+	  if (error) {
+		console.error("Supabase Insert Error:", error);
+		setSubmitStatus('error');
+	  } else {
+		// Successfully inserted! Add it to the top of the UI list immediately.
+		if (data && data.length > 0) {
+		  setReviews([data[0], ...reviews]);
+		}
+		
+		// Reset form
+		setFormData({ name: '', company: '', comment: '' });
+		setRating(5);
+		setSubmitStatus('success');
+	  }
+	} catch (err) {
+	  console.error("Unexpected error submitting review:", err);
+	  setSubmitStatus('error');
+	} finally {
 	  setIsSubmitting(false);
-	  
-	  setTimeout(() => setSubmitStatus(null), 3000);
-	}, 1000);
+	  // Clear status message after 4 seconds
+	  setTimeout(() => setSubmitStatus(null), 4000);
+	}
+  };
+
+  // Date Formatter Helper
+  const formatDate = (dateString) => {
+	if (!dateString) return "";
+	const options = { year: 'numeric', month: 'short', day: 'numeric' };
+	return new Date(dateString).toLocaleDateString(isAr ? 'ar-SA' : 'en-US', options);
   };
 
   return (
@@ -125,7 +135,7 @@ export default function ReviewsSection() {
 					  onClick={() => setRating(star)}
 					  onMouseEnter={() => setHoveredStar(star)}
 					  onMouseLeave={() => setHoveredStar(0)}
-					  className="focus:outline-none transition-transform hover:scale-110"
+					  className="focus:outline-none transition-transform hover:scale-110 cursor-pointer"
 					>
 					  <Star 
 						size={28} 
@@ -158,54 +168,79 @@ export default function ReviewsSection() {
 				<textarea required rows="4" value={formData.comment} onChange={(e) => setFormData({...formData, comment: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-[#1e2d40] focus:border-[#d4af37] outline-none transition-colors resize-none"></textarea>
 			  </div>
 
-			  <button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-[#1e2d40] to-[#151c28] text-white py-4 rounded-xl text-xs font-black uppercase tracking-widest hover:shadow-lg hover:shadow-[#1e2d40]/20 transition-all flex items-center justify-center gap-2 disabled:opacity-70">
+			  <button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-[#1e2d40] to-[#151c28] text-white py-4 rounded-xl text-xs font-black uppercase tracking-widest hover:shadow-lg hover:shadow-[#1e2d40]/20 transition-all flex items-center justify-center gap-2 disabled:opacity-70 cursor-pointer">
 				{isSubmitting ? (isAr ? "جاري الإرسال..." : "Transmitting...") : (isAr ? "نشر المراجعة" : "Publish Review")}
 				{!isSubmitting && <Send size={14} className={isAr ? "rotate-180" : ""} />}
 			  </button>
 
+			  {/* Status Messages */}
 			  {submitStatus === 'success' && (
-				<div className="text-center text-xs font-bold text-emerald-600 bg-emerald-50 py-2 rounded-lg animate-in fade-in">
-				  {isAr ? "تم إرسال مراجعتك بنجاح!" : "Review successfully integrated into the matrix!"}
+				<div className="text-center text-xs font-bold text-emerald-600 bg-emerald-50 py-3 rounded-lg border border-emerald-100 animate-in fade-in">
+				  {isAr ? "تم إرسال مراجعتك بنجاح. شكراً لك!" : "Review successfully integrated into the matrix!"}
+				</div>
+			  )}
+			  {submitStatus === 'error' && (
+				<div className="text-center text-xs font-bold text-red-600 bg-red-50 py-3 rounded-lg border border-red-100 animate-in fade-in">
+				  {isAr ? "حدث خطأ أثناء الإرسال. يرجى المحاولة لاحقاً." : "A transmission error occurred. Please try again."}
 				</div>
 			  )}
 			</form>
 		  </div>
 
-		  {/* ─── RIGHT: INTERACTIVE REVIEWS GRID ─── */}
-		  <div className="lg:col-span-7 grid sm:grid-cols-2 gap-6 h-[600px] overflow-y-auto pr-2 pb-10 custom-scrollbar">
-			{reviews.map((review, index) => (
-			  <div 
-				key={review.id} 
-				className="bg-[#1e2d40] p-6 rounded-3xl border border-slate-700 shadow-lg hover:-translate-y-2 transition-transform duration-500 group flex flex-col animate-in slide-in-from-bottom-4 fade-in"
-				style={{ animationDelay: `${index * 150}ms`, animationFillMode: 'both' }}
-			  >
-				<div className="flex items-center gap-1 mb-4">
-				  {[...Array(5)].map((_, i) => (
-					<Star key={i} size={14} className={i < review.rating ? 'fill-[#d4af37] text-[#d4af37]' : 'text-slate-600'} />
-				  ))}
-				</div>
-				
-				<p className="text-sm text-slate-300 font-medium leading-relaxed flex-grow italic mb-6">
-				  "{review.comment}"
-				</p>
-				
-				<div className="mt-auto border-t border-slate-700/50 pt-4 flex items-center justify-between">
-				  <div>
-					<h4 className="text-white text-sm font-black">{review.name}</h4>
-					<p className="text-[10px] font-black uppercase tracking-widest text-[#d4af37]">{review.company}</p>
-				  </div>
-				  <div className="text-[10px] text-slate-500 font-mono">
-					{review.date}
-				  </div>
-				</div>
+		  {/* ─── RIGHT: LIVE REVIEWS GRID ─── */}
+		  <div className="lg:col-span-7 h-[600px] overflow-y-auto pr-2 pb-10 custom-scrollbar relative">
+			
+			{isLoading ? (
+			  <div className="flex flex-col items-center justify-center h-full text-[#d4af37] space-y-4">
+				<Loader2 size={40} className="animate-spin" />
+				<span className="text-xs font-black uppercase tracking-widest text-slate-400">
+				  {isAr ? "جاري جلب المراجعات الحية..." : "Syncing Live Telemetry..."}
+				</span>
 			  </div>
-			))}
+			) : reviews.length === 0 ? (
+			  <div className="flex flex-col items-center justify-center h-full text-slate-500 border-2 border-dashed border-slate-700/50 rounded-3xl m-4">
+				<MessageSquare size={32} className="mb-3 opacity-50" />
+				<span className="text-xs font-bold uppercase tracking-widest text-slate-400">
+				  {isAr ? "كن أول من يشاركنا تقييمه." : "No reviews found. Be the first to assess."}
+				</span>
+			  </div>
+			) : (
+			  <div className="grid sm:grid-cols-2 gap-6">
+				{reviews.map((review, index) => (
+				  <div 
+					key={review.id} 
+					className="bg-[#1e2d40] p-6 rounded-3xl border border-slate-700 shadow-lg hover:-translate-y-2 transition-transform duration-500 group flex flex-col animate-in slide-in-from-bottom-4 fade-in"
+					style={{ animationDelay: `${(index % 10) * 100}ms`, animationFillMode: 'both' }}
+				  >
+					<div className="flex items-center gap-1 mb-4">
+					  {[...Array(5)].map((_, i) => (
+						<Star key={i} size={14} className={i < review.rating ? 'fill-[#d4af37] text-[#d4af37]' : 'text-slate-600'} />
+					  ))}
+					</div>
+					
+					<p className="text-sm text-slate-300 font-medium leading-relaxed flex-grow italic mb-6 break-words">
+					  "{review.comment}"
+					</p>
+					
+					<div className="mt-auto border-t border-slate-700/50 pt-4 flex items-center justify-between">
+					  <div className="overflow-hidden">
+						<h4 className="text-white text-sm font-black truncate">{review.name}</h4>
+						<p className="text-[10px] font-black uppercase tracking-widest text-[#d4af37] truncate">{review.company}</p>
+					  </div>
+					  <div className="text-[10px] text-slate-500 font-mono shrink-0 pl-2">
+						{formatDate(review.created_at)}
+					  </div>
+					</div>
+				  </div>
+				))}
+			  </div>
+			)}
 		  </div>
 
 		</div>
 	  </div>
 
-	  {/* Hide standard scrollbar for a cleaner look */}
+	  {/* Scrollbar styling for the reviews list */}
 	  <style dangerouslySetInnerHTML={{__html: `
 		.custom-scrollbar::-webkit-scrollbar { width: 4px; }
 		.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
