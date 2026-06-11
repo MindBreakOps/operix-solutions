@@ -104,7 +104,7 @@ export default function Projects() {
 	  subAr: 'البوابة المؤسسية',
 	  descEn: 'Dedicated administrative portal mapped for institutional resource planning, community outreach tracking, and digital archive management.',
 	  descAr: 'بوابة إدارية مخصصة لتخطيط الموارد المؤسسية، وتتبع التواصل المجتمعي، وإدارة الأرشيف الرقمي.',
-	  url: 'https://aljmaan.dpdns.org/abdullah-bin-abbas',
+	  url: 'https://aljmaan.dpdns.org/abdullah-bin-abbas-qc',
 	  icon: <Landmark size={20} />,
 	  color: 'bg-white text-emerald-800 border border-slate-100', // Dark Green Icon
 	  image: '/projects/abbas.png'
