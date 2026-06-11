@@ -18,13 +18,19 @@ export default function Clients() {
 	  id: 2,
 	  name: isAr ? "مؤسسة مامي" : "Mamey Enterprise",
 	  contractDetails: isAr ? "تجارة عامة واستثمار ولوجستيات" : "General Trading, Investment & Logistics",
-	  logoUrl: "/projects/mamey.jpeg" // Using the image you uploaded
+	  logoUrl: "/projects/mamey.png" // Using the image you uploaded
 	},
 	{
 	  id: 3,
 	  name: isAr ? "مركز عبدالله بن عباس" : "Abdullah Bin Abbas Center",
 	  contractDetails: isAr ? "إدارة مؤسسية وأرشفة رقمية" : "Institutional Management & Digital Archiving",
-	  logoUrl: "/projects/abbas.jpeg"
+	  logoUrl: "/projects/abbas.png"
+	},
+	{
+	id: 3,
+	  name: isAr ? "Mind Break Cafe" : "VIP VALET SERVICE",
+	  contractDetails: isAr ? "خدمة صف سيارات وادارة مواقف ذكية" : "VIP VALET SERVICE and Parking System ANPR",
+	  logoUrl: "/projects/valet.png"
 	}
   ];
 

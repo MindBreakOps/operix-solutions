@@ -13,7 +13,7 @@ export default function News() {
 	  content: isAr 
 		? "تحديث شامل لمصفوفة قراءة اللوحات (ANPR) وتحسينات كبرى في تتبع القوى العاملة الميدانية."
 		: "Major update to the ANPR telemetry matrix and massive improvements to field workforce tracking.",
-	  mediaUrl: "/matrix-bg.jpg",
+	  mediaUrl: "projects/ops.png",
 	  date: "June 11, 2026"
 	},
 	{
@@ -22,7 +22,7 @@ export default function News() {
 	  content: isAr 
 		? "تم اعتماد نظام الإدارة المالية أوبيريكس (FMIS) بشكل رسمي ومباشر مع هيئة الزكاة والضريبة والجمارك."
 		: "The OPERIX FMIS ecosystem has been officially certified for direct integration with ZATCA phase 2 compliance.",
-	  mediaUrl: "/projects/fmis.jpeg",
+	  mediaUrl: "/projects/fmis.png",
 	  date: "May 28, 2026"
 	}
   ];
