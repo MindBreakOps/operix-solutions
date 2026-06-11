@@ -1,67 +1,65 @@
-import React, { useEffect, useState } from 'react';
-import { supabaseClient as supabase } from '../config/supabase';
+import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { Calendar } from 'lucide-react';
 
 export default function News() {
   const { isAr } = useLanguage();
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-	async function fetchCmsNewsFeed() {
-	  const { data, error } = await supabase
-		.from('operix_cms_content')
-		.select('*')
-		.eq('page', 'news');
-
-	  if (!error && data) {
-		setArticles(data);
-	  }
-	  setLoading(false);
+  // ─── CMS READY DATA ARRAY ───
+  const newsData = [
+	{
+	  id: 1,
+	  title: isAr ? "إطلاق النسخة 2.4 من نظام إدارة العمليات" : "OPERIX Operations V2.4 Deployed",
+	  content: isAr 
+		? "تحديث شامل لمصفوفة قراءة اللوحات (ANPR) وتحسينات كبرى في تتبع القوى العاملة الميدانية."
+		: "Major update to the ANPR telemetry matrix and massive improvements to field workforce tracking.",
+	  mediaUrl: "/matrix-bg.jpg",
+	  date: "June 11, 2026"
+	},
+	{
+	  id: 2,
+	  title: isAr ? "اعتماد المرحلة الثانية من فوترة الزكاة" : "ZATCA Phase 2 E-Invoicing Certified",
+	  content: isAr 
+		? "تم اعتماد نظام الإدارة المالية أوبيريكس (FMIS) بشكل رسمي ومباشر مع هيئة الزكاة والضريبة والجمارك."
+		: "The OPERIX FMIS ecosystem has been officially certified for direct integration with ZATCA phase 2 compliance.",
+	  mediaUrl: "/projects/fmis.jpeg",
+	  date: "May 28, 2026"
 	}
-	fetchCmsNewsFeed();
-  }, []);
-
-  if (loading) {
-	return <div className="text-center py-24 font-sans font-bold text-slate-400">Loading Intelligence Feed...</div>;
-  }
+  ];
 
   return (
-	<div className="news-container animate-in">
-	  <div className="text-center max-w-2xl mx-auto space-y-4">
-		<h1 className="text-4xl font-black text-[#1e2d40]">{isAr ? "مركز الأخبار والتحديثات" : "Ecosystem Intelligence & News"}</h1>
-		<p className="text-slate-500 text-sm font-medium">{isAr ? "تابع آخر التطورات الميدانية والتقنية لمنصة أوبيريكس للحلول المتكاملة." : "Real-time updates regarding system rollouts, operational telemetry, and feature drops."}</p>
-	  </div>
+	<div className="w-full bg-[#f8fafc] min-h-screen py-16 px-4 md:px-6 font-sans">
+	  <div className="max-w-6xl mx-auto space-y-16">
+		
+		<div className="text-center space-y-4">
+		  <h1 className="text-4xl md:text-5xl font-black text-[#1e2d40] font-serif tracking-tight">
+			{isAr ? "أخبار المنظومة التشغيلية" : "Ecosystem Intelligence & News"}
+		  </h1>
+		  <p className="text-slate-600 text-sm md:text-base font-medium max-w-2xl mx-auto">
+			{isAr 
+			  ? "تحديثات لحظية حول إطلاق الأنظمة الجديدة، والبيانات التشغيلية." 
+			  : "Real-time updates regarding system rollouts, operational telemetry, and feature drops."}
+		  </p>
+		</div>
 
-	  <div className="news-grid">
-		{articles.length === 0 ? (
-		  <div className="col-span-full text-center py-16 border border-dashed border-slate-200 rounded-3xl text-slate-400 font-medium">
-			{isAr ? "لم يتم نشر أي أخبار تشغيلية بعد عبر لوحة التحكم." : "No operational announcements broadcasted via the CMS console yet."}
-		  </div>
-		) : (
-		  articles.map((item) => (
-			<article key={item.id} className="news-card">
-			  <div className="news-image-wrapper">
-				<img 
-				  src={item.media_url || "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5"} 
-				  alt="News Media Feed Asset" 
-				  className="news-img" 
-				/>
+		{/* DYNAMIC CMS FEED */}
+		<div className="space-y-10">
+		  {newsData.map((article) => (
+			<div key={article.id} className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm flex flex-col md:flex-row">
+			  <div className="md:w-1/3 h-48 md:h-auto bg-slate-900 overflow-hidden">
+				<img src={article.mediaUrl} alt={article.title} className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" />
 			  </div>
-			  <div className="news-content">
-				<span className="text-[10px] font-black text-[#c9a84c] font-mono uppercase tracking-wider">
-				  {new Date(item.updated_at).toLocaleDateString(isAr ? 'ar-EG' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-				</span>
-				<h3 className="text-base font-black text-[#1e2d40]">
-				  {isAr ? item.title_ar : item.title_en}
-				</h3>
-				<p className="text-slate-500 text-xs leading-relaxed font-medium">
-				  {isAr ? item.body_ar : item.body_en}
-				</p>
+			  <div className="p-6 md:p-8 md:w-2/3 flex flex-col justify-center space-y-4">
+				<div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#c9a84c]">
+				  <Calendar size={14} /> {article.date}
+				</div>
+				<h3 className="text-2xl font-black text-[#1e2d40] font-serif">{article.title}</h3>
+				<p className="text-sm text-slate-500 font-medium leading-relaxed">{article.content}</p>
 			  </div>
-			</article>
-		  ))
-		)}
+			</div>
+		  ))}
+		</div>
+
 	  </div>
 	</div>
   );

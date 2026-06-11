@@ -3,84 +3,114 @@ import { useLanguage } from '../context/LanguageContext';
 import { Mail, Shield } from 'lucide-react';
 
 export default function Contact() {
-  const { t, isAr } = useLanguage();
-  const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ name: '', email: '', company: '', type: 'HRIS' });
+  const { isAr } = useLanguage();
+  const [formData, setFormData] = useState({ name: '', email: '', company: '', architecture: 'OPERIX HRIS', customArchitecture: '' });
+  const [showCustomInput, setShowCustomInput] = useState(false);
 
-  const handleFormSubmit = async (e) => {
+  // Dynamic Service List based on your operations
+  const servicesList = [
+	"OPERIX HRIS",
+	"OPERIX Operations",
+	"OPERIX FMIS",
+	"OPERIX Care HIS",
+	"Facility & Parking Management",
+	"VIP Valet & Event Operations",
+	"Custom White-Label Engineering",
+	"Other / Unlisted Requirement"
+  ];
+
+  const handleServiceChange = (e) => {
+	const val = e.target.value;
+	setFormData({ ...formData, architecture: val });
+	setShowCustomInput(val === "Other / Unlisted Requirement");
+  };
+
+  const handleSubmit = (e) => {
 	e.preventDefault();
-	setLoading(true);
-	const payload = {
-	  action: 'sendEmail',
-	  to: 'operixsolution@gmail.com',
-	  subject: `Corporate Request: ${form.company}`,
-	  body: `OPERIX REQUEST ARCHIVE\n\nContact: ${form.name}\nEmail: ${form.email}\nCompany: ${form.company}\nModule Requested: ${form.type}`,
-	  senderName: 'Operix Corporate Portal',
-	  senderEmail: 'system@operix.com'
+	const finalData = {
+	  ...formData,
+	  architecture: showCustomInput ? formData.customArchitecture : formData.architecture
 	};
-
-	try {
-	  await fetch(import.meta.env.VITE_OPS_API_URL, {
-		method: 'POST',
-		mode: 'no-cors',
-		cache: 'no-cache',
-		headers: { 'Content-Type': 'text/plain' },
-		body: JSON.stringify(payload)
-	  });
-	  alert(isAr ? "تم إرسال مواصفات منشأتك بنجاح. سيتواصل معك مهندسو الأنظمة قريباً." : "Enterprise parameters dispatched successfully.");
-	  setForm({ name: '', email: '', company: '', type: 'HRIS' });
-	} catch {
-	  alert("Network timeout. Please try again.");
-	} finally {
-	  setLoading(false);
-	}
+	console.log("Dispatching:", finalData);
+	// Add Supabase insert logic here
   };
 
   return (
-	<div className="contact-wrapper animate-in">
-	  <div className="contact-info-panel">
-		<h1 className="text-4xl font-black text-[#1e2d40]">{t.contactTitle || "Initialize Enterprise Transformation"}</h1>
-		<p className="text-slate-500 text-sm leading-relaxed font-medium">{t.contactSub || "Submit your corporate specifications below to consult with our system implementation architects."}</p>
-		<div className="space-y-4 pt-4 font-sans">
-		  <div className="flex items-center gap-3 text-xs font-bold text-slate-600 uppercase">
-			<Mail size={16} className="text-[#c9a84c]" />
-			<span>operixsolution@gmail.com</span>
-		  </div>
-		  <div className="flex items-center gap-3 text-xs font-bold text-slate-600 uppercase">
-			<Shield size={16} className="text-[#c9a84c]" />
-			<span>{isAr ? "استشارات وحلول فنية مخصصة لإدارة المرافق" : "Proprietary Technical Facility Consulting"}</span>
+	<div className="w-full min-h-screen bg-[#f8fafc] flex flex-col justify-center py-20 px-4 md:px-6 font-sans">
+	  <div className="max-w-4xl mx-auto w-full bg-white p-8 md:p-16 rounded-3xl shadow-sm border border-slate-200">
+		
+		<div className="space-y-4 mb-12">
+		  <h1 className="text-3xl md:text-5xl font-black text-[#1e2d40] tracking-tight font-serif">
+			{isAr ? "بدء التحول المؤسسي" : "Initialize Enterprise Transformation"}
+		  </h1>
+		  <p className="text-slate-600 text-sm md:text-base font-medium">
+			{isAr 
+			  ? "أدخل مواصفات منشأتك أدناه للتشاور مع مهندسي تنفيذ الأنظمة لدينا."
+			  : "Submit your corporate specifications below to consult with our system implementation architects."}
+		  </p>
+		  <div className="pt-2 space-y-2">
+			<div className="flex items-center gap-2 text-[10px] md:text-xs font-black tracking-widest text-[#1e2d40] uppercase">
+			  <Mail size={14} className="text-[#c9a84c]" /> OPERIXSOLUTION@GMAIL.COM
+			</div>
+			<div className="flex items-center gap-2 text-[10px] md:text-xs font-black tracking-widest text-[#1e2d40] uppercase">
+			  <Shield size={14} className="text-[#c9a84c]" /> PROPRIETARY TECHNICAL FACILITY CONSULTING
+			</div>
 		  </div>
 		</div>
-	  </div>
 
-	  <div className="contact-form-panel">
-		<form onSubmit={handleFormSubmit} className="space-y-4">
-		  <div>
-			<label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{isAr ? "الاسم الكريم" : "Your Name"}</label>
-			<input type="text" required value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="contact-input" />
+		<form onSubmit={handleSubmit} className="space-y-6">
+		  <div className="space-y-2">
+			<label className="block text-[10px] md:text-[11px] font-black uppercase tracking-widest text-[#1e2d40]">
+			  {isAr ? "الاسم الكامل" : "YOUR NAME"}
+			</label>
+			<input 
+			  type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})}
+			  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3.5 text-sm font-semibold text-[#1e2d40] outline-none focus:bg-white focus:border-[#1e2d40] transition-colors"
+			/>
 		  </div>
-		  <div>
-			<label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{isAr ? "البريد الإلكتروني للعمل" : "Work Email"}</label>
-			<input type="email" required value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="contact-input" />
+
+		  <div className="space-y-2">
+			<label className="block text-[10px] md:text-[11px] font-black uppercase tracking-widest text-[#1e2d40]">
+			  {isAr ? "البريد الإلكتروني للعمل" : "WORK EMAIL"}
+			</label>
+			<input 
+			  type="email" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})}
+			  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3.5 text-sm font-semibold text-[#1e2d40] outline-none focus:bg-white focus:border-[#1e2d40] transition-colors"
+			/>
 		  </div>
-		  <div>
-			<label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{isAr ? "اسم الشركة / المنشأة" : "Company Name"}</label>
-			<input type="text" required value={form.company} onChange={e => setForm({...form, company: e.target.value})} className="contact-input" />
-		  </div>
-		  <div>
-			<label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{isAr ? "النظام المطلوب" : "Target Architecture Selection"}</label>
-			<select value={form.type} onChange={e => setForm({...form, type: e.target.value})} className="contact-input cursor-pointer font-bold text-xs uppercase text-slate-600">
-			  <option value="HRIS">OPERIX HRIS</option>
-			  <option value="OPERATIONS">OPERIX OPERATIONS</option>
-			  <option value="FMIS">OPERIX FMIS</option>
-			  <option value="CARE">OPERIX Care (Full HIS Suite)</option>
-			  <option value="WHITE_LABEL">{isAr ? "تطوير نظام بهوية خاصة" : "Custom Identity Deployment"}</option>
+
+		  <div className="space-y-2">
+			<label className="block text-[10px] md:text-[11px] font-black uppercase tracking-widest text-[#1e2d40]">
+			  {isAr ? "تحديد بنية النظام المستهدف" : "TARGET ARCHITECTURE SELECTION"}
+			</label>
+			<select 
+			  value={formData.architecture} onChange={handleServiceChange}
+			  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3.5 text-sm font-semibold text-[#1e2d40] outline-none focus:bg-white focus:border-[#1e2d40] transition-colors cursor-pointer"
+			>
+			  {servicesList.map(service => <option key={service} value={service}>{service}</option>)}
 			</select>
 		  </div>
-		  <button type="submit" disabled={loading} className="w-full py-3.5 bg-[#1e2d40] text-white rounded-xl font-extrabold text-xs tracking-wider uppercase hover:opacity-90 transition-opacity disabled:opacity-50 mt-2">
-			{loading ? "Processing..." : (isAr ? "إرسال البيانات لمركز التصميم" : "Dispatch Parameters")}
-		  </button>
+
+		  {/* Conditional "Other" Input */}
+		  {showCustomInput && (
+			<div className="space-y-2 animate-in slide-in-from-top-2">
+			  <label className="block text-[10px] md:text-[11px] font-black uppercase tracking-widest text-[#c9a84c]">
+				{isAr ? "يرجى تحديد الخدمة المطلوبة" : "PLEASE SPECIFY YOUR REQUIREMENT"}
+			  </label>
+			  <input 
+				type="text" required={showCustomInput} placeholder={isAr ? "أكتب تفاصيل طلبك هنا..." : "Type your specific request here..."} value={formData.customArchitecture} onChange={e => setFormData({...formData, customArchitecture: e.target.value})}
+				className="w-full bg-white border border-[#c9a84c]/50 rounded-lg px-4 py-3.5 text-sm font-semibold text-[#1e2d40] outline-none focus:border-[#c9a84c] transition-colors shadow-inner"
+			  />
+			</div>
+		  )}
+
+		  <div className="pt-6">
+			<button type="submit" className="w-full bg-[#1e2d40] text-white py-4 rounded-lg text-xs font-black uppercase tracking-widest hover:bg-[#c9a84c] transition-colors shadow-md">
+			  {isAr ? "إرسال المعطيات" : "DISPATCH PARAMETERS"}
+			</button>
+		  </div>
 		</form>
+
 	  </div>
 	</div>
   );
