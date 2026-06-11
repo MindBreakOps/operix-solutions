@@ -111,30 +111,33 @@ export default function Home() {
 	<div className="w-full flex flex-col items-center justify-center animate-in px-4 md:px-6 font-sans pb-20">
 	  
 	  {/* ─── HERO ARCHITECTURE ─── */}
-	  <header className="px-6 pt-16 md:pt-24 pb-12 text-center max-w-4xl mx-auto space-y-6">
-		<div className="inline-flex items-center gap-2 border border-slate-200 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest bg-white shadow-sm mx-auto">
-		  <span className="w-1.5 h-1.5 bg-[#c9a84c] rounded-full" />
-		  {isAr ? "برمجيات وإدارة تشغيلية متكاملة" : "SOFTWARE & FULL-PHASE OPERATIONS"}
-		</div>
-		<h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] text-[#1e2d40]">
-		  {isAr ? "تمكين المنشآت الكبرى عبر " : "Empowering Enterprises with "}
-		  <span className="bg-gradient-to-r from-[#1e2d40] to-[#c9a84c] bg-clip-text text-transparent block sm:inline ml-1">
-			{brandName}
-		  </span>
-		</h1>
-		<p className="text-base sm:text-lg leading-relaxed max-w-2xl mx-auto font-medium text-slate-500">
-		  {isAr 
-			? "نحن لا نكتفي ببناء الأنظمة الذكية فحسب، بل نوفر الكوادر الخبيرة لتشغيل وإدارة المرافق، مواقف السيارات، والفعاليات الكبرى على أرض الواقع."
-			: "We don't just build intelligent systems. We deploy the expert personnel to run your facilities, parking grids, and large-scale events flawlessly on the ground."}
-		</p>
-		<div className="pt-4">
-		  <button onClick={() => navigate('/contact')} className="bg-[#1e2d40] hover:bg-[#c9a84c] transition-colors text-white px-8 py-3.5 rounded-xl text-xs font-black tracking-wider uppercase inline-flex items-center shadow-md cursor-pointer">
-			{isAr ? "طلب عرض تجريبي" : "SCHEDULE A DEMO"} 
-			{isAr ? <ArrowLeft size={14} className="ml-2" /> : <ArrowRight size={14} className="ml-2" />}
-		  </button>
-		</div>
-	  </header>
-
+		<header className="px-6 pt-16 md:pt-24 pb-12 text-center max-w-3xl mx-auto space-y-6">
+		  <div className="inline-flex items-center gap-2 border border-slate-200 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest bg-white shadow-sm mx-auto">
+			<span className="w-1.5 h-1.5 bg-[#c9a84c] rounded-full" />
+			{isAr ? "برمجيات وإدارة تشغيلية متكاملة" : "SOFTWARE & FULL-PHASE OPERATIONS"}
+		  </div>
+		  
+		  {/* Scaled down the text from 6xl to 5xl for a crisper desktop feel */}
+		  <h1 className="text-3xl md:text-4xl lg:text-5xl font-black leading-[1.15] text-[#1e2d40] tracking-tight">
+			{isAr ? "تمكين المنشآت الكبرى عبر " : "Empowering Enterprises with "}
+			<span className="bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent block sm:inline ml-1">
+			  {brandName}
+			</span>
+		  </h1>
+		  
+		  <p className="text-sm md:text-base leading-relaxed max-w-2xl mx-auto font-medium text-slate-500">
+			{isAr 
+			  ? "نحن لا نكتفي ببناء الأنظمة الذكية فحسب، بل نوفر الكوادر الخبيرة لتشغيل وإدارة المرافق، مواقف السيارات، والفعاليات الكبرى على أرض الواقع."
+			  : "We don't just build intelligent systems. We deploy the expert personnel to run your facilities, parking grids, and large-scale events flawlessly on the ground."}
+		  </p>
+		  
+		  <div className="pt-4">
+			<button onClick={() => navigate('/contact')} className="bg-[#1e2d40] hover:bg-[#d4af37] transition-colors text-white px-8 py-3.5 rounded-xl text-xs font-black tracking-wider uppercase inline-flex items-center shadow-md cursor-pointer">
+			  {isAr ? "طلب عرض تجريبي" : "SCHEDULE A DEMO"} 
+			  {isAr ? <ArrowLeft size={14} className="ml-2" /> : <ArrowRight size={14} className="ml-2" />}
+			</button>
+		  </div>
+		</header>
 	  {/* ─── NEW SECTION: FULL PHASE OPERATIONS & MANAGEMENT ─── */}
 	  <section className="max-w-6xl mx-auto w-full my-12 space-y-10">
 		<div className="text-center space-y-4 mb-8">

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { Link } from 'react-router-dom';
-
+import { Mail, MapPin } from 'lucide-react';
 export default function Footer() {
   const { isAr } = useLanguage();
   const brandName = "OPERIX SOLUTIONS";
@@ -16,16 +16,34 @@ export default function Footer() {
 			<img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain bg-white rounded-md p-1" />
 			<span className="font-black tracking-tight text-lg uppercase text-white drop-shadow-sm">{brandName}</span>
 		  </div>
+		  
 		  <p className="text-xs text-slate-400 font-medium leading-relaxed pr-4">
 			{isAr 
 			  ? "مجموعة قيادة مؤسسية موحدة تنسق العمليات، المسارات الطبية، ودورات حياة رأس المال البشري في مركز تحكم واحد."
 			  : "A unified enterprise command suite coordinating operations, medical workflows, and human capital life-cycles into a singular control core."}
 		  </p>
-		  <div className="text-xs font-mono text-slate-400 pt-2">
-			E: operixsolution@gmail.com
+		
+		  {/* Organized Contact Block */}
+		  <div className="space-y-3 pt-2">
+			<div className="space-y-1">
+			  <a href="mailto:operixsolution@gmail.com" className="flex items-center gap-2 text-xs text-slate-300 hover:text-[#d4af37] transition-colors font-mono">
+				<Mail size={14} className="text-[#d4af37]" /> operixsolution@gmail.com
+			  </a>
+			  <div className="flex items-center gap-2 text-[10px] text-slate-500 font-bold uppercase tracking-wider pl-6">
+				<MapPin size={12} className="text-slate-600" /> Riyadh, SA
+			  </div>
+			</div>
+		
+			<div className="space-y-1">
+			  <a href="mailto:operix249@gmail.com" className="flex items-center gap-2 text-xs text-slate-300 hover:text-[#d4af37] transition-colors font-mono">
+				<Mail size={14} className="text-[#d4af37]" /> operix249@gmail.com
+			  </a>
+			  <div className="flex items-center gap-2 text-[10px] text-slate-500 font-bold uppercase tracking-wider pl-6">
+				<MapPin size={12} className="text-slate-600" /> Khartoum, Sudan
+			  </div>
+			</div>
 		  </div>
 		</div>
-
 		{/* Cloud Portals */}
 		<div>
 		  <h4 className="text-[10px] font-extrabold uppercase tracking-widest text-[#d4af37] drop-shadow-sm mb-5">
