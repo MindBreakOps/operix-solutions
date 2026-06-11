@@ -1,36 +1,36 @@
 {
   "rewrites": [
-	{
-	  "source": "/operix-fmis",
-	  "destination": "[https://operix-fmis.vercel.app](https://operix-fmis.vercel.app)"
-	},
-	{
-	  "source": "/operix-fmis/:path*",
-	  "destination": "[https://operix-fmis.vercel.app/:path](https://operix-fmis.vercel.app/:path)*"
-	},
-	{
-	  "source": "/operix-operations",
-	  "destination": "[https://operix-operations.vercel.app](https://operix-operations.vercel.app)"
-	},
-	{
-	  "source": "/operix-operations/:path*",
-	  "destination": "[https://operix-operations.vercel.app/:path](https://operix-operations.vercel.app/:path)*"
-	},
-	{
-	  "source": "/operix-hris",
-	  "destination": "[https://operix-hris.vercel.app](https://operix-hris.vercel.app)"
-	},
-	{
-	  "source": "/operix-hris/:path*",
-	  "destination": "[https://operix-hris.vercel.app/:path](https://operix-hris.vercel.app/:path)*"
-	},
-	{
-	  "source": "/operix-care",
-	  "destination": "[https://operix-care.vercel.app](https://operix-care.vercel.app)"
-	},
-	{
-	  "source": "/operix-care/:path*",
-	  "destination": "[https://operix-care.vercel.app/:path](https://operix-care.vercel.app/:path)*"
-	}
+    {
+      "source": "/operix-fmis",
+      "destination": "[https://operix-fmis.vercel.app](https://operix-fmis.vercel.app)"
+    },
+    {
+      "source": "/operix-fmis/:path*",
+      "destination": "[https://operix-fmis.vercel.app/:path](https://operix-fmis.vercel.app/:path)*"
+    },
+    {
+      "source": "/operix-operations",
+      "destination": "[https://operix-operations.vercel.app](https://operix-operations.vercel.app)"
+    },
+    {
+      "source": "/operix-operations/:path*",
+      "destination": "[https://operix-operations.vercel.app/:path](https://operix-operations.vercel.app/:path)*"
+    },
+    {
+      "source": "/operix-hris",
+      "destination": "[https://operix-hris.vercel.app](https://operix-hris.vercel.app)"
+    },
+    {
+      "source": "/operix-hris/:path*",
+      "destination": "[https://operix-hris.vercel.app/:path](https://operix-hris.vercel.app/:path)*"
+    },
+    {
+      "source": "/operix-care",
+      "destination": "[https://operix-care.vercel.app](https://operix-care.vercel.app)"
+    },
+    {
+      "source": "/operix-care/:path*",
+      "destination": "[https://operix-care.vercel.app/:path](https://operix-care.vercel.app/:path)*"
+    }
   ]
 }
