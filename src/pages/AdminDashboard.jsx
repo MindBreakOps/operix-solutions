@@ -73,9 +73,26 @@ export default function AdminDashboard() {
 	setFormData({ title_en: '', title_ar: '', body_en: '', body_ar: '', media_url: '' });
   };
 
+  // ─── HELPER: Convert Google Drive links to Direct Image Links ───
+// ─── HELPER: Convert Google Drive links to Direct Image Links ───
+	const processMediaUrl = (url) => {
+	  if (!url) return '';
+	  // Look for Google Drive ID in standard share links
+	  const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+	  
+	  if (driveMatch && driveMatch[1]) {
+		// Uses the Thumbnail API bypass (w1000 means width 1000px for high quality)
+		return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w1000`;
+	  }
+	  return url; // If not Google Drive, return as-is
+	};
+
   // Create or Update Record
   const handleSaveItem = async (e) => {
 	e.preventDefault();
+	
+	// Automatically convert Drive links before saving
+	const formattedMediaUrl = processMediaUrl(formData.media_url);
 	
 	const payload = {
 	  page: targetPage,
@@ -84,7 +101,7 @@ export default function AdminDashboard() {
 	  title_ar: formData.title_ar,
 	  body_en: formData.body_en,
 	  body_ar: formData.body_ar,
-	  media_url: formData.media_url,
+	  media_url: formattedMediaUrl,
 	  updated_at: new Date().toISOString()
 	};
 
@@ -231,8 +248,8 @@ export default function AdminDashboard() {
 			</div>
 
 			<div className="md:col-span-2">
-			  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">GAS API Media Asset Stream Pipeline URL</label>
-			  <input type="url" value={formData.media_url} onChange={e => setFormData({...formData, media_url: e.target.value})} placeholder="https://images.unsplash.com/..." className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono outline-none text-[#1e2d40] focus:bg-white focus:border-[#c9a84c]" />
+			  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">GAS API Media Asset Stream Pipeline URL (Paste Drive Link)</label>
+			  <input type="url" value={formData.media_url} onChange={e => setFormData({...formData, media_url: e.target.value})} placeholder="https://drive.google.com/file/d/..." className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono outline-none text-[#1e2d40] focus:bg-white focus:border-[#c9a84c]" />
 			</div>
 
 			<div className="md:col-span-2 text-right pt-2">

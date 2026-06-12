@@ -23,21 +23,34 @@ export default function Navbar() {
 
   return (
 	<nav className="sticky top-0 z-50 bg-[#1e2d40] border-b border-slate-700 shadow-sm w-full font-sans">
-	  <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+	  {/* 
+		FIXED: Added gap-4 lg:gap-8 to the parent container. 
+		This strictly enforces space between the Left, Center, and Right sections. 
+	  */}
+	  <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4 lg:gap-8">
 		
 		{/* Left: Logo */}
-		<Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-3 shrink-0 hover:opacity-90 transition-opacity">
+		<Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2 lg:gap-3 shrink-0 hover:opacity-90 transition-opacity">
 		  <img src="/logo.png" alt="Logo" className="w-7 h-7 object-contain bg-white rounded-md p-1" />
-		  <span className="font-bold tracking-tight text-sm text-white hidden sm:block">{brandTitle}</span>
+		  <span className="font-bold tracking-tight text-sm text-white hidden sm:block whitespace-nowrap">
+			{brandTitle}
+		  </span>
 		</Link>
 
-		{/* Center: Standard Sized Links */}
-		<div className="hidden lg:flex items-center gap-6 justify-center">
+		{/* 
+		  Center: Standard Sized Links 
+		  FIXED: Removed 'flex-1' and 'overflow-hidden'. Letting justify-between handle the spacing naturally. 
+		*/}
+		<div className="hidden lg:flex items-center justify-center gap-2 xl:gap-5">
 		  {navItems.map((item) => (
 			<Link 
 			  key={item.path} 
 			  to={item.path}
-			  className={`text-[13px] font-medium transition-colors pb-0.5 border-b-2 ${location.pathname === item.path ? 'text-[#d4af37] border-[#d4af37]' : 'text-slate-300 border-transparent hover:text-white'}`}
+			  className={`text-[11px] xl:text-[13px] font-medium transition-colors pb-0.5 border-b-2 whitespace-nowrap ${
+				location.pathname === item.path 
+				  ? 'text-[#d4af37] border-[#d4af37]' 
+				  : 'text-slate-300 border-transparent hover:text-white'
+			  }`}
 			>
 			  {item.label}
 			</Link>
@@ -45,21 +58,20 @@ export default function Navbar() {
 		</div>
 
 		{/* Right: Actions */}
-		<div className="hidden lg:flex items-center gap-4 shrink-0">
+		<div className="hidden lg:flex items-center gap-3 shrink-0">
 		  <button onClick={toggleLanguage} title={isAr ? 'English' : 'عربي'} className="text-slate-300 hover:text-white transition-colors cursor-pointer p-1">
 			<Globe size={16} />
 		  </button>
 		  
-		  {/* FIXED: Restored to /cms-login so it doesn't crash the router */}
 		  <Link to="/cms-login" title={t.login || 'System Login'} className="text-slate-300 hover:text-[#d4af37] transition-colors cursor-pointer p-1 flex items-center">
 			<LogIn size={16} />
 		  </Link>
 
-		  <Link to="/subscription" className="text-[12px] font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer">
+		  <Link to="/subscription" className="text-[11px] xl:text-[12px] font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer whitespace-nowrap">
 			{t.pricing || 'Pricing'}
 		  </Link>
 
-		  <Link to="/contact" className="bg-[#d4af37] hover:bg-[#eab308] text-[#1e2d40] px-4 py-1.5 rounded-md text-[11px] font-bold uppercase tracking-wide transition-colors cursor-pointer shadow-sm ml-1 flex items-center justify-center">
+		  <Link to="/contact" className="bg-[#d4af37] hover:bg-[#eab308] text-[#1e2d40] px-3 xl:px-4 py-1.5 rounded-md text-[10px] xl:text-[11px] font-bold uppercase tracking-wide transition-colors cursor-pointer shadow-sm ml-1 flex items-center justify-center whitespace-nowrap">
 			{t.demoBtn || 'Book Demo'}
 		  </Link>
 		</div>
@@ -84,7 +96,6 @@ export default function Navbar() {
 			  <Globe size={16} /> {isAr ? 'Switch to English' : 'تبديل للغة العربية'}
 			</button>
 			
-			{/* FIXED Mobile Login Link */}
 			<Link to="/cms-login" onClick={() => setIsOpen(false)} className="flex items-center gap-2 text-sm font-medium text-white">
 			  <LogIn size={16} /> {t.login || 'System Login'}
 			</Link>
