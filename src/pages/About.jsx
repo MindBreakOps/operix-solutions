@@ -129,7 +129,7 @@ export default function About() {
 				? `تم ابتكار وتصميم ركائز ${companyName} برؤية استراتيجية من المؤسس الشريك عاصم الجمعان، عبر هندسة لوحات تحكم تشغيلية متطورة مصممة خصيصاً للحد من الخسائر التشغيلية وتعظيم العوائد.`
 				: `${companyName} was engineered under the strategic direction of Co-Founder Asim Aljma'an, deploying custom cloud architectures, telemetry modules, and centralized workforce orchestration boards to enforce operational security.`}
 			</p>
-			<a href="https://aljmaan.dpdns.org/portfolio-AsimAljmaan/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-[#d4af37] hover:text-white transition-colors mt-2">
+			<a href="https://www.aljmaan.operix-solutions.online/portfolio-AsimAljmaan/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-[#d4af37] hover:text-white transition-colors mt-2">
 			  {isAr ? "استعراض السيرة الكاملة للمؤسس" : "Review Comprehensive Founder Portfolio"} <ExternalLink size={12} />
 			</a>
 		  </div>
