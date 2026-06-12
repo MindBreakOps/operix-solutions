@@ -104,7 +104,7 @@ export default function Projects() {
 	  subAr: 'البوابة المؤسسية',
 	  descEn: 'Dedicated administrative portal mapped for institutional resource planning, community outreach tracking, and digital archive management.',
 	  descAr: 'بوابة إدارية مخصصة لتخطيط الموارد المؤسسية، وتتبع التواصل المجتمعي، وإدارة الأرشيف الرقمي.',
-	  url: 'https://aljmaan.operix-solutions.online/abdullah-bin-abbas-qc',
+	  url: 'https://www.aljmaan.operix-solutions.online/abdullah-bin-abbas-qc',
 	  icon: <Landmark size={20} />,
 	  color: 'bg-white text-emerald-800 border border-slate-100', // Dark Green Icon
 	  image: '/projects/abbas.png'
@@ -117,7 +117,7 @@ export default function Projects() {
 	  subAr: 'مركز المجتمع الذكي',
 	  descEn: 'Real estate and property management ecosystem handling resident requests, facility maintenance logs, and community billing cycles.',
 	  descAr: 'منظومة إدارة العقارات والممتلكات للتعامل مع طلبات السكان، وسجلات صيانة المرافق، ودورات الفوترة المجتمعية.',
-	  url: 'https://aljmaan.operix-solutions.online/Naseem_City',
+	  url: 'https://www.aljmaan.operix-solutions.online/Naseem_City',
 	  icon: <Building2 size={20} />,
 	  color: 'bg-red-900 text-white', // Dark Red and White
 	  image: '/projects/naseem.png' // Left as .png per your previous message
