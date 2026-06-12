@@ -47,18 +47,32 @@ export default function Home() {
   }, []);
 
 useEffect(() => {
-	// Define streamTelemetry inside the hook so it has access to setters
-	async function streamTelemetry() {
+	async function runTelemetry() {
 	  try {
-		// 1. Get total hits
+		// 1. Attempt to log the visitor
+		const response = await fetch('https://ipapi.co/json/');
+		const data = await response.json();
+		
+		const ip = data.ip || '0.0.0.0';
+		const country = data.country_code || 'SA';
+  
+		await supabase.from('operix_visitor_logs').insert([{ 
+		  visitor_ip: ip, 
+		  ip_country: country, 
+		  page_visited: window.location.pathname 
+		}]);
+	  } catch (err) {
+		console.warn("Logging skipped or failed:", err);
+	  }
+  
+	  // 2. Fetch data (Run this even if log fails)
+	  try {
 		const { count } = await supabase.from('operix_visitor_logs').select('*', { count: 'exact', head: true });
 		if (count !== null) setHits(count);
   
-		// 2. Get unique visitors
 		const { data: uniqueCount } = await supabase.rpc('get_unique_visitors');
 		if (uniqueCount !== null) setVisitors(uniqueCount);
   
-		// 3. Get country data
 		const { data: logs } = await supabase.from('operix_visitor_logs').select('ip_country');
 		if (logs) {
 		  const counts = logs.reduce((acc, curr) => {
@@ -75,10 +89,32 @@ useEffect(() => {
 	  }
 	}
   
-
-  
-	logAndInitialize();
+	runTelemetry();
   }, []);
+  
+
+  async function logAndInitialize() {
+	  try {
+		// Step 1: Attempt to log the visitor
+		const response = await fetch('https://ipapi.co/json/');
+		const data = await response.json();
+		
+		const ip = data.ip || '0.0.0.0';
+		const country = data.country_code || 'SA';
+  
+		await supabase.from('operix_visitor_logs').insert([{ 
+		  visitor_ip: ip, 
+		  ip_country: country, 
+		  page_visited: window.location.pathname 
+		}]);
+	  } catch (err) {
+		console.warn("Logging skipped (check RLS permissions):", err);
+	  } finally {
+		// Step 2: ALWAYS fetch the telemetry, even if logging failed
+		streamTelemetry();
+	  }
+	}
+
   useEffect(() => {
 	if (!mapReady || !window.L || Object.keys(activeCountries).length === 0 || !mapContainerRef.current || mapInstanceRef.current) return;
 
