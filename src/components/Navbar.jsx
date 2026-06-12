@@ -23,7 +23,7 @@ export default function Navbar() {
 
   return (
 	<nav className="sticky top-0 z-50 bg-[#1e2d40] border-b border-slate-700 shadow-sm w-full font-sans">
-	  {/* Strict max-w-6xl (1152px) constraint to match Home Page */}
+	  {/* Strict max-w-6xl (1152px) constraint to match standard corporate sizing */}
 	  <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
 		
 		{/* Left: Logo */}
@@ -32,7 +32,7 @@ export default function Navbar() {
 		  <span className="font-bold tracking-tight text-sm text-white hidden sm:block">{brandTitle}</span>
 		</Link>
 
-		{/* Center: Standard Sized Links (Like Mamey) */}
+		{/* Center: Standard Sized Links */}
 		<div className="hidden lg:flex items-center gap-6 justify-center">
 		  {navItems.map((item) => (
 			<Link 
@@ -51,17 +51,18 @@ export default function Navbar() {
 			<Globe size={16} />
 		  </button>
 		  
-		  <button onClick={() => navigate('/cms-login')} title={t.login || 'System Login'} className="text-slate-300 hover:text-[#d4af37] transition-colors cursor-pointer p-1">
+		  {/* FIXED: Restored to a proper Link with a URL so it functions natively */}
+		  <Link to="/login" title={t.login || 'System Login'} className="text-slate-300 hover:text-[#d4af37] transition-colors cursor-pointer p-1 flex items-center">
 			<LogIn size={16} />
-		  </button>
+		  </Link>
 
-		  <button onClick={() => navigate('/subscription')} className="text-[12px] font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer">
+		  <Link to="/subscription" className="text-[12px] font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer">
 			{t.pricing || 'Pricing'}
-		  </button>
+		  </Link>
 
-		  <button onClick={() => navigate('/contact')} className="bg-[#d4af37] hover:bg-[#eab308] text-[#1e2d40] px-4 py-1.5 rounded-md text-[11px] font-bold uppercase tracking-wide transition-colors cursor-pointer shadow-sm ml-1">
+		  <Link to="/contact" className="bg-[#d4af37] hover:bg-[#eab308] text-[#1e2d40] px-4 py-1.5 rounded-md text-[11px] font-bold uppercase tracking-wide transition-colors cursor-pointer shadow-sm ml-1 flex items-center justify-center">
 			{t.demoBtn || 'Book Demo'}
-		  </button>
+		  </Link>
 		</div>
 
 		{/* Mobile Toggle */}
@@ -75,20 +76,27 @@ export default function Navbar() {
 	  {isOpen && (
 		<div className="lg:hidden fixed top-[55px] left-0 right-0 bg-[#1e2d40] border-b border-slate-700 shadow-xl p-6 flex flex-col gap-2 font-sans z-50">
 		  {navItems.map((item) => (
-			<button key={item.path} onClick={() => { setIsOpen(false); navigate(item.path); }} className="text-sm font-medium py-3 border-b border-slate-700 text-white text-left">
+			<Link key={item.path} to={item.path} onClick={() => setIsOpen(false)} className="text-sm font-medium py-3 border-b border-slate-700 text-white text-left block">
 			  {item.label}
-			</button>
+			</Link>
 		  ))}
 		  <div className="pt-4 flex flex-col gap-4">
 			<button onClick={() => { toggleLanguage(); setIsOpen(false); }} className="flex items-center gap-2 text-sm font-medium text-white">
 			  <Globe size={16} /> {isAr ? 'Switch to English' : 'تبديل للغة العربية'}
 			</button>
-			<button onClick={() => { setIsOpen(false); navigate('/subscription'); }} className="text-sm font-medium text-[#d4af37] text-left">
+			
+			{/* FIXED Mobile Login Link */}
+			<Link to="/login" onClick={() => setIsOpen(false)} className="flex items-center gap-2 text-sm font-medium text-white">
+			  <LogIn size={16} /> {t.login || 'System Login'}
+			</Link>
+			
+			<Link to="/subscription" onClick={() => setIsOpen(false)} className="text-sm font-medium text-[#d4af37] text-left block">
 			  {t.pricing || 'Pricing'}
-			</button>
-			<button onClick={() => { setIsOpen(false); navigate('/contact'); }} className="bg-[#d4af37] text-[#1e2d40] text-center py-2.5 rounded-md font-bold text-sm mt-2">
+			</Link>
+			
+			<Link to="/contact" onClick={() => setIsOpen(false)} className="bg-[#d4af37] text-[#1e2d40] text-center py-2.5 rounded-md font-bold text-sm mt-2 block">
 			  {t.demoBtn || 'Book a Demo'}
-			</button>
+			</Link>
 		  </div>
 		</div>
 	  )}
