@@ -47,51 +47,38 @@ export default function Home() {
   }, []);
 
 useEffect(() => {
-	async function initTelemetry() {
+	// Define streamTelemetry inside the hook so it has access to setters
+	async function streamTelemetry() {
 	  try {
-		// 1. Log the visitor first
-		const response = await fetch('https://ipapi.co/json/');
-		const data = await response.json();
-		
-		const ip = data.ip || '0.0.0.0';
-		const country = data.country_code || 'SA';
+		// 1. Get total hits
+		const { count } = await supabase.from('operix_visitor_logs').select('*', { count: 'exact', head: true });
+		if (count !== null) setHits(count);
   
-		await supabase.from('operix_visitor_logs').insert([{ 
-		  visitor_ip: ip, 
-		  ip_country: country, 
-		  page_visited: window.location.pathname 
-		}]);
-  
-		// 2. Now fetch the updated telemetry data
-		const { count } = await supabase
-		  .from('operix_visitor_logs')
-		  .select('*', { count: 'exact', head: true });
-		if (count) setHits(count);
-  
+		// 2. Get unique visitors
 		const { data: uniqueCount } = await supabase.rpc('get_unique_visitors');
-		if (uniqueCount) setVisitors(uniqueCount);
+		if (uniqueCount !== null) setVisitors(uniqueCount);
   
+		// 3. Get country data
 		const { data: logs } = await supabase.from('operix_visitor_logs').select('ip_country');
 		if (logs) {
 		  const counts = logs.reduce((acc, curr) => {
 			if (curr.ip_country) {
-			  acc[curr.ip_country.toUpperCase()] = (acc[curr.ip_country.toUpperCase()] || 0) + 1;
+			  const code = curr.ip_country.toUpperCase();
+			  acc[code] = (acc[code] || 0) + 1;
 			}
 			return acc;
 		  }, {});
 		  setActiveCountries(counts);
 		}
 	  } catch (err) {
-		console.error("Telemetry error:", err);
+		console.error("Telemetry fetch error:", err);
 	  }
 	}
-	
-	initTelemetry();
-  }, []); // Runs once on mount
-	
-	
+  
 
-
+  
+	logAndInitialize();
+  }, []);
   useEffect(() => {
 	if (!mapReady || !window.L || Object.keys(activeCountries).length === 0 || !mapContainerRef.current || mapInstanceRef.current) return;
 
