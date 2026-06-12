@@ -27,8 +27,17 @@ export default function Footer() {
 		
 		  <div className="space-y-3 pt-2">
 			<div className="space-y-1">
-			  <a href="mailto:operixsolution@gmail.com" className="flex items-center gap-2 text-xs text-white hover:text-[#d4af37] transition-colors font-mono">
-				<Mail size={14} className="text-[#d4af37]" /> operixsolution@gmail.com
+			  <a href="mailto:info@operix-solutions.com" className="flex items-center gap-2 text-xs text-white hover:text-[#d4af37] transition-colors font-mono">
+				<Mail size={14} className="text-[#d4af37]" /> info@operix-solutions.com
+			  </a>
+			  <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider pl-6">
+				<MapPin size={12} className="text-slate-500" /> Riyadh, SA
+			  </div>
+			</div>
+
+			<div className="space-y-1">
+			  <a href="mailto:subscription@operix-solutions.com" className="flex items-center gap-2 text-xs text-white hover:text-[#d4af37] transition-colors font-mono">
+				<Mail size={14} className="text-[#d4af37]" /> subscription@operix-solutions.com
 			  </a>
 			  <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider pl-6">
 				<MapPin size={12} className="text-slate-500" /> Riyadh, SA
@@ -36,8 +45,8 @@ export default function Footer() {
 			</div>
 		
 			<div className="space-y-1">
-			  <a href="mailto:operix249@gmail.com" className="flex items-center gap-2 text-xs text-white hover:text-[#d4af37] transition-colors font-mono">
-				<Mail size={14} className="text-[#d4af37]" /> operix249@gmail.com
+			  <a href="mailto:sudan.office@operix-solutions.com" className="flex items-center gap-2 text-xs text-white hover:text-[#d4af37] transition-colors font-mono">
+				<Mail size={14} className="text-[#d4af37]" /> sudan.office@operix-solutions.com
 			  </a>
 			  <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider pl-6">
 				<MapPin size={12} className="text-slate-500" /> Khartoum, Sudan
