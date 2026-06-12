@@ -15,7 +15,7 @@ export default function Projects() {
 	  subAr: 'إدارة أسطول العمليات والقوى العاملة',
 	  descEn: 'The core operations hub replacing manual logbooks. Features comprehensive ANPR parking, valet management, and real-time gig workforce deployment tracking.',
 	  descAr: 'محور العمليات الأساسي الذي يحل محل دفاتر السجلات اليدوية. إدارة متكاملة لمواقف السيارات بكاميرات التعرف الذكي (ANPR)، وتوجيه القوى العاملة.',
-	  url: 'https://operix-operations.vercel.app',
+	  url: 'https://www.operations.operix-solutions.online',
 	  icon: <Settings size={24} />,
 	  color: 'bg-white text-red-600 border border-slate-100', // White and Red
 	  image: '/projects/ops.png',
@@ -33,7 +33,7 @@ export default function Projects() {
 	  subAr: 'نظام السجلات المالية للشركات',
 	  descEn: 'Financial management ecosystem, corporate ledger reconciliation, ZATCA Phase 2 Integration Matrix, and automated budget loops.',
 	  descAr: 'نظام إدارة مالية متكامل يشمل التسويات المحاسبية للشركات، متوافق بالكامل مع متطلبات المرحلة الثانية لهيئة الزكاة والدخل (ZATCA).',
-	  url: 'https://operix-fmis.vercel.app',
+	  url: 'https://www.fmis.operix-solutions.online',
 	  icon: <CreditCard size={24} />,
 	  color: 'bg-emerald-900 text-white', // Dark Green and White
 	  image: '/projects/fmis.png',
@@ -51,7 +51,7 @@ export default function Projects() {
 	  subAr: 'بنية رأس المال البشري',
 	  descEn: 'Complete HR automation — GPS-enforced attendance tracking, automated salary deductions, and seamless employee self-service pipelines.',
 	  descAr: 'أتمتة كاملة للموارد البشرية — تسجيل الحضور والغياب بنطاق الحماية الجغرافي (GPS)، ومحرك احتساب الاستقطاعات التلقائي للرواتب.',
-	  url: 'https://operix-hris.vercel.app',
+	  url: 'https://www.hris.operix-solutions.online',
 	  icon: <Users size={24} />,
 	  color: 'bg-black text-white', // Black and White
 	  image: '/projects/hris.png',
@@ -69,7 +69,7 @@ export default function Projects() {
 	  subAr: 'منظومة الإدارة السريرية',
 	  descEn: 'Advanced medical management ecosystem featuring doctor portals, comprehensive patient history, and voice-to-text clinical notes.',
 	  descAr: 'منظومة الإدارة الطبية المتقدمة التي تضم بوابات تفاعلية للأطباء، ملفات شاملة للمرضى، وميزة الإدخال الصوتي للملاحظات السريرية.',
-	  url: 'https://operix-care.vercel.app',
+	  url: 'https://www.care.operix-solutions.online',
 	  icon: <Activity size={24} />,
 	  color: 'bg-blue-900 text-white', // Dark Blue and White
 	  image: '/projects/care.png',
@@ -104,7 +104,7 @@ export default function Projects() {
 	  subAr: 'البوابة المؤسسية',
 	  descEn: 'Dedicated administrative portal mapped for institutional resource planning, community outreach tracking, and digital archive management.',
 	  descAr: 'بوابة إدارية مخصصة لتخطيط الموارد المؤسسية، وتتبع التواصل المجتمعي، وإدارة الأرشيف الرقمي.',
-	  url: 'https://aljmaan.dpdns.org/abdullah-bin-abbas-qc',
+	  url: 'https://aljmaan.operix-solutions.online/abdullah-bin-abbas-qc',
 	  icon: <Landmark size={20} />,
 	  color: 'bg-white text-emerald-800 border border-slate-100', // Dark Green Icon
 	  image: '/projects/abbas.png'
@@ -117,7 +117,7 @@ export default function Projects() {
 	  subAr: 'مركز المجتمع الذكي',
 	  descEn: 'Real estate and property management ecosystem handling resident requests, facility maintenance logs, and community billing cycles.',
 	  descAr: 'منظومة إدارة العقارات والممتلكات للتعامل مع طلبات السكان، وسجلات صيانة المرافق، ودورات الفوترة المجتمعية.',
-	  url: 'https://aljmaan.dpdns.org/Naseem_City',
+	  url: 'https://aljmaan.operix-solutions.online/Naseem_City',
 	  icon: <Building2 size={20} />,
 	  color: 'bg-red-900 text-white', // Dark Red and White
 	  image: '/projects/naseem.png' // Left as .png per your previous message
