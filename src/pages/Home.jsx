@@ -10,6 +10,7 @@ export default function Home() {
   const { isAr } = useLanguage();
 
   const [hits, setHits] = useState(0);
+  const [visitors, setVisitors] = useState(0); // Added visitors state
   const [activeCountries, setActiveCountries] = useState({});
   const [mapReady, setMapReady] = useState(false);
   
@@ -47,9 +48,15 @@ export default function Home() {
 
   useEffect(() => {
 	async function streamTelemetry() {
+	  // 1. Get total hits
 	  const { count } = await supabase.from('operix_visitor_logs').select('*', { count: 'exact', head: true });
 	  if (count) setHits(count);
 
+	  // 2. Get unique visitors via SQL RPC
+	  const { data: uniqueCount } = await supabase.rpc('get_unique_visitors');
+	  if (uniqueCount) setVisitors(uniqueCount);
+
+	  // 3. Get country mapping data
 	  const { data } = await supabase.from('operix_visitor_logs').select('ip_country');
 	  if (data) {
 		const counts = data.reduce((acc, curr) => {
@@ -110,10 +117,9 @@ export default function Home() {
 		backgroundAttachment: 'fixed' 
 	  }}
 	>
-	  {/* ─── GLASS OVERLAY (Keeps text perfectly readable while showing your background) ─── */}
+	  {/* ─── GLASS OVERLAY ─── */}
 	  <div className="absolute inset-0 z-0 bg-slate-50/40 backdrop-blur-sm pointer-events-none" />
 
-	  {/* ─── STRICT GLOBAL WRAPPER: max-w-7xl perfectly aligns content ─── */}
 	  <main className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-10 py-10">
 		
 		{/* ─── HERO SECTION ─── */}
@@ -140,7 +146,7 @@ export default function Home() {
 		  </button>
 		</header>
 
-		{/* ─── BENTO GRID: OPERATIONS (Left) & MAP (Right) ─── */}
+		{/* ─── BENTO GRID: OPERATIONS & MAP ─── */}
 		<div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full items-stretch">
 		  
 		  {/* Operations Panel */}
@@ -192,8 +198,13 @@ export default function Home() {
 				<Globe2 size={14} />
 				<span>{isAr ? "الخريطة الحية" : "Live Signal Map"}</span>
 			  </div>
-			  <div className="text-[10px] font-black text-[#1e2d40] bg-slate-100 border border-slate-200 px-2 py-1 rounded">
-				HITS: {hits.toLocaleString()}
+			  <div className="flex gap-2">
+				<div className="text-[10px] font-black text-[#1e2d40] bg-slate-100 border border-slate-200 px-2 py-1 rounded shadow-sm">
+				  VISITORS: {visitors.toLocaleString()}
+				</div>
+				<div className="text-[10px] font-black text-[#1e2d40] bg-slate-100 border border-slate-200 px-2 py-1 rounded shadow-sm">
+				  HITS: {hits.toLocaleString()}
+				</div>
 			  </div>
 			</div>
 			<div 
@@ -204,7 +215,7 @@ export default function Home() {
 		  </div>
 		</div>
 
-		{/* ─── ECOSYSTEM GRID (4 Columns for perfect balance) ─── */}
+		{/* ─── ECOSYSTEM GRID ─── */}
 		<div className="mt-8 text-center md:text-left">
 		  <h2 className="text-2xl font-black font-serif text-[#1e2d40]">
 			{isAr ? "منظومة أوبيريكس السحابية" : `The ${brandName} Ecosystem`}
@@ -262,7 +273,7 @@ export default function Home() {
 		  ))}
 		</div>
 
-		{/* ─── CLEAN, NORMAL-SIZED REVIEWS SECTION ─── */}
+		{/* ─── REVIEWS SECTION ─── */}
 		<div className="mt-8 pt-8 border-t border-slate-200/50">
 		  <div className="text-center md:text-left mb-6">
 			<h2 className="text-2xl font-black font-serif text-[#1e2d40]">
@@ -273,7 +284,6 @@ export default function Home() {
 			</p>
 		  </div>
 		  
-		  {/* Strictly light-themed, compact wrapper for the external Reviews component */}
 		  <div className="w-full bg-white border border-slate-200 rounded-2xl p-6 shadow-sm overflow-hidden text-slate-900">
 			<ReviewsSection />
 		  </div>
