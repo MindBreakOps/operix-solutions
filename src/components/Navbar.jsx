@@ -23,7 +23,6 @@ export default function Navbar() {
 
   return (
 	<nav className="sticky top-0 z-50 bg-[#1e2d40] border-b border-slate-700 shadow-sm w-full font-sans">
-	  {/* Strict max-w-6xl (1152px) constraint to match standard corporate sizing */}
 	  <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
 		
 		{/* Left: Logo */}
@@ -51,8 +50,8 @@ export default function Navbar() {
 			<Globe size={16} />
 		  </button>
 		  
-		  {/* FIXED: Restored to a proper Link with a URL so it functions natively */}
-		  <Link to="/login" title={t.login || 'System Login'} className="text-slate-300 hover:text-[#d4af37] transition-colors cursor-pointer p-1 flex items-center">
+		  {/* FIXED: Restored to /cms-login so it doesn't crash the router */}
+		  <Link to="/cms-login" title={t.login || 'System Login'} className="text-slate-300 hover:text-[#d4af37] transition-colors cursor-pointer p-1 flex items-center">
 			<LogIn size={16} />
 		  </Link>
 
@@ -86,7 +85,7 @@ export default function Navbar() {
 			</button>
 			
 			{/* FIXED Mobile Login Link */}
-			<Link to="/login" onClick={() => setIsOpen(false)} className="flex items-center gap-2 text-sm font-medium text-white">
+			<Link to="/cms-login" onClick={() => setIsOpen(false)} className="flex items-center gap-2 text-sm font-medium text-white">
 			  <LogIn size={16} /> {t.login || 'System Login'}
 			</Link>
 			
