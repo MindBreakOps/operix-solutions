@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { Link } from 'react-router-dom';
-import { Mail, MapPin, MessageCircle, Phone, AtSign } from 'lucide-react';
+import { Mail, MapPin, MessageCircle, Phone, AtSign, Users, Settings, Stethoscope, FileCheck } from 'lucide-react';
 
 export default function Footer() {
   const { isAr } = useLanguage();
@@ -35,6 +35,16 @@ export default function Footer() {
 			  </div>
 			</div>
 
+			{/* NEW: Support Email */}
+			<div className="space-y-1">
+			  <a href="mailto:support@operix-solutions.com" className="flex items-center gap-2 text-xs text-white hover:text-[#d4af37] transition-colors font-mono">
+				<Mail size={14} className="text-[#d4af37]" /> support@operix-solutions.com
+			  </a>
+			  <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider pl-6">
+				<MapPin size={12} className="text-slate-500" /> Riyadh, SA
+			  </div>
+			</div>
+
 			<div className="space-y-1">
 			  <a href="mailto:subscription@operix-solutions.com" className="flex items-center gap-2 text-xs text-white hover:text-[#d4af37] transition-colors font-mono">
 				<Mail size={14} className="text-[#d4af37]" /> subscription@operix-solutions.com
@@ -60,11 +70,27 @@ export default function Footer() {
 		  <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#d4af37] mb-4">
 			{isAr ? "البوابات السحابية" : "CLOUD PORTALS"}
 		  </h4>
-		  <ul className="space-y-2 text-sm text-slate-300">
-			<li><a href="https://operix-hris.vercel.app" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">OPERIX HRIS</a></li>
-			<li><a href="https://operix-operations.vercel.app" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">OPERIX Operations</a></li>
-			<li><a href="https://operix-care.vercel.app" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">OPERIX Care HIS</a></li>
-			<li><a href="https://operix-fmis.vercel.app" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">OPERIX FMIS</a></li>
+		  <ul className="space-y-3 text-sm text-slate-300">
+			<li>
+			  <a href="https://www.hris.operix-solutions.online" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-white transition-colors">
+				<Users size={14} className="text-slate-400" /> OPERIX HRIS
+			  </a>
+			</li>
+			<li>
+			  <a href="https://www.operations.operix-solutions.online" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-white transition-colors">
+				<Settings size={14} className="text-slate-400" /> OPERIX Operations
+			  </a>
+			</li>
+			<li>
+			  <a href="https://www.care.operix-solutions.online" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-white transition-colors">
+				<Stethoscope size={14} className="text-slate-400" /> OPERIX Care HIS
+			  </a>
+			</li>
+			<li>
+			  <a href="https://www.fmis.operix-solutions.online" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-white transition-colors">
+				<FileCheck size={14} className="text-slate-400" /> OPERIX FMIS
+			  </a>
+			</li>
 		  </ul>
 		</div>
 
@@ -110,6 +136,13 @@ export default function Footer() {
 			<li>
 			  <a href="https://wa.me/966500823643" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-[#25D366] transition-colors">
 				<Phone size={14} /> {isAr ? "واتساب الأعمال" : "WA Business"}
+			  </a>
+			</li>
+			{/* NEW: X (Twitter) */}
+			<li>
+			  <a href="https://x.com/operixsolutions?s=11" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-white transition-colors">
+				<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg>
+				{isAr ? "إكس (تويتر)" : "X (Twitter)"}
 			  </a>
 			</li>
 			<li>
