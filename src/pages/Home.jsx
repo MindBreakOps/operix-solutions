@@ -46,25 +46,35 @@ export default function Home() {
 	}
   }, []);
 
-  useEffect(() => {
-	async function streamTelemetry() {
-	  // 1. Get total hits
-	  const { count } = await supabase.from('operix_visitor_logs').select('*', { count: 'exact', head: true });
-	  if (count) setHits(count);
-
-	  // 2. Get unique visitors via SQL RPC
-	  const { data: uniqueCount } = await supabase.rpc('get_unique_visitors');
-	  if (uniqueCount) setVisitors(uniqueCount);
-
-	  // 3. Get country mapping data
-	  const { data } = await supabase.from('operix_visitor_logs').select('ip_country');
-	  if (data) {
-		const counts = data.reduce((acc, curr) => {
-		  if (curr.ip_country) {
-			acc[curr.ip_country.toUpperCase()] = (acc[curr.ip_country.toUpperCase()] || 0) + 1;
-		  }
-		  return acc;
-		}, {});
+ useEffect(() => {
+   async function logVisitor() {
+	 try {
+	   // 1. Fetch IP and Country from a public API
+	   const response = await fetch('https://ipapi.co/json/');
+	   const data = await response.json();
+	   
+	   const ip = data.ip || '0.0.0.0';
+	   const country = data.country_code || 'SA';
+ 
+	   // 2. Insert this data into your Supabase table
+	   await supabase
+		 .from('operix_visitor_logs')
+		 .insert([
+		   { 
+			 visitor_ip: ip, 
+			 ip_country: country, 
+			 page_visited: window.location.pathname 
+		   }
+		 ]);
+		 
+	   // 3. Now refresh your counts
+	   streamTelemetry();
+	 } catch (err) {
+	   console.error("Error logging visitor:", err);
+	 }
+   }
+   logVisitor();
+ }, []);
 		setActiveCountries(counts);
 	  }
 	}
