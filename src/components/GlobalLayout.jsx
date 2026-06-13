@@ -32,6 +32,8 @@ export default function GlobalLayout() {
 		<Footer />
 	  </div>
 	  
+	  {/* ─── VERCEL WEB ANALYTICS ─── */}
+	  <Analytics />
 	</div>
   );
 }
