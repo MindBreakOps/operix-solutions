@@ -51,14 +51,16 @@ export default function Clients() {
 		  {clientsData.map((client) => (
 			<div key={client.id} className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl hover:border-[#d4af37]/50 transition-all duration-300 group flex flex-col">
 			  
-			  <div className="h-56 bg-[#1e2d40] relative overflow-hidden">
+			  {/* FIXED: Changed to object-contain, added padding (p-8), and set flex center */}
+			  <div className="h-48 bg-[#1e2d40] relative overflow-hidden flex items-center justify-center p-8">
 				<img 
 				  src={client.logoUrl} 
 				  alt={client.name} 
-				  className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-transform duration-500" 
-				  onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.innerHTML = '<div class="w-full h-full flex items-center justify-center text-slate-500 font-black tracking-widest uppercase bg-slate-100">IMAGE</div>'; }}
+				  className="w-full h-full object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-transform duration-500" 
+				  onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.innerHTML = '<div class="w-full h-full flex items-center justify-center text-slate-500 font-black tracking-widest uppercase">LOGO</div>'; }}
 				/>
-				<div className="absolute inset-0 bg-gradient-to-t from-[#1e2d40]/40 to-transparent opacity-60"></div>
+				{/* Gradient overlay kept for texture, but set to pointer-events-none so it doesn't block the image */}
+				<div className="absolute inset-0 bg-gradient-to-t from-[#1e2d40]/40 to-transparent opacity-60 pointer-events-none"></div>
 			  </div>
 
 			  <div className="p-8 flex flex-col flex-grow relative bg-white">
