@@ -216,9 +216,10 @@ export default function AdminDashboard() {
 			  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Target Web Module</label>
 			  <select value={targetPage} onChange={e => setTargetPage(e.target.value)} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none text-[#1e2d40] cursor-pointer focus:bg-white focus:border-[#c9a84c]">
 				<option value="news">News & Intelligence Feed</option>
-				<option value="home">Home Page Presentation</option>
-				<option value="about">About Strategy Overview</option>
-				<option value="services">Services Matrix</option>
+				  <option value="home">Home Page Presentation</option>
+				  <option value="about">About Strategy Overview</option>
+				  <option value="services">Services Matrix</option>
+				  <option value="clients">Clients & Partners Matrix</option>
 			  </select>
 			</div>
 

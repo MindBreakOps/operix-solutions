@@ -1,35 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { supabaseClient as supabase } from '../config/supabase';
 
 export default function Clients() {
   const { isAr } = useLanguage();
+  const [clientsData, setClientsData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const clientsData = [
-	{
-	  id: 1,
-	  name: isAr ? "مدينة النسيم" : "Naseem City",
-	  contractDetails: isAr ? "إدارة مجتمعية ذكية وصيانة مرافق" : "Smart Community Hub & Facility Maintenance",
-	  logoUrl: "/projects/naseem.png"
-	},
-	{
-	  id: 2,
-	  name: isAr ? "مؤسسة مامي" : "Mamey Enterprise",
-	  contractDetails: isAr ? "تجارة عامة واستثمار ولوجستيات" : "General Trading, Investment & Logistics",
-	  logoUrl: "/projects/mamey.png" 
-	},
-	{
-	  id: 3,
-	  name: isAr ? "مركز عبدالله بن عباس" : "Abdullah Bin Abbas Center",
-	  contractDetails: isAr ? "إدارة مؤسسية وأرشفة رقمية" : "Institutional Management & Digital Archiving",
-	  logoUrl: "/projects/abbas.png"
-	},
-	{
-	  id: 4,
-	  name: isAr ? "Mind Break Cafe" : "VIP VALET SERVICE",
-	  contractDetails: isAr ? "خدمة صف سيارات وادارة مواقف ذكية" : "VIP VALET SERVICE and Parking System ANPR",
-	  logoUrl: "/projects/valet.png"
+  // Fetch Clients from Supabase CMS
+  useEffect(() => {
+	async function fetchClients() {
+	  try {
+		const { data, error } = await supabase
+		  .from('operix_cms_content')
+		  .select('*')
+		  .eq('page', 'clients') // Only fetch items tagged as 'clients'
+		  .order('updated_at', { ascending: true }); // Oldest first (or false for newest)
+
+		if (error) throw error;
+		if (data) setClientsData(data);
+	  } catch (error) {
+		console.error("Error loading clients:", error);
+	  } finally {
+		setLoading(false);
+	  }
 	}
-  ];
+
+	fetchClients();
+  }, []);
 
   return (
 	<div className="w-full bg-[#f8fafc] min-h-screen py-20 px-4 md:px-6 font-sans">
@@ -47,31 +45,50 @@ export default function Clients() {
 		  </p>
 		</div>
 
-		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-		  {clientsData.map((client) => (
-			<div key={client.id} className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl hover:border-[#d4af37]/50 transition-all duration-300 group flex flex-col">
-			  
-			  {/* FIXED: Changed to object-contain, added padding (p-8), and set flex center */}
-			  <div className="h-48 bg-[#1e2d40] relative overflow-hidden flex items-center justify-center p-8">
-				<img 
-				  src={client.logoUrl} 
-				  alt={client.name} 
-				  className="w-full h-full object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-transform duration-500" 
-				  onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.innerHTML = '<div class="w-full h-full flex items-center justify-center text-slate-500 font-black tracking-widest uppercase">LOGO</div>'; }}
-				/>
-				{/* Gradient overlay kept for texture, but set to pointer-events-none so it doesn't block the image */}
-				<div className="absolute inset-0 bg-gradient-to-t from-[#1e2d40]/40 to-transparent opacity-60 pointer-events-none"></div>
-			  </div>
+		{loading ? (
+		  <div className="text-center text-slate-400 font-bold uppercase tracking-widest py-10">
+			{isAr ? "جاري تحميل بيانات الشركاء..." : "Loading corporate partners..."}
+		  </div>
+		) : clientsData.length === 0 ? (
+		  <div className="text-center text-slate-400 font-bold uppercase tracking-widest py-10">
+			{isAr ? "لا يوجد شركاء مسجلين حالياً." : "No partners registered yet."}
+		  </div>
+		) : (
+		  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+			{clientsData.map((client) => (
+			  <div key={client.id} className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl hover:border-[#d4af37]/50 transition-all duration-300 group flex flex-col">
+				
+				<div className="h-48 bg-[#1e2d40] relative overflow-hidden flex items-center justify-center p-8">
+				  <img 
+					src={client.media_url || '/placeholder.png'} 
+					alt={isAr ? client.title_ar : client.title_en} 
+					className="w-full h-full object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-transform duration-500" 
+					onError={(e) => { 
+					  e.target.style.display = 'none'; 
+					  e.target.parentElement.innerHTML = '<div class="w-full h-full flex items-center justify-center text-slate-500 font-black tracking-widest uppercase">LOGO</div>'; 
+					}}
+				  />
+				  <div className="absolute inset-0 bg-gradient-to-t from-[#1e2d40]/40 to-transparent opacity-60 pointer-events-none"></div>
+				</div>
 
-			  <div className="p-8 flex flex-col flex-grow relative bg-white">
-				<div className="absolute top-0 right-8 -translate-y-1/2 w-10 h-1.5 bg-[#d4af37] rounded-full shadow-sm"></div>
-				<h3 className="text-xl font-black mb-2 bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent pb-1">{client.name}</h3>
-				<p className="text-xs text-slate-500 font-bold leading-relaxed uppercase tracking-wider">{client.contractDetails}</p>
+				<div className="p-8 flex flex-col flex-grow relative bg-white">
+				  <div className="absolute top-0 right-8 -translate-y-1/2 w-10 h-1.5 bg-[#d4af37] rounded-full shadow-sm"></div>
+				  
+				  {/* Dynamic Name */}
+				  <h3 className="text-xl font-black mb-2 bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent pb-1" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
+					{isAr ? client.title_ar : client.title_en}
+				  </h3>
+				  
+				  {/* Dynamic Contract Details */}
+				  <p className="text-xs text-slate-500 font-bold leading-relaxed uppercase tracking-wider" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
+					{isAr ? client.body_ar : client.body_en}
+				  </p>
+				</div>
+				
 			  </div>
-			  
-			</div>
-		  ))}
-		</div>
+			))}
+		  </div>
+		)}
 
 	  </div>
 	</div>
