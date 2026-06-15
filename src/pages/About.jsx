@@ -137,7 +137,7 @@ export default function About() {
 				  </div>
 				  <div>
 					<div className="text-xs font-black text-white">{isAr ? "مصطفى عبدالله" : "Mustafa Abdullah"}</div>
-					<div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{isAr ? "مدير مكتب السودان" : "CO-FOUNDER"}</div>
+					<div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{isAr ? "المؤسس الشريك" : "CO-FOUNDER"}</div>
 				  </div>
 				</div>
 			  </div>
