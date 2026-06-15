@@ -1,30 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { Calendar } from 'lucide-react';
+import { supabaseClient as supabase } from '../config/supabase'; // Make sure this path matches your project
 
 export default function News() {
   const { isAr } = useLanguage();
+  const [newsItems, setNewsItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const newsData = [
-	{
-	  id: 1,
-	  title: isAr ? "إطلاق النسخة 2.4 من نظام إدارة العمليات" : "OPERIX Operations V2.4 Deployed",
-	  content: isAr 
-		? "تحديث شامل لمصفوفة قراءة اللوحات (ANPR) وتحسينات كبرى في تتبع القوى العاملة الميدانية."
-		: "Major update to the ANPR telemetry matrix and massive improvements to field workforce tracking.",
-	  mediaUrl: "/matrix-bg.jpg",
-	  date: "June 11, 2026"
-	},
-	{
-	  id: 2,
-	  title: isAr ? "اعتماد المرحلة الثانية من فوترة الزكاة" : "ZATCA Phase 2 E-Invoicing Certified",
-	  content: isAr 
-		? "تم اعتماد نظام الإدارة المالية أوبيريكس (FMIS) بشكل رسمي ومباشر مع هيئة الزكاة والضريبة والجمارك."
-		: "The OPERIX FMIS ecosystem has been officially certified for direct integration with ZATCA phase 2 compliance.",
-	  mediaUrl: "/projects/fmis.jpeg",
-	  date: "May 28, 2026"
+  // Fetch data from the Admin Dashboard CMS table
+  useEffect(() => {
+	async function fetchNews() {
+	  try {
+		const { data, error } = await supabase
+		  .from('operix_cms_content')
+		  .select('*')
+		  .eq('page', 'news') // Only get items tagged for the News module
+		  .order('updated_at', { ascending: false }); // Newest first
+
+		if (error) throw error;
+		if (data) setNewsItems(data);
+	  } catch (error) {
+		console.error("Error loading news feed:", error);
+	  } finally {
+		setLoading(false);
+	  }
 	}
-  ];
+
+	fetchNews();
+  }, []);
+
+  // Format the date to look nice (e.g., "June 11, 2026")
+  const formatDate = (dateString) => {
+	const options = { year: 'numeric', month: 'long', day: 'numeric' };
+	return new Date(dateString).toLocaleDateString(isAr ? 'ar-SA' : 'en-US', options);
+  };
 
   return (
 	<div className="w-full bg-[#f8fafc] min-h-screen py-16 px-6 font-sans">
@@ -43,28 +53,52 @@ export default function News() {
 		</div>
 
 		<div className="space-y-10">
-		  {newsData.map((article) => (
-			<div key={article.id} className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm flex flex-col md:flex-row hover:shadow-md transition-shadow">
-			  <div className="md:w-1/3 h-64 md:h-auto bg-[#1e2d40] overflow-hidden flex-shrink-0">
-				<img 
-				  src={article.mediaUrl} 
-				  alt={article.title} 
-				  className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" 
-				  onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.innerHTML = '<div class="w-full h-full flex items-center justify-center text-slate-500 font-black tracking-widest uppercase bg-slate-100">IMAGE</div>'; }}
-				/>
-			  </div>
-			  <div className="p-8 md:w-2/3 flex flex-col justify-center space-y-4">
-				<div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#d4af37]">
-				  <Calendar size={14} /> {article.date}
-				</div>
-				{/* Article Title Gradient */}
-				<h3 className="text-2xl font-black font-serif bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent pb-1">
-				  {article.title}
-				</h3>
-				<p className="text-sm text-slate-500 font-medium leading-relaxed">{article.content}</p>
-			  </div>
+		  {loading ? (
+			// Simple Loading State
+			<div className="text-center text-slate-400 font-bold uppercase tracking-widest py-10">
+			  {isAr ? "جاري تحميل البيانات..." : "Loading intelligence feed..."}
 			</div>
-		  ))}
+		  ) : newsItems.length === 0 ? (
+			// Empty State
+			<div className="text-center text-slate-400 font-bold uppercase tracking-widest py-10">
+			  {isAr ? "لا توجد أخبار حالياً" : "No news articles found."}
+			</div>
+		  ) : (
+			// Render Live Data from Supabase
+			newsItems.map((article) => (
+			  <div key={article.id} className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm flex flex-col md:flex-row hover:shadow-md transition-shadow">
+				
+				<div className="md:w-1/3 h-64 md:h-auto bg-[#1e2d40] overflow-hidden flex-shrink-0">
+				  <img 
+					src={article.media_url || '/placeholder.jpg'} // Fallback if no image URL is provided
+					alt={isAr ? article.title_ar : article.title_en} 
+					className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" 
+					onError={(e) => { 
+					  e.target.style.display = 'none'; 
+					  e.target.parentElement.innerHTML = '<div class="w-full h-full flex items-center justify-center text-slate-500 font-black tracking-widest uppercase bg-slate-100">OPERIX MEDIA</div>'; 
+					}}
+				  />
+				</div>
+
+				<div className="p-8 md:w-2/3 flex flex-col justify-center space-y-4">
+				  <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#d4af37]">
+					<Calendar size={14} /> {formatDate(article.updated_at)}
+				  </div>
+				  
+				  {/* Dynamic Title based on Language */}
+				  <h3 className="text-2xl font-black font-serif bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent pb-1" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
+					{isAr ? article.title_ar : article.title_en}
+				  </h3>
+				  
+				  {/* Dynamic Body based on Language */}
+				  <p className="text-sm text-slate-500 font-medium leading-relaxed whitespace-pre-line" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
+					{isAr ? article.body_ar : article.body_en}
+				  </p>
+				</div>
+				
+			  </div>
+			))
+		  )}
 		</div>
 
 	  </div>

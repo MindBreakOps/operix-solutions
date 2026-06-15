@@ -8,7 +8,7 @@ export default function Footer() {
   const brandName = "OPERIX SOLUTIONS";
 
   return (
-	<footer className="w-full bg-[#1e2d40] text-white pt-12 pb-8 font-sans mt-auto border-t border-slate-700">
+	<footer className="w-full bg-[#1e2d40] text-white pt-12 pb-6 font-sans mt-auto border-t border-slate-700">
 	  {/* Boxed to max-w-6xl to match the rest of the site */}
 	  <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10">
 		
@@ -138,7 +138,6 @@ export default function Footer() {
 				<Phone size={14} /> {isAr ? "واتساب الأعمال" : "WA Business"}
 			  </a>
 			</li>
-			{/* NEW: X (Twitter) */}
 			<li>
 			  <a href="https://x.com/operixsolutions?s=11" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-white transition-colors">
 				<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg>
@@ -166,6 +165,17 @@ export default function Footer() {
 		</div>
 
 	  </div>
+
+	  {/* ─── COPYRIGHT BAR ─── */}
+	  <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-6 border-t border-slate-700/50 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-400">
+		<p>
+		  &copy; {new Date().getFullYear()} OPERIX Solutions. {isAr ? "جميع الحقوق محفوظة." : "All rights reserved."}
+		</p>
+		<p className="font-mono opacity-60">
+		  SECURE ENTERPRISE INFRASTRUCTURE
+		</p>
+	  </div>
+	  
 	</footer>
   );
 }

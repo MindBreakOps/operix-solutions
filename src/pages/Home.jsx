@@ -19,13 +19,56 @@ export default function Home() {
 
   const brandName = "OPERIX Solutions";
 
-  const countryCoordinates = {
-	SA: { lat: 23.8859, lon: 45.0792, name: 'Saudi Arabia' },
-	AE: { lat: 23.4241, lon: 53.8478, name: 'United Arab Emirates' },
-	US: { lat: 37.0902, lon: -95.7129, name: 'United States' },
-	GB: { lat: 55.3781, lon: -3.4360, name: 'United Kingdom' },
-	EG: { lat: 26.8206, lon: 30.8025, name: 'Egypt' }
-  };
+ const countryCoordinates = {
+   // Middle East & Africa
+   "SA": { name: "Saudi Arabia", lat: 23.8859, lon: 45.0792 },
+   "SD": { name: "Sudan", lat: 12.8628, lon: 30.2176 },
+   "AE": { name: "United Arab Emirates", lat: 23.4241, lon: 53.8478 },
+   "EG": { name: "Egypt", lat: 26.8206, lon: 30.8025 },
+   "QA": { name: "Qatar", lat: 25.3548, lon: 51.1839 },
+   "KW": { name: "Kuwait", lat: 29.3117, lon: 47.4818 },
+   "BH": { name: "Bahrain", lat: 25.9304, lon: 50.6378 },
+   "OM": { name: "Oman", lat: 21.4735, lon: 55.9754 },
+   "JO": { name: "Jordan", lat: 30.5852, lon: 36.2384 },
+   "LB": { name: "Lebanon", lat: 33.8547, lon: 35.8623 },
+   "IQ": { name: "Iraq", lat: 33.2232, lon: 43.6793 },
+   "MA": { name: "Morocco", lat: 31.7917, lon: -7.0926 },
+   "DZ": { name: "Algeria", lat: 28.0339, lon: 1.6596 },
+   "TN": { name: "Tunisia", lat: 33.8869, lon: 9.5375 },
+   
+   // Global / Western
+   "US": { name: "United States", lat: 37.0902, lon: -95.7129 },
+   "GB": { name: "United Kingdom", lat: 55.3781, lon: -3.4360 },
+   "CA": { name: "Canada", lat: 56.1304, lon: -106.3468 },
+   "AU": { name: "Australia", lat: -25.2744, lon: 133.7751 },
+   "DE": { name: "Germany", lat: 51.1657, lon: 10.4515 },
+   "FR": { name: "France", lat: 46.2276, lon: 2.2137 },
+   
+   // Asia
+   "IN": { name: "India", lat: 20.5937, lon: 78.9629 },
+   "PK": { name: "Pakistan", lat: 30.3753, lon: 69.3451 },
+   "CN": { name: "China", lat: 35.8617, lon: 104.1954 },
+   "JP": { name: "Japan", lat: 36.2048, lon: 138.2529 },
+   "MY": { name: "Malaysia", lat: 4.2105, lon: 101.9758 },
+   "ID": { name: "Indonesia", lat: -0.7893, lon: 113.9213 },
+   "PL": { name: "Poland", lat: 51.9194, lon: 19.1451 },
+	 "CA": { name: "Canada", lat: 56.1304, lon: -106.3468 },
+	 "AD": { name: "Andorra", lat: 42.5063, lon: 1.5218 },
+	 "SG": { name: "Singapore", lat: 1.3521, lon: 103.8198 },
+	 "DE": { name: "Germany", lat: 51.1657, lon: 10.4515 },
+	 "RO": { name: "Romania", lat: 45.9432, lon: 24.9668 },
+	 "AE": { name: "United Arab Emirates", lat: 23.4241, lon: 53.8478 },
+	 "GB": { name: "United Kingdom", lat: 55.3781, lon: -3.4360 },
+	 "KR": { name: "South Korea", lat: 35.9078, lon: 127.7669 },
+	 "SA": { name: "Saudi Arabia", lat: 23.8859, lon: 45.0792 },
+	 "US": { name: "United States", lat: 37.0902, lon: -95.7129 },
+	 "FR": { name: "France", lat: 46.2276, lon: 2.2137 },
+	 "SD": { name: "Sudan", lat: 12.8628, lon: 30.2176 },
+   
+   // Europe
+   "RU": { name: "Russia", lat: 61.5240, lon: 105.3188 },
+   "TR": { name: "Turkey", lat: 38.9637, lon: 35.2433 }
+ };
 
   useEffect(() => {
 	if (!document.getElementById('leaflet-css')) {
@@ -74,16 +117,17 @@ useEffect(() => {
 		if (uniqueCount !== null) setVisitors(uniqueCount);
   
 		const { data: logs } = await supabase.from('operix_visitor_logs').select('ip_country');
-		if (logs) {
-		  const counts = logs.reduce((acc, curr) => {
-			if (curr.ip_country) {
-			  const code = curr.ip_country.toUpperCase();
+		  if (logs) {
+			const counts = logs.reduce((acc, curr) => {
+			  // This safely catches missing data just like the Admin Dashboard
+			  const code = curr.ip_country ? curr.ip_country.toUpperCase() : 'UNKNOWN';
 			  acc[code] = (acc[code] || 0) + 1;
-			}
-			return acc;
-		  }, {});
-		  setActiveCountries(counts);
-		}
+			  return acc;
+			}, {});
+			
+			// If your map uses this object directly, it will now include the exact same totals
+			setActiveCountries(counts); 
+		  }
 	  } catch (err) {
 		console.error("Telemetry fetch error:", err);
 	  }
