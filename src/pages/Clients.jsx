@@ -14,8 +14,8 @@ export default function Clients() {
 		const { data, error } = await supabase
 		  .from('operix_cms_content')
 		  .select('*')
-		  .eq('page', 'clients') // Only fetch items tagged as 'clients'
-		  .order('updated_at', { ascending: true }); // Oldest first (or false for newest)
+		  .eq('page', 'clients') 
+		  .order('updated_at', { ascending: true }); 
 
 		if (error) throw error;
 		if (data) setClientsData(data);
@@ -58,17 +58,19 @@ export default function Clients() {
 			{clientsData.map((client) => (
 			  <div key={client.id} className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl hover:border-[#d4af37]/50 transition-all duration-300 group flex flex-col">
 				
-				<div className="h-48 bg-[#1e2d40] relative overflow-hidden flex items-center justify-center p-8">
+				{/* FIXED: Changed to bg-white and added a subtle bottom border separator */}
+				<div className="h-48 bg-white border-b border-slate-100 relative overflow-hidden flex items-center justify-center p-8">
 				  <img 
 					src={client.media_url || '/placeholder.png'} 
 					alt={isAr ? client.title_ar : client.title_en} 
 					className="w-full h-full object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-transform duration-500" 
 					onError={(e) => { 
 					  e.target.style.display = 'none'; 
-					  e.target.parentElement.innerHTML = '<div class="w-full h-full flex items-center justify-center text-slate-500 font-black tracking-widest uppercase">LOGO</div>'; 
+					  e.target.parentElement.innerHTML = '<div class="w-full h-full flex items-center justify-center text-slate-400 font-black tracking-widest uppercase">LOGO</div>'; 
 					}}
 				  />
-				  <div className="absolute inset-0 bg-gradient-to-t from-[#1e2d40]/40 to-transparent opacity-60 pointer-events-none"></div>
+				  {/* Adjusted overlay to be a very light, subtle slate gradient instead of dark navy */}
+				  <div className="absolute inset-0 bg-gradient-to-t from-slate-100/60 to-transparent pointer-events-none"></div>
 				</div>
 
 				<div className="p-8 flex flex-col flex-grow relative bg-white">
