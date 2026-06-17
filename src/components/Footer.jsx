@@ -41,6 +41,7 @@ export default function Footer() {
 	{ to: '/',           label: isAr ? 'الرئيسية'              : 'Home' },
 	{ to: '/about',      label: isAr ? 'من نحن'                : 'About Us' },
 	{ to: '/services',   label: isAr ? 'خدماتنا'               : 'Our Services' },
+	{ to: '/vision',     label: isAr? 'رؤيتنا'                 :'Our Vision'},
 	{ to: '/projects',   label: isAr ? 'المشاريع والعمليات'    : 'Projects & Operations' },
 	{ to: '/clients',    label: isAr ? 'العملاء والشركاء'      : 'Clients & Partners' },
 	{ to: '/news',       label: isAr ? 'الأخبار'               : 'News' },
@@ -70,8 +71,8 @@ export default function Footer() {
 	{ href: 'https://www.threads.com/@operix.solutions',              Icon: AtSign,        label: isAr ? 'ثريدز'         : 'Threads',           color: 'hover:text-white' },
   ];
 
-  return (
-	<footer className="w-full font-sans" style={{ background: 'linear-gradient(180deg, #0d1826 0%, #0a1118 100%)' }}>
+return (
+  <footer className={`w-full ${isAr ? "font-['Cairo','Tajawal',sans-serif]" : "font-sans"}`} style={{ background: 'linear-gradient(180deg, #0d1826 0%, #0a1118 100%)' }}>
 
 	  {/* ─── GOLD RULE ─── */}
 	  <div className="w-full h-[2px]" style={{ background: 'linear-gradient(90deg, transparent 0%, #d4af37 30%, #f0d060 50%, #d4af37 70%, transparent 100%)' }} />
@@ -79,7 +80,7 @@ export default function Footer() {
 	  {/* ─── CLOUD PORTALS MARQUEE STRIP ─── */}
 	  <div className="w-full border-b border-white/5 bg-[#0a1118]">
 		<div className="max-w-7xl mx-auto px-6 lg:px-10 py-3 flex flex-wrap items-center gap-6 justify-center lg:justify-between">
-		  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#d4af37]/50 shrink-0">
+		  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#d4af37]/80 shrink-0">
 			{isAr ? 'البوابات السحابية المباشرة' : 'Live Cloud Portals'}
 		  </span>
 		  <div className="flex flex-wrap items-center gap-2">
@@ -91,8 +92,9 @@ export default function Footer() {
 				rel="noreferrer"
 				className="group flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/4 border border-white/8 hover:border-[#d4af37]/40 hover:bg-[#d4af37]/6 transition-all duration-200"
 			  >
-				<Icon size={12} className="text-[#d4af37]/60 group-hover:text-[#d4af37] transition-colors shrink-0" />
-				<span className="text-[10px] font-bold text-slate-400 group-hover:text-white tracking-wide transition-colors whitespace-nowrap">{label}</span>
+				<Icon size={12} className="text-[#d4af37]/80 group-hover:text-[#d4af37] transition-colors shrink-0" />
+				{/* FIXED: Brightened text-slate-400 to text-slate-200 */}
+				<span className="text-[10px] font-bold text-slate-200 group-hover:text-white tracking-wide transition-colors whitespace-nowrap">{label}</span>
 			  </a>
 			))}
 		  </div>
@@ -116,7 +118,8 @@ export default function Footer() {
 			  </div>
 			</div>
 
-			<p className="text-[12px] text-slate-400 leading-relaxed border-l-2 border-[#d4af37]/30 pl-3">
+			{/* FIXED: Brightened text-slate-400 to text-slate-200 */}
+			<p className="text-[12px] text-slate-200 leading-relaxed border-l-2 border-[#d4af37]/50 pl-3">
 			  {isAr
 				? 'مجموعة قيادة مؤسسية موحدة تنسق العمليات، المسارات الطبية، ودورات حياة رأس المال البشري في مركز تحكم واحد.'
 				: 'A unified enterprise command suite coordinating operations, medical workflows, and human capital life-cycles into a singular control core.'}
@@ -127,18 +130,20 @@ export default function Footer() {
 			  {contacts.map(({ email, loc, label }) => (
 				<div key={email} className="group">
 				  <div className="flex items-center gap-1.5 mb-0.5">
-					<span className="text-[8px] font-black uppercase tracking-[0.2em] text-[#d4af37]/60">{label}</span>
+					<span className="text-[8px] font-black uppercase tracking-[0.2em] text-[#d4af37]/80">{label}</span>
 				  </div>
+				  {/* FIXED: Brightened text-slate-300 to text-slate-100 */}
 				  <a
 					href={`mailto:${email}`}
-					className="flex items-center gap-2 text-[11px] font-mono text-slate-300 hover:text-[#d4af37] transition-colors group-hover:tracking-wide"
+					className="flex items-center gap-2 text-[11px] font-mono text-slate-100 hover:text-[#d4af37] transition-colors group-hover:tracking-wide"
 				  >
-					<Mail size={12} className="text-[#d4af37]/50 shrink-0" />
+					<Mail size={12} className="text-[#d4af37]/80 shrink-0" />
 					{email}
 				  </a>
 				  <div className="flex items-center gap-1.5 mt-0.5 pl-5">
-					<MapPin size={9} className="text-slate-600" />
-					<span className="text-[9px] font-bold uppercase tracking-wider text-slate-600">{loc}</span>
+					{/* FIXED: Brightened text-slate-600 to text-slate-400 */}
+					<MapPin size={9} className="text-slate-400" />
+					<span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">{loc}</span>
 				  </div>
 				</div>
 			  ))}
@@ -151,16 +156,17 @@ export default function Footer() {
 			  <h4 className="text-[9px] font-black uppercase tracking-[0.25em] text-[#d4af37] mb-1">
 				{isAr ? 'دليل الشركة' : 'CORPORATE DIRECTORY'}
 			  </h4>
-			  <div className="w-6 h-[1.5px] bg-[#d4af37]/40" />
+			  <div className="w-6 h-[1.5px] bg-[#d4af37]/60" />
 			</div>
 			<ul className="space-y-1.5">
 			  {corpNav.map(({ to, label }) => (
 				<li key={to}>
+				  {/* FIXED: Brightened text-slate-400 to text-slate-200 */}
 				  <Link
 					to={to}
-					className="group flex items-center gap-2 text-[12px] font-medium text-slate-400 hover:text-white transition-colors py-0.5"
+					className="group flex items-center gap-2 text-[12px] font-medium text-slate-200 hover:text-white transition-colors py-0.5"
 				  >
-					<ChevronRight size={10} className="text-[#d4af37]/30 group-hover:text-[#d4af37] transition-colors shrink-0" />
+					<ChevronRight size={10} className="text-[#d4af37]/50 group-hover:text-[#d4af37] transition-colors shrink-0" />
 					{label}
 				  </Link>
 				</li>
@@ -174,16 +180,17 @@ export default function Footer() {
 			  <h4 className="text-[9px] font-black uppercase tracking-[0.25em] text-[#d4af37] mb-1">
 				{isAr ? 'الإطار القانوني' : 'LEGAL FRAMEWORK'}
 			  </h4>
-			  <div className="w-6 h-[1.5px] bg-[#d4af37]/40" />
+			  <div className="w-6 h-[1.5px] bg-[#d4af37]/60" />
 			</div>
 			<ul className="space-y-1.5">
 			  {legal.map(({ to, label }) => (
 				<li key={label}>
+				  {/* FIXED: Brightened text-slate-400 to text-slate-200 */}
 				  <Link
 					to={to}
-					className="group flex items-center gap-2 text-[12px] font-medium text-slate-400 hover:text-white transition-colors py-0.5"
+					className="group flex items-center gap-2 text-[12px] font-medium text-slate-200 hover:text-white transition-colors py-0.5"
 				  >
-					<Shield size={10} className="text-[#d4af37]/30 group-hover:text-[#d4af37] transition-colors shrink-0" />
+					<Shield size={10} className="text-[#d4af37]/50 group-hover:text-[#d4af37] transition-colors shrink-0" />
 					{label}
 				  </Link>
 				</li>
@@ -191,12 +198,13 @@ export default function Footer() {
 			</ul>
 
 			{/* Compliance badge */}
-			<div className="mt-4 p-3 rounded-xl border border-[#d4af37]/15 bg-[#d4af37]/5">
+			<div className="mt-4 p-3 rounded-xl border border-[#d4af37]/30 bg-[#d4af37]/10">
 			  <div className="flex items-center gap-2 mb-1">
 				<Shield size={11} className="text-[#d4af37]" />
 				<span className="text-[9px] font-black uppercase tracking-widest text-[#d4af37]">ZATCA Verified</span>
 			  </div>
-			  <p className="text-[9px] text-slate-500 leading-snug">
+			  {/* FIXED: Brightened text-slate-500 to text-slate-300 */}
+			  <p className="text-[9px] text-slate-300 leading-snug">
 				{isAr ? 'متوافق مع المرحلة الثانية لهيئة الزكاة والدخل' : 'Phase 2 ZATCA e-invoicing compliant'}
 			  </p>
 			</div>
@@ -208,7 +216,7 @@ export default function Footer() {
 			  <h4 className="text-[9px] font-black uppercase tracking-[0.25em] text-[#d4af37] mb-1">
 				{isAr ? 'التواصل الاجتماعي' : 'SOCIAL CONNECT'}
 			  </h4>
-			  <div className="w-6 h-[1.5px] bg-[#d4af37]/40" />
+			  <div className="w-6 h-[1.5px] bg-[#d4af37]/60" />
 			</div>
 
 			<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -218,12 +226,14 @@ export default function Footer() {
 				  href={href}
 				  target="_blank"
 				  rel="noreferrer"
-				  className={`group flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/3 border border-white/6 hover:border-white/15 hover:bg-white/6 transition-all ${color}`}
+				  className={`group flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 hover:bg-white/10 transition-all ${color}`}
 				>
-				  <span className="shrink-0 text-slate-500 group-hover:scale-110 transition-transform">
+				  {/* FIXED: Brightened text-slate-500 to text-slate-300 */}
+				  <span className="shrink-0 text-slate-300 group-hover:scale-110 transition-transform">
 					<Icon />
 				  </span>
-				  <span className="text-[11px] font-semibold text-slate-400 group-hover:text-current transition-colors">
+				  {/* FIXED: Brightened text-slate-400 to text-slate-200 */}
+				  <span className="text-[11px] font-semibold text-slate-200 group-hover:text-current transition-colors">
 					{label}
 				  </span>
 				</a>
@@ -231,7 +241,7 @@ export default function Footer() {
 			</div>
 
 			{/* System status pill */}
-			<div className="mt-2 flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-900/20 border border-emerald-800/30">
+			<div className="mt-2 flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-900/40 border border-emerald-800/50">
 			  <span className="relative flex h-2 w-2 shrink-0">
 				<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
 				<span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -246,18 +256,20 @@ export default function Footer() {
 	  </div>
 
 	  {/* ─── COPYRIGHT BAR ─── */}
-	  <div className="border-t border-white/6">
+	  <div className="border-t border-white/10">
 		<div className="max-w-7xl mx-auto px-6 lg:px-10 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-		  <p className="text-[10px] font-medium text-slate-600">
+		  {/* FIXED: Brightened text-slate-600 to text-slate-400 */}
+		  <p className="text-[10px] font-medium text-slate-400">
 			&copy; {new Date().getFullYear()} OPERIX Solutions.{' '}
 			{isAr ? 'جميع الحقوق محفوظة.' : 'All rights reserved.'}
 		  </p>
 		  <div className="flex items-center gap-3">
-			<span className="text-[9px] font-black uppercase tracking-[0.25em] text-slate-700">
+			{/* FIXED: Brightened text-slate-700 to text-slate-400 */}
+			<span className="text-[9px] font-black uppercase tracking-[0.25em] text-slate-400">
 			  SECURE ENTERPRISE INFRASTRUCTURE
 			</span>
-			<span className="w-1.5 h-1.5 rounded-full bg-[#d4af37]/40" />
-			<Globe size={10} className="text-slate-700" />
+			<span className="w-1.5 h-1.5 rounded-full bg-[#d4af37]/60" />
+			<Globe size={10} className="text-slate-400" />
 		  </div>
 		</div>
 	  </div>

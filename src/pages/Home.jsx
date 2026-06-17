@@ -159,10 +159,10 @@ export default function Home() {
 	  if (!coords) return;
 	  const r = Math.min(6 + count * 1.5, 24);
 	  const circle = L.circleMarker([coords.lat, coords.lon], {
-		radius: r, fillColor: '#d4af37', color: '#fff',
+		radius: r, fillColor: '#c5a059', color: '#fff',
 		weight: 1.5, opacity: 0.9, fillOpacity: 0.75
 	  }).addTo(map);
-	  circle.bindPopup(`<b style="color:#1e2d40">${coords.name}</b><br/><span style="color:#d4af37;font-weight:700">${count} visits</span>`);
+	  circle.bindPopup(`<b style="color:#1e2d40">${coords.name}</b><br/><span style="color:#c5a059;font-weight:700">${count} visits</span>`);
 	});
   }, [mapReady, activeCountries]);
 
@@ -180,7 +180,7 @@ export default function Home() {
 	  url: 'https:///www.hris.operix-solutions.online'
 	},
 	{
-	  icon: <FileCheck size={20} />, title: 'OPERIX FMIS', accentColor: '#d4af37',
+	  icon: <FileCheck size={20} />, title: 'OPERIX FMIS', accentColor: '#c5a059',
 	  badge: isAr ? 'معتمد من هيئة الزكاة' : 'ZATCA PHASE 2',
 	  desc: isAr ? 'إدارة مالية مؤسسية متوافقة تماماً.' : 'Enterprise finance. Fully compliant. From quotes to ZATCA invoices.',
 	  url: 'https://www.fmis.operix-solutions.online'
@@ -200,7 +200,7 @@ export default function Home() {
 	  desc: isAr ? "إدارة شاملة للمرافق التجارية ومواقف السيارات الذكية." : "Comprehensive management of commercial facilities and smart parking grids."
 	},
 	{
-	  icon: <Car size={22} />, color: '#d4af37',
+	  icon: <Car size={22} />, color: '#c5a059',
 	  title: isAr ? "الفالي والفعاليات" : "VIP Valet & Events",
 	  desc: isAr ? "خدمات ركن السيارات لكبار الشخصيات وإدارة لوجستيات الفعاليات." : "Flawless VIP valet services and logistics management for large-scale events."
 	},
@@ -215,9 +215,9 @@ export default function Home() {
 	<div className="w-full bg-[#f8fafc] min-h-screen font-sans" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
 
 	  <style>{`
-		@keyframes gridPulse {
-		  0%, 100% { opacity: 0.03; }
-		  50% { opacity: 0.065; }
+		@keyframes gridPulseDark {
+		  0%, 100% { opacity: 0.05; }
+		  50% { opacity: 0.1; }
 		}
 		@keyframes floatGlow {
 		  0%, 100% { transform: translateY(0px) scale(1); opacity: 0.12; }
@@ -231,13 +231,13 @@ export default function Home() {
 		  from { opacity: 0; transform: translateY(-16px); }
 		  to { opacity: 1; transform: translateY(0); }
 		}
-		@keyframes shimmer {
-		  0% { background-position: -200% center; }
-		  100% { background-position: 200% center; }
-		}
 		@keyframes ping-slow {
 		  0% { transform: scale(1); opacity: 0.8; }
 		  100% { transform: scale(2.2); opacity: 0; }
+		}
+		@keyframes shimmerGold {
+		  0% { background-position: -200% center; }
+		  100% { background-position: 200% center; }
 		}
 		.hero-tag { animation: fadeSlideDown 0.6s cubic-bezier(0.22,1,0.36,1) 0.1s both; }
 		.hero-h1  { animation: fadeSlideUp 0.75s cubic-bezier(0.22,1,0.36,1) 0.2s both; }
@@ -249,94 +249,97 @@ export default function Home() {
 		.op-card { transition: all 0.3s cubic-bezier(0.22,1,0.36,1); }
 		.op-card:hover { transform: translateY(-3px); }
 		.cta-btn { transition: all 0.25s cubic-bezier(0.22,1,0.36,1); }
-		.cta-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(212,175,55,0.35); }
-		.shimmer-text {
-		  background: linear-gradient(90deg, #1e2d40 0%, #1e2d40 30%, #d4af37 50%, #1e2d40 70%, #1e2d40 100%);
-		  background-size: 200% auto;
-		  -webkit-background-clip: text;
-		  -webkit-text-fill-color: transparent;
-		  background-clip: text;
-		  animation: shimmer 4s linear infinite;
-		}
+		.cta-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(197, 160, 89, 0.35); }
 		.dot-ping::after {
 		  content: '';
 		  position: absolute;
 		  inset: 0;
 		  border-radius: 50%;
-		  background: #d4af37;
+		  background: #c5a059;
 		  animation: ping-slow 1.8s cubic-bezier(0,0,0.2,1) infinite;
+		}
+		/* ── PREMIUM GOLD TEXT EFFECT ── */
+		.premium-gold-text {
+		  background: linear-gradient(to right, #c5a059 0%, #f3de9a 40%, #c5a059 80%);
+		  background-size: 200% auto;
+		  color: transparent;
+		  -webkit-background-clip: text;
+		  background-clip: text;
+		  animation: shimmerGold 5s linear infinite;
 		}
 	  `}</style>
 
 	  {/* ── HERO ─────────────────────────────────────────────────── */}
-	  <div className="relative overflow-hidden bg-white border-b border-slate-200">
-		{/* Grid pattern */}
+	  <div className="relative overflow-hidden bg-[#1e2d40] border-b border-white/10">
 		<div className="absolute inset-0 pointer-events-none" style={{
-		  backgroundImage: 'linear-gradient(rgba(30,45,64,1) 1px, transparent 1px), linear-gradient(90deg, rgba(30,45,64,1) 1px, transparent 1px)',
+		  backgroundImage: 'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)',
 		  backgroundSize: '48px 48px',
-		  animation: 'gridPulse 6s ease-in-out infinite',
+		  animation: 'gridPulseDark 6s ease-in-out infinite',
 		}} />
-		{/* Glow orbs */}
+		
 		<div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full pointer-events-none"
-		  style={{ background: 'radial-gradient(ellipse, #d4af3730 0%, transparent 70%)', animation: 'floatGlow 7s ease-in-out infinite' }} />
+		  style={{ background: 'radial-gradient(ellipse, #c5a05920 0%, transparent 70%)', animation: 'floatGlow 7s ease-in-out infinite' }} />
 		<div className="absolute -bottom-20 -left-20 w-[340px] h-[340px] rounded-full pointer-events-none"
-		  style={{ background: 'radial-gradient(ellipse, #1e2d4020 0%, transparent 70%)', animation: 'floatGlow 9s ease-in-out infinite reverse' }} />
+		  style={{ background: 'radial-gradient(ellipse, #ffffff05 0%, transparent 70%)', animation: 'floatGlow 9s ease-in-out infinite reverse' }} />
 
-		<div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
-		  <div className="max-w-3xl" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
+		<div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 flex flex-col items-center">
+		  <div className="max-w-3xl mx-auto text-center" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
+			
 			{/* Tag */}
-			<div className="hero-tag inline-flex items-center gap-2 bg-[#d4af37]/10 border border-[#d4af37]/25 text-[#d4af37] px-4 py-1.5 rounded-full mb-6">
+			<div className="hero-tag inline-flex items-center gap-2 bg-[#c5a059]/10 border border-[#c5a059]/30 text-[#c5a059] px-4 py-1.5 rounded-full mb-6 shadow-[0_0_15px_rgba(197,160,89,0.15)]">
 			  <span className="relative w-2 h-2 flex-shrink-0">
-				<span className="dot-ping relative inline-block w-2 h-2 bg-[#d4af37] rounded-full" />
+				<span className="dot-ping relative inline-block w-2 h-2 bg-[#c5a059] rounded-full" />
 			  </span>
 			  <span className="text-[10px] font-black uppercase tracking-widest">
-				{isAr ? "الجيل القادم من البنية التشغيلية" : "Next-Gen Operational Infrastructure"}
+				{isAr ? "الجيل القادم من البنية التشغيلية" : "NEXT-GEN OPERATIONAL INFRASTRUCTURE"}
 			  </span>
 			</div>
 
 			{/* H1 */}
-			<h1 className="hero-h1 text-4xl md:text-5xl lg:text-[3.75rem] font-black tracking-tight leading-[1.08] mb-5 text-[#1e2d40]">
+			<h1 className="hero-h1 text-4xl md:text-5xl lg:text-[3.75rem] font-black tracking-tight leading-[1.08] mb-5 text-white">
 			  {isAr ? (
-				<>تمكين المنشآت الكبرى<br />عبر <span className="shimmer-text">{brandName}</span></>
+				<>تمكين المنشآت الكبرى<br />عبر <span className="premium-gold-text">{brandName}</span></>
 			  ) : (
-				<>Empowering Enterprises<br />with <span className="shimmer-text">{brandName}</span></>
+				<>Empowering Enterprises<br />with <span className="premium-gold-text">{brandName}</span></>
 			  )}
 			</h1>
 
-			<p className="hero-p text-sm md:text-base text-slate-500 font-medium leading-relaxed max-w-2xl mb-8">
+			{/* Paragraph */}
+			<p className="hero-p text-sm md:text-base text-slate-300 font-medium leading-relaxed max-w-2xl mx-auto mb-8">
 			  {isAr
 				? "نحن لا نكتفي ببناء الأنظمة الذكية فحسب، بل نوفر الكوادر الخبيرة لتشغيل وإدارة المرافق، مواقف السيارات، والفعاليات الكبرى على أرض الواقع."
 				: "We don't just build intelligent systems. We deploy expert personnel to run your facilities, parking grids, and large-scale events flawlessly on the ground."}
 			</p>
 
-			<div className="hero-cta flex flex-wrap gap-3">
+			{/* CTA Buttons */}
+			<div className="hero-cta flex flex-wrap justify-center gap-4">
 			  <button
 				onClick={() => navigate('/contact')}
-				className="cta-btn bg-[#1e2d40] text-white px-7 py-3.5 rounded-xl text-[11px] font-black tracking-widest uppercase inline-flex items-center gap-2 shadow-lg"
+				className="cta-btn bg-gradient-to-r from-[#c5a059] to-[#d4af37] hover:from-[#d4af37] hover:to-[#f3de9a] text-[#1e2d40] px-8 py-3.5 rounded-xl text-[11px] font-black tracking-widest uppercase inline-flex items-center gap-2 shadow-lg"
 			  >
 				{isAr ? "طلب عرض تجريبي" : "SCHEDULE A DEMO"}
 				{isAr ? <ArrowLeft size={15} /> : <ArrowRight size={15} />}
 			  </button>
 			  <button
 				onClick={() => navigate('/about')}
-				className="cta-btn bg-white border border-slate-200 text-[#1e2d40] px-7 py-3.5 rounded-xl text-[11px] font-black tracking-widest uppercase inline-flex items-center gap-2 shadow-sm hover:border-[#d4af37]"
+				className="cta-btn bg-white/5 border border-white/20 hover:bg-white/10 hover:border-[#c5a059] text-white px-8 py-3.5 rounded-xl text-[11px] font-black tracking-widest uppercase inline-flex items-center gap-2 shadow-sm"
 			  >
 				{isAr ? "تعرف علينا" : "LEARN MORE"}
 			  </button>
 			</div>
 
 			{/* Stat bar */}
-			<div className="hero-stats mt-10 flex flex-wrap gap-6">
+			<div className="hero-stats mt-14 flex flex-wrap justify-center gap-10">
 			  {[
-				{ label: isAr ? 'زيارة موثقة' : 'Total Hits', val: hits },
-				{ label: isAr ? 'زائر فريد' : 'Unique Visitors', val: visitors },
-				{ label: isAr ? 'دولة نشطة' : 'Active Countries', val: Object.keys(activeCountries).length },
+				{ label: isAr ? 'زيارة موثقة' : 'TOTAL HITS', val: hits },
+				{ label: isAr ? 'زائر فريد' : 'UNIQUE VISITORS', val: visitors },
+				{ label: isAr ? 'دولة نشطة' : 'ACTIVE COUNTRIES', val: Object.keys(activeCountries).length },
 			  ].map((s, i) => (
-				<div key={i} className="flex flex-col">
-				  <span className="text-2xl font-black text-[#1e2d40] tabular-nums">
+				<div key={i} className="flex flex-col items-center">
+				  <span className="text-3xl font-black text-white tabular-nums">
 					<Counter target={s.val} />
 				  </span>
-				  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{s.label}</span>
+				  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">{s.label}</span>
 				</div>
 			  ))}
 			</div>
@@ -353,8 +356,8 @@ export default function Home() {
 			{/* Operations Panel */}
 			<div className="lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-7 md:p-9 shadow-sm flex flex-col">
 			  <div className="flex items-center gap-2 mb-1">
-				<Zap size={16} className="text-[#d4af37]" />
-				<span className="text-[10px] font-black uppercase tracking-widest text-[#d4af37]">
+				<Zap size={16} className="text-[#c5a059]" />
+				<span className="text-[10px] font-black uppercase tracking-widest text-[#c5a059]">
 				  {isAr ? "الكفاءة التشغيلية" : "Operational Excellence"}
 				</span>
 			  </div>
@@ -368,7 +371,7 @@ export default function Home() {
 			  </p>
 			  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-grow">
 				{opCards.map((card, i) => (
-				  <div key={i} className="op-card bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col items-start hover:bg-white hover:border-[#d4af37]/30 hover:shadow-md cursor-default">
+				  <div key={i} className="op-card bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col items-start hover:bg-white hover:border-[#c5a059]/30 hover:shadow-md cursor-default">
 					<div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 flex-shrink-0"
 					  style={{ backgroundColor: card.color + '15', color: card.color }}>
 					  {card.icon}
@@ -384,10 +387,10 @@ export default function Home() {
 			<div className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col">
 			  <div className="flex items-center justify-between mb-4">
 				<div className="flex items-center gap-2">
-				  <Globe2 size={14} className="text-[#d4af37]" />
-				  <span className="text-[10px] font-black uppercase tracking-widest text-[#d4af37]">
+				  <Globe2 size={14} className="text-[#c5a059]" />
+				  <span className="text-[10px] font-black uppercase tracking-widest text-[#c5a059]">
 					{isAr ? "الخريطة الحية" : "Live Signal Map"}
-				  </span>
+				</span>
 				</div>
 				<div className="flex gap-2">
 				  <span className="text-[10px] font-black text-[#1e2d40] bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-lg">
@@ -411,7 +414,7 @@ export default function Home() {
 		  <Reveal className="mb-7">
 			<div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2">
 			  <div>
-				<span className="text-[10px] font-black uppercase tracking-widest text-[#d4af37] block mb-1">
+				<span className="text-[10px] font-black uppercase tracking-widest text-[#c5a059] block mb-1">
 				  {isAr ? "المنظومة السحابية" : "Cloud Ecosystem"}
 				</span>
 				<h2 className="text-2xl font-black font-serif text-[#1e2d40]">
@@ -471,7 +474,7 @@ export default function Home() {
 		  <div className="pt-2 border-t border-slate-200">
 			<div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 mb-7">
 			  <div>
-				<span className="text-[10px] font-black uppercase tracking-widest text-[#d4af37] block mb-1">
+				<span className="text-[10px] font-black uppercase tracking-widest text-[#c5a059] block mb-1">
 				  {isAr ? "التقييمات الموثقة" : "Verified Reviews"}
 				</span>
 				<h2 className="text-2xl font-black font-serif text-[#1e2d40]">
@@ -493,12 +496,12 @@ export default function Home() {
 		  <div className="relative overflow-hidden bg-[#1e2d40] rounded-2xl p-8 md:p-12 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
 			{/* Background detail */}
 			<div className="absolute -right-16 -top-16 w-64 h-64 rounded-full pointer-events-none"
-			  style={{ background: 'radial-gradient(ellipse, #d4af3718 0%, transparent 70%)' }} />
+			  style={{ background: 'radial-gradient(ellipse, #c5a05918 0%, transparent 70%)' }} />
 			<div className="absolute bottom-0 left-1/4 w-px h-full pointer-events-none"
-			  style={{ background: 'linear-gradient(180deg, transparent, #d4af3718, transparent)' }} />
+			  style={{ background: 'linear-gradient(180deg, transparent, #c5a05918, transparent)' }} />
 
 			<div className="relative z-10 text-center md:text-left" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
-			  <div className="inline-flex items-center gap-2 bg-[#d4af37]/15 border border-[#d4af37]/25 text-[#d4af37] px-3 py-1 rounded-full mb-3">
+			  <div className="inline-flex items-center gap-2 bg-[#c5a059]/15 border border-[#c5a059]/25 text-[#c5a059] px-3 py-1 rounded-full mb-3">
 				<TrendingUp size={12} />
 				<span className="text-[10px] font-black uppercase tracking-widest">
 				  {isAr ? "ارفع كفاءة منشأتك" : "Elevate Your Enterprise"}
@@ -516,7 +519,7 @@ export default function Home() {
 
 			<button
 			  onClick={() => navigate('/contact')}
-			  className="cta-btn shrink-0 bg-[#d4af37] hover:bg-[#f0cb55] text-[#1e2d40] px-8 py-4 rounded-xl text-[11px] font-black uppercase tracking-widest shadow-lg whitespace-nowrap relative z-10 inline-flex items-center gap-2"
+			  className="cta-btn shrink-0 bg-gradient-to-r from-[#c5a059] to-[#d4af37] hover:from-[#d4af37] hover:to-[#f3de9a] text-[#1e2d40] px-8 py-4 rounded-xl text-[11px] font-black uppercase tracking-widest shadow-lg whitespace-nowrap relative z-10 inline-flex items-center gap-2"
 			>
 			  {isAr ? "طلب العرض الآن" : "SCHEDULE A DEMO"}
 			  {isAr ? <ArrowLeft size={15} /> : <ArrowRight size={15} />}

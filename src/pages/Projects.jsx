@@ -49,7 +49,7 @@ export default function Projects() {
 		  descAr: 'مركز إداري رفيع المستوى لاعتمادات الإدارة التنفيذية، وعمليات تقنية المعلومات، وإدارة هويات الوصول عبر المؤسسة.'
 		},
 		{ 
-		  url: '/projects/ops/ops-dash.png', 
+		  url: '/projects/ops/ops-dash.mp4', 
 		  titleEn: 'Enterprise Operations Matrix', 
 		  titleAr: 'مصفوفة عمليات المؤسسة',
 		  descEn: 'The central nervous system of the operations floor. Provides direct access to ANPR scanners, task hubs, inventory control, and fleet tracking modules.',
@@ -651,15 +651,29 @@ export default function Projects() {
 			  {/* LEFT: Image viewer */}
 			  <div className="relative lg:flex-1 bg-[#080d12] rounded-2xl border border-slate-800 overflow-hidden flex flex-col min-h-[280px] lg:min-h-0">
 				
-				{/* Image with fade animation on change */}
+				{/* Media with fade animation on change */}
 				<div className="flex-1 flex items-center justify-center p-4 relative group">
-				  <img
-					key={currentImgIndex}
-					src={activePreview.previews[currentImgIndex].url}
-					alt="System Preview"
-					className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
-					style={{ animation: 'imgFade 0.25s ease both' }}
-				  />
+				  {/* MODIFIED: Check if URL is an mp4 video */}
+				  {activePreview.previews[currentImgIndex].url.endsWith('.mp4') ? (
+					<video
+					  key={`vid-${currentImgIndex}`}
+					  src={activePreview.previews[currentImgIndex].url}
+					  controls
+					  autoPlay
+					  muted
+					  loop
+					  className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+					  style={{ animation: 'imgFade 0.25s ease both' }}
+					/>
+				  ) : (
+					<img
+					  key={`img-${currentImgIndex}`}
+					  src={activePreview.previews[currentImgIndex].url}
+					  alt="System Preview"
+					  className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+					  style={{ animation: 'imgFade 0.25s ease both' }}
+					/>
+				  )}
 				  {/* Hover arrows */}
 				  <button
 					onClick={prevImg}
@@ -683,7 +697,12 @@ export default function Projects() {
 					  onClick={() => setCurrentImgIndex(i)}
 					  className={`shrink-0 w-16 h-10 rounded-md overflow-hidden border-2 transition-all duration-200 ${i === currentImgIndex ? 'border-[#d4af37] opacity-100 scale-105 shadow-lg shadow-[#d4af37]/20' : 'border-slate-700 opacity-40 hover:opacity-70 hover:border-slate-500'}`}
 					>
-					  <img src={p.url} alt="" className="w-full h-full object-cover object-top" />
+					  {/* MODIFIED: Check if thumbnail URL is an mp4 video */}
+					  {p.url.endsWith('.mp4') ? (
+						<video src={p.url} className="w-full h-full object-cover object-top" muted />
+					  ) : (
+						<img src={p.url} alt="" className="w-full h-full object-cover object-top" />
+					  )}
 					</button>
 				  ))}
 				</div>
