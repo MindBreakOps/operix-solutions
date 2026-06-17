@@ -3,8 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { 
   Users, Settings, Activity, CreditCard, ExternalLink, 
   Building2, Globe, Landmark, ShieldCheck, 
-  ImageIcon, X, ChevronRight, ChevronLeft, Info,
-  Heart, Stethoscope, FlaskConical, Syringe, Building
+  ImageIcon, X, ChevronRight, ChevronLeft, Info
 } from 'lucide-react';
 
 export default function Projects() {
@@ -13,6 +12,11 @@ export default function Projects() {
   // States for the Preview Modal Carousel
   const [activePreview, setActivePreview] = useState(null);
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
+
+  // ─── SWIPE GESTURE ENGINE STATES ───
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const minSwipeDistance = 50;
 
   // Prevent background scrolling when modal is open
   useEffect(() => {
@@ -419,6 +423,30 @@ export default function Projects() {
 	return () => window.removeEventListener('keydown', onKey);
   }, [activePreview, nextImg, prevImg]);
 
+  // ─── SWIPE GESTURE HANDLERS ───
+  const handleTouchStart = (e) => {
+	setTouchEnd(null);
+	setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+	setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+	if (!touchStart || !touchEnd) return;
+	const distance = touchStart - touchEnd;
+	const isLeftSwipe = distance > minSwipeDistance;
+	const isRightSwipe = distance < -minSwipeDistance;
+	
+	if (isLeftSwipe) {
+	  nextImg();
+	}
+	if (isRightSwipe) {
+	  prevImg();
+	}
+  };
+
   return (
 	<div className="projects-wrapper w-full px-6 py-12 space-y-20 font-sans">
 	  
@@ -604,7 +632,7 @@ export default function Projects() {
 		</div>
 	  </section>
 
-	  {/* ─── UPGRADED PREVIEW MODAL ─── */}
+	  {/* ─── UPGRADED PREVIEW MODAL (TOUCH-FRIENDLY & SWIPE ENABLED) ─── */}
 	  {activePreview && activePreview.previews && activePreview.previews.length > 0 && (
 		<div
 		  className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 lg:p-8"
@@ -648,12 +676,17 @@ export default function Projects() {
 			{/* ─── MAIN CONTENT ─── */}
 			<div className="flex flex-col lg:flex-row gap-3 flex-1 min-h-0">
 
-			  {/* LEFT: Image viewer */}
+			  {/* LEFT: Image viewer (SWIPE ENABLED) */}
 			  <div className="relative lg:flex-1 bg-[#080d12] rounded-2xl border border-slate-800 overflow-hidden flex flex-col min-h-[280px] lg:min-h-0">
 				
-				{/* Media with fade animation on change */}
-				<div className="flex-1 flex items-center justify-center p-4 relative group">
-				  {/* MODIFIED: Check if URL is an mp4 video */}
+				{/* Media Wrapper with Touch Handlers */}
+				<div 
+				  className="flex-1 flex items-center justify-center p-4 relative group cursor-grab active:cursor-grabbing"
+				  onTouchStart={handleTouchStart}
+				  onTouchMove={handleTouchMove}
+				  onTouchEnd={handleTouchEnd}
+				>
+				  {/* Check if URL is an mp4 video */}
 				  {activePreview.previews[currentImgIndex].url.endsWith('.mp4') ? (
 					<video
 					  key={`vid-${currentImgIndex}`}
@@ -662,7 +695,7 @@ export default function Projects() {
 					  autoPlay
 					  muted
 					  loop
-					  className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+					  className="max-w-full max-h-full object-contain rounded-lg shadow-2xl pointer-events-auto"
 					  style={{ animation: 'imgFade 0.25s ease both' }}
 					/>
 				  ) : (
@@ -670,20 +703,23 @@ export default function Projects() {
 					  key={`img-${currentImgIndex}`}
 					  src={activePreview.previews[currentImgIndex].url}
 					  alt="System Preview"
-					  className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+					  className="max-w-full max-h-full object-contain rounded-lg shadow-2xl pointer-events-none"
 					  style={{ animation: 'imgFade 0.25s ease both' }}
 					/>
 				  )}
-				  {/* Hover arrows */}
+				  
+				  {/* Left Navigation Arrow (Always visible on mobile, hide on hover for desktop) */}
 				  <button
-					onClick={prevImg}
-					className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-[#0f1621]/90 hover:bg-[#d4af37] text-white rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 border border-slate-700 hover:border-[#d4af37] shadow-xl"
+					onClick={(e) => { e.stopPropagation(); prevImg(); }}
+					className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-[#0f1621]/90 hover:bg-[#d4af37] text-white rounded-full flex items-center justify-center transition-all opacity-100 lg:opacity-0 lg:group-hover:opacity-100 border border-slate-700 hover:border-[#d4af37] shadow-xl z-10"
 				  >
 					<ChevronLeft size={20} />
 				  </button>
+				  
+				  {/* Right Navigation Arrow (Always visible on mobile, hide on hover for desktop) */}
 				  <button
-					onClick={nextImg}
-					className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-[#0f1621]/90 hover:bg-[#d4af37] text-white rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 border border-slate-700 hover:border-[#d4af37] shadow-xl"
+					onClick={(e) => { e.stopPropagation(); nextImg(); }}
+					className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-[#0f1621]/90 hover:bg-[#d4af37] text-white rounded-full flex items-center justify-center transition-all opacity-100 lg:opacity-0 lg:group-hover:opacity-100 border border-slate-700 hover:border-[#d4af37] shadow-xl z-10"
 				  >
 					<ChevronRight size={20} />
 				  </button>
@@ -697,11 +733,11 @@ export default function Projects() {
 					  onClick={() => setCurrentImgIndex(i)}
 					  className={`shrink-0 w-16 h-10 rounded-md overflow-hidden border-2 transition-all duration-200 ${i === currentImgIndex ? 'border-[#d4af37] opacity-100 scale-105 shadow-lg shadow-[#d4af37]/20' : 'border-slate-700 opacity-40 hover:opacity-70 hover:border-slate-500'}`}
 					>
-					  {/* MODIFIED: Check if thumbnail URL is an mp4 video */}
+					  {/* Check if thumbnail URL is an mp4 video */}
 					  {p.url.endsWith('.mp4') ? (
-						<video src={p.url} className="w-full h-full object-cover object-top" muted />
+						<video src={p.url} className="w-full h-full object-cover object-top pointer-events-none" muted />
 					  ) : (
-						<img src={p.url} alt="" className="w-full h-full object-cover object-top" />
+						<img src={p.url} alt="" className="w-full h-full object-cover object-top pointer-events-none" />
 					  )}
 					</button>
 				  ))}
