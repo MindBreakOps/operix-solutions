@@ -19,6 +19,7 @@ export default function Navbar() {
 	{ path: '/clients', label: t.navClients || 'Clients & Partners' },
 	{ path: '/news', label: t.navNews || 'News' },
 	{ path: '/contact', label: t.navContact || 'Contact' },
+	{ path: '/Legal', label: t.navLegal || 'Legal' },
   ];
 
   return (
