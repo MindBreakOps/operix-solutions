@@ -40,7 +40,14 @@ function Reveal({ as: Tag = 'div', delay = 0, className = '', children, style = 
 export default function Vision() {
   const { isAr } = useLanguage();
 
-  // The overarching philosophies directly attributed to the founders
+  // ─── UNIFIED TOUCH & HOVER STATE ENGINE ───
+  const [activeEntity, setActiveEntity] = useState(null);
+
+  const handleInteraction = (id) => setActiveEntity(id);
+  const clearInteraction = () => setActiveEntity(null);
+  const toggleInteraction = (id) => setActiveEntity(prev => prev === id ? null : id);
+
+  // ─── DATA ───
   const philosophies = [
 	{
 	  title: isAr ? "الدائرة المتكاملة" : "The Integrated Circle",
@@ -150,9 +157,8 @@ export default function Vision() {
 		}
 	  `}</style>
 
-	  {/* ─── HERO SECTION (DARK NAVY TO MATCH NAVBAR) ──────────── */}
+	  {/* ─── HERO SECTION ─────────────────────────── */}
 	  <div className="relative pt-32 pb-24 bg-[#1e2d40] border-b-4 border-[#d4af37] overflow-hidden">
-		{/* Adjusted background glow for dark mode */}
 		<div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-[#d4af37] rounded-full blur-[120px] opacity-20 pointer-events-none" style={{ animation: 'floatGlowDark 8s ease-in-out infinite' }} />
 		
 		<div className="relative z-10 max-w-6xl mx-auto px-4 text-center">
@@ -183,7 +189,7 @@ export default function Vision() {
 		</div>
 	  </div>
 
-	  {/* ─── THE GUIDING PHILOSOPHIES (WITH FOUNDER NAMES) ─────── */}
+	  {/* ─── THE GUIDING PHILOSOPHIES (TOUCH OPTIMIZED) ────────── */}
 	  <div className="max-w-7xl mx-auto px-4 py-24">
 		<Reveal>
 		  <div className="text-center mb-16">
@@ -195,77 +201,103 @@ export default function Vision() {
 		</Reveal>
 
 		<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-		  {philosophies.map((phil, idx) => (
-			<Reveal key={idx} delay={idx * 200}>
-			  <div className="bg-white border border-slate-200 rounded-3xl p-10 shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col group relative overflow-hidden">
-				<div className={`w-16 h-16 rounded-2xl ${phil.bgColor} ${phil.color} flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300`}>
-				  {phil.icon}
-				</div>
-				
-				<h4 className={`text-[11px] font-black uppercase tracking-widest mb-2 ${phil.color}`}>
-				  {phil.subtitle}
-				</h4>
-				<h3 className="text-3xl font-black text-[#1e2d40] mb-4">
-				  {phil.title}
-				</h3>
-				<p className="text-slate-500 font-medium leading-relaxed text-lg flex-grow mb-10">
-				  {phil.desc}
-				</p>
-
-				{/* Founder Attribution Footer */}
-				<div className="mt-auto pt-6 border-t border-slate-100 flex items-center justify-between">
-				  <div>
-					<div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">
-					  {phil.founderRole}
-					</div>
-					<div className="text-sm font-bold text-[#1e2d40]">
-					  {phil.founder}
-					</div>
-				  </div>
-				  <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-[#1e2d40] font-black text-xs shadow-sm">
-					{phil.initials}
-				  </div>
-				</div>
-
-			  </div>
-			</Reveal>
-		  ))}
-		</div>
-	  </div>
-
-	  {/* ─── GLOBAL NODES (HQ & REGIONAL) ──────────────────────── */}
-	  <div className="bg-white py-24 border-y border-slate-200">
-		<div className="max-w-7xl mx-auto px-4">
-		  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-			{hqData.map((hq, idx) => (
+		  {philosophies.map((phil, idx) => {
+			const isActive = activeEntity === `phil-${idx}`;
+			return (
 			  <Reveal key={idx} delay={idx * 200}>
-				<div className="bg-[#f8fafc] border border-slate-200 rounded-3xl p-8 shadow-sm hover:shadow-md hover:border-[#d4af37]/50 transition-all duration-300">
-				  <div className="flex items-start justify-between mb-8">
-					<div>
-					  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">{hq.title}</div>
-					  <h3 className="text-2xl font-black text-[#1e2d40]">{hq.entity}</h3>
-					</div>
-					<div className={`w-12 h-12 rounded-2xl ${hq.badgeColor} ${hq.iconColor} flex items-center justify-center shadow-md`}>
-					  {hq.icon}
-					</div>
+				<div 
+				  onMouseEnter={() => handleInteraction(`phil-${idx}`)}
+				  onMouseLeave={clearInteraction}
+				  onClick={() => toggleInteraction(`phil-${idx}`)}
+				  className={`bg-white border rounded-3xl p-10 h-full flex flex-col relative overflow-hidden cursor-pointer transition-all duration-500
+					${isActive ? 'shadow-[0_20px_40px_rgba(212,175,55,0.15)] border-[#d4af37]/60 -translate-y-2' : 'shadow-sm border-slate-200'}
+				  `}
+				>
+				  {/* Subtle Background Glow on Active/Touch */}
+				  <div className={`absolute inset-0 transition-opacity duration-500 pointer-events-none ${isActive ? 'opacity-100' : 'opacity-0'}`} 
+					   style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.05) 0%, transparent 100%)' }} />
+
+				  <div className={`w-16 h-16 rounded-2xl ${phil.bgColor} ${phil.color} flex items-center justify-center mb-8 transition-transform duration-500 ease-out
+					${isActive ? 'scale-110' : 'scale-100'}
+				  `}>
+					{phil.icon}
 				  </div>
 				  
-				  <p className="text-slate-600 font-medium leading-relaxed mb-8 h-20">
-					{hq.desc}
+				  <h4 className={`text-[11px] font-black uppercase tracking-widest mb-2 ${phil.color}`}>
+					{phil.subtitle}
+				  </h4>
+				  <h3 className="text-3xl font-black text-[#1e2d40] mb-4 relative z-10">
+					{phil.title}
+				  </h3>
+				  <p className="text-slate-500 font-medium leading-relaxed text-lg flex-grow mb-10 relative z-10">
+					{phil.desc}
 				  </p>
-				  
-				  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500">
-					<MapPin size={14} className="text-[#d4af37]" />
-					{hq.city}
+
+				  <div className="mt-auto pt-6 border-t border-slate-100 flex items-center justify-between relative z-10">
+					<div>
+					  <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">
+						{phil.founderRole}
+					  </div>
+					  <div className="text-sm font-bold text-[#1e2d40]">
+						{phil.founder}
+					  </div>
+					</div>
+					<div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-[#1e2d40] font-black text-xs shadow-sm">
+					  {phil.initials}
+					</div>
 				  </div>
 				</div>
 			  </Reveal>
-			))}
+			);
+		  })}
+		</div>
+	  </div>
+
+	  {/* ─── GLOBAL NODES (TOUCH OPTIMIZED) ────────────────────── */}
+	  <div className="bg-white py-24 border-y border-slate-200">
+		<div className="max-w-7xl mx-auto px-4">
+		  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+			{hqData.map((hq, idx) => {
+			  const isActive = activeEntity === `hq-${idx}`;
+			  return (
+				<Reveal key={idx} delay={idx * 200}>
+				  <div 
+					onMouseEnter={() => handleInteraction(`hq-${idx}`)}
+					onMouseLeave={clearInteraction}
+					onClick={() => toggleInteraction(`hq-${idx}`)}
+					className={`bg-[#f8fafc] border rounded-3xl p-8 cursor-pointer transition-all duration-500
+					  ${isActive ? 'shadow-lg border-[#d4af37]/50 -translate-y-1 bg-white' : 'shadow-sm border-slate-200'}
+					`}
+				  >
+					<div className="flex items-start justify-between mb-8">
+					  <div>
+						<div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">{hq.title}</div>
+						<h3 className="text-2xl font-black text-[#1e2d40]">{hq.entity}</h3>
+					  </div>
+					  <div className={`w-12 h-12 rounded-2xl ${hq.badgeColor} ${hq.iconColor} flex items-center justify-center transition-all duration-500
+						${isActive ? 'scale-110 shadow-md' : 'shadow-sm'}
+					  `}>
+						{hq.icon}
+					  </div>
+					</div>
+					
+					<p className="text-slate-600 font-medium leading-relaxed mb-8 h-20">
+					  {hq.desc}
+					</p>
+					
+					<div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500">
+					  <MapPin size={14} className="text-[#d4af37]" />
+					  {hq.city}
+					</div>
+				  </div>
+				</Reveal>
+			  );
+			})}
 		  </div>
 		</div>
 	  </div>
 
-	  {/* ─── EXPANDED PILLARS GRID ─────────────────────────────── */}
+	  {/* ─── PILLARS GRID (TOUCH OPTIMIZED) ────────────────────── */}
 	  <div className="py-24">
 		<div className="max-w-7xl mx-auto px-4">
 		  <Reveal>
@@ -278,20 +310,31 @@ export default function Vision() {
 		  </Reveal>
 
 		  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-			{pillars.map((pillar, idx) => (
-			  <Reveal key={idx} delay={idx * 100}>
-				<div className="bg-white p-8 rounded-2xl border border-slate-200 hover:border-[#d4af37]/50 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 group h-full flex flex-col">
-				  {/* Styled like a Phosphor duotone icon */}
-				  <div className="w-14 h-14 bg-[#d4af37]/10 text-[#d4af37] rounded-xl flex items-center justify-center mb-6 group-hover:bg-[#d4af37] group-hover:text-white transition-colors duration-300">
-					{pillar.icon}
+			{pillars.map((pillar, idx) => {
+			  const isActive = activeEntity === `pillar-${idx}`;
+			  return (
+				<Reveal key={idx} delay={idx * 100}>
+				  <div 
+					onMouseEnter={() => handleInteraction(`pillar-${idx}`)}
+					onMouseLeave={clearInteraction}
+					onClick={() => toggleInteraction(`pillar-${idx}`)}
+					className={`bg-white p-8 rounded-2xl border cursor-pointer h-full flex flex-col transition-all duration-500 ease-out
+					  ${isActive ? 'border-[#d4af37]/50 shadow-[0_15px_35px_rgba(212,175,55,0.15)] -translate-y-1.5' : 'border-slate-200 shadow-sm'}
+					`}
+				  >
+					<div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 transition-all duration-500 ease-out
+					  ${isActive ? 'bg-[#d4af37] text-white shadow-lg scale-110 -rotate-3' : 'bg-[#d4af37]/10 text-[#d4af37]'}
+					`}>
+					  {pillar.icon}
+					</div>
+					<h3 className="text-lg font-bold text-[#1e2d40] mb-3">{pillar.title}</h3>
+					<p className="text-slate-500 text-sm leading-relaxed font-medium flex-grow">
+					  {pillar.desc}
+					</p>
 				  </div>
-				  <h3 className="text-lg font-bold text-[#1e2d40] mb-3">{pillar.title}</h3>
-				  <p className="text-slate-500 text-sm leading-relaxed font-medium flex-grow">
-					{pillar.desc}
-				  </p>
-				</div>
-			  </Reveal>
-			))}
+				</Reveal>
+			  );
+			})}
 		  </div>
 		</div>
 	  </div>
