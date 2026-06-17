@@ -48,7 +48,7 @@ export default function Projects() {
 		  descAr: 'مركز إداري رفيع المستوى لاعتمادات الإدارة التنفيذية، وعمليات تقنية المعلومات، وإدارة هويات الوصول عبر المؤسسة.'
 		},
 		{ 
-		  url: '/projects/ops/ops-dash.jpg', 
+		  url: '/projects/ops/ops-dash.png', 
 		  titleEn: 'Enterprise Operations Matrix', 
 		  titleAr: 'مصفوفة عمليات المؤسسة',
 		  descEn: 'The central nervous system of the operations floor. Provides direct access to ANPR scanners, task hubs, inventory control, and fleet tracking modules.',
@@ -75,14 +75,14 @@ export default function Projects() {
 	  ),
 	  previews: [
 		{ 
-		  url: '/projects/fmis/dash-fmis.jpg', 
+		  url: '/projects/fmis/dash-fmis.png', 
 		  titleEn: 'Executive Dashboard & P&L', 
 		  titleAr: 'لوحة القيادة التنفيذية والأرباح والخسائر',
 		  descEn: 'Real-time overview of profit and loss, revenue pipelines, and pending liabilities. Provides C-level executives with immediate financial health metrics.',
 		  descAr: 'نظرة عامة لحظية على الأرباح والخسائر، وتدفقات الإيرادات، والالتزامات المعلقة. توفر للإدارة التنفيذية مؤشرات فورية للصحة المالية.'
 		},
 		{ 
-		  url: '/projects/fmis/opx-ai-fmis.jpg', 
+		  url: '/projects/fmis/opx-ai-fmis.png', 
 		  titleEn: 'OPERIX AI Copilot Integration', 
 		  titleAr: 'مساعد الذكاء الاصطناعي المدمج',
 		  descEn: 'Embedded AI assistant that analyzes financial databases, automates complex module navigation, and generates live telemetry reports on command.',
@@ -96,7 +96,7 @@ export default function Projects() {
 		  descAr: 'أداة متطورة لإنشاء العروض ترتبط مباشرة بنظام إدارة علاقات العملاء (CRM)، مما يتيح صياغة واعتماد وإرسال التقديرات المالية للشركات بسرعة.'
 		},
 		{ 
-		  url: '/projects/fmis/help-fmis.jpg', 
+		  url: '/projects/fmis/help-fmis.png', 
 		  titleEn: 'System Architecture & Help Matrix', 
 		  titleAr: 'هيكلية النظام والمساعدة الذكية',
 		  descEn: 'Comprehensive, built-in documentation and mission-control mapping that guides users through GL, WBS, and Payroll engine workflows.',
@@ -123,49 +123,49 @@ export default function Projects() {
 	  ),
 	  previews: [
 		{ 
-		  url: '/projects/hris/ai-scanner-hris.jpg', 
+		  url: '/projects/hris/ai-scanner-hris.png', 
 		  titleEn: 'AI-Powered CV Scanner', 
 		  titleAr: 'الماسح الضوئي للسير الذاتية بالذكاء الاصطناعي',
 		  descEn: 'Automated recruitment engine utilizing Edge AI to instantly parse, score, and extract data from applicant CVs, mapping them directly to open requisitions.',
 		  descAr: 'محرك توظيف آلي يعتمد على الذكاء الاصطناعي الطرفي لقراءة السير الذاتية واستخراج البيانات منها وتقييمها فورياً، مع ربطها مباشرة بالوظائف الشاغرة.'
 		},
 		{ 
-		  url: '/projects/hris/resutl-ats-hris.jpg', 
+		  url: '/projects/hris/resutl-ats-hris.png', 
 		  titleEn: 'AI Scan Results & Match Analysis', 
 		  titleAr: 'نتائج المسح الضوئي وتحليل التطابق',
 		  descEn: 'Detailed breakdown of candidate profiles, showcasing AI-generated skill gap analysis and automated role matching probabilities.',
 		  descAr: 'تحليل مفصل لملفات المرشحين، يعرض الفجوات المهارية المستخرجة بالذكاء الاصطناعي واحتماليات التطابق التلقائي مع الأدوار الوظيفية.'
 		},
 		{ 
-		  url: '/projects/hris/emp-pro-hris.jpg', 
+		  url: '/projects/hris/emp-pro-hris.png', 
 		  titleEn: 'Master Employee Profiles', 
 		  titleAr: 'الملفات الشاملة للموظفين',
 		  descEn: 'Centralized digital twin of the workforce. Stores identity documents, contract financials, and live disciplinary or attendance records in one secure vault.',
 		  descAr: 'توأمة رقمية مركزية للقوى العاملة. تحفظ مستندات الهوية، والبيانات المالية للعقود، والسجلات الحية للحضور والانضباط في خزانة آمنة واحدة.'
 		},
 		{ 
-		  url: '/projects/hris/pipline-hris.jpg', 
+		  url: '/projects/hris/pipline-hris.png', 
 		  titleEn: 'Kanban Recruitment Pipeline', 
 		  titleAr: 'مسار التوظيف وإدارة المرشحين',
 		  descEn: 'Visual drag-and-drop applicant tracking system (ATS). Seamlessly move candidates from initial screening to final offer with automated status triggers.',
 		  descAr: 'نظام تتبع للمتقدمين (ATS) مرئي يعمل بالسحب والإفلات. ينقل المرشحين بسلاسة من الفرز الأولي إلى العرض النهائي مع مشغلات حالة تلقائية.'
 		},
 		{ 
-		  url: '/projects/hris/visa-mgm-hris.jpg', 
+		  url: '/projects/hris/visa-mgm-hris.png', 
 		  titleEn: 'Muqeem Visa Management', 
 		  titleAr: 'إدارة تأشيرات مقيم',
 		  descEn: 'Direct API integration for tracking expatriate Iqama expiries, managing exit/entry visas, and ensuring 100% governmental compliance.',
 		  descAr: 'ربط واجهة برمجة التطبيقات (API) مباشر لتتبع انتهاء إقامات الوافدين، وإدارة تأشيرات الخروج والعودة، وضمان الامتثال الحكومي بنسبة 100%.'
 		},
 		{ 
-		  url: '/projects/hris/doc-hris.jpg', 
+		  url: '/projects/hris/doc-hris.png', 
 		  titleEn: 'Corporate Document Builder', 
 		  titleAr: 'منشئ المستندات والخطابات الرسمية',
 		  descEn: 'Automated letterhead generator for official corporate correspondence, warnings, and salary certificates, stored in an immutable ledger.',
 		  descAr: 'منشئ خطابات آلي للمراسلات الرسمية للشركة، والإنذارات، وشهادات الرواتب، محفوظة في سجل غير قابل للتعديل.'
 		},
 		{ 
-		  url: '/projects/hris/external-apps-hris.jpg', 
+		  url: '/projects/hris/external-apps-hris.png', 
 		  titleEn: 'External Freelance Portals', 
 		  titleAr: 'بوابات العمل الحر الخارجية',
 		  descEn: 'Secure, passcode-protected public gateways for gig workers and external applicants to submit credentials without accessing the core system.',
