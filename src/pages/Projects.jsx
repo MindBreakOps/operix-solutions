@@ -53,6 +53,76 @@ export default function Projects() {
 		  titleAr: 'مصفوفة عمليات المؤسسة',
 		  descEn: 'The central nervous system of the operations floor. Provides direct access to ANPR scanners, task hubs, inventory control, and fleet tracking modules.',
 		  descAr: 'العصب المركزي لطابق العمليات. يوفر وصولاً مباشراً لماسحات ANPR، ومراكز المهام، والتحكم في المخزون، ووحدات تتبع الأسطول.'
+		},
+		{ 
+		  url: '/projects/ops/ai-email-ops.png', 
+		  titleEn: 'AI-Powered Communications Core', 
+		  titleAr: 'مركز الاتصالات المدعوم بالذكاء الاصطناعي',
+		  descEn: 'Smart email drafting utilizing generative AI. Features pre-configured corporate templates for official notices, updates, and HR compliance letters.',
+		  descAr: 'صياغة ذكية لرسائل البريد الإلكتروني باستخدام الذكاء الاصطناعي التوليدي. يحتوي على قوالب مؤسسية مسبقة الإعداد للإشعارات الرسمية والتحديثات.'
+		},
+		{ 
+		  url: '/projects/ops/analyticsandreports-ops.png', 
+		  titleEn: 'Advanced Analytics & Reporting', 
+		  titleAr: 'التحليلات المتقدمة والتقارير',
+		  descEn: 'Dynamic data visualization and custom report generation. Filter vast datasets across the enterprise and export directly to Excel or secure PDF formats.',
+		  descAr: 'تصوير مرئي ديناميكي للبيانات وإنشاء تقارير مخصصة. تصفية مجموعات البيانات الضخمة عبر المؤسسة وتصديرها مباشرة بتنسيقات إكسل أو PDF آمنة.'
+		},
+		{ 
+		  url: '/projects/ops/crm-ops.png', 
+		  titleEn: 'CRM & Lead Pipeline Matrix', 
+		  titleAr: 'مصفوفة إدارة علاقات العملاء (CRM)',
+		  descEn: 'Centralized marketing workspace tracking ad spend, campaign ROI, and lead conversion funnels in real-time.',
+		  descAr: 'مساحة عمل تسويقية مركزية لتتبع الإنفاق الإعلاني، وعائد الاستثمار للحملات، ومسارات تحويل العملاء المحتملين في الوقت الفعلي.'
+		},
+		{ 
+		  url: '/projects/ops/doc-generateandsendemail-ops.png', 
+		  titleEn: 'Automated Document Generator', 
+		  titleAr: 'منشئ المستندات المؤسسية الآلي',
+		  descEn: 'Instantly generate official employment offers, contracts, and internal memos complete with dynamic variables and secure ledger archiving.',
+		  descAr: 'إنشاء فوري لعروض العمل الرسمية والعقود والمذكرات الداخلية مع متغيرات ديناميكية وأرشفة آمنة في السجل.'
+		},
+		{ 
+		  url: '/projects/ops/external-standaloneapps-ops.png', 
+		  titleEn: 'Decentralized Portals & QR Gateway', 
+		  titleAr: 'البوابات اللامركزية ورموز الاستجابة السريعة',
+		  descEn: 'Manage public-facing touchpoints and standalone apps for gig workers, field staff, and VIP valet clients via generated access links and QR codes.',
+		  descAr: 'إدارة نقاط الاتصال العامة والتطبيقات المستقلة للعاملين المستقلين والموظفين الميدانيين وعملاء خدمة صف السيارات (Valet) عبر روابط وصول ورموز QR.'
+		},
+		{ 
+		  url: '/projects/ops/facilitandtraining-ops.png', 
+		  titleEn: 'Facility Configuration & Academy Hub', 
+		  titleAr: 'تهيئة المرافق وإدارة الأكاديميات',
+		  descEn: 'Spin up and configure complex project environments, set daily operational targets, and manage internal training course capacities.',
+		  descAr: 'إنشاء وتهيئة بيئات مشاريع معقدة، وتحديد أهداف التشغيل اليومية، وإدارة السعة الاستيعابية للدورات التدريبية الداخلية.'
+		},
+		{ 
+		  url: '/projects/ops/hr-ops.png', 
+		  titleEn: 'Master HR & Roster Directory', 
+		  titleAr: 'الدليل الشامل للموارد البشرية والورديات',
+		  descEn: 'Global administrative view of human capital. Track shift assignments, monitor active timesheets, and execute top-level personnel overrides.',
+		  descAr: 'عرض إداري شامل لرأس المال البشري. تتبع المهام والورديات، ومراقبة سجلات الحضور النشطة، وتنفيذ الإجراءات الإدارية العليا للموظفين.'
+		},
+		{ 
+		  url: '/projects/ops/it-ops.png', 
+		  titleEn: 'IT IAM & Infrastructure Control', 
+		  titleAr: 'عمليات تقنية المعلومات وإدارة الهويات',
+		  descEn: 'Secure Identity and Access Management (IAM) panel. Provision user roles, manage system permissions, and monitor core infrastructure health.',
+		  descAr: 'لوحة آمنة لإدارة الهويات والوصول (IAM). منح أدوار المستخدمين، وإدارة صلاحيات النظام، ومراقبة صحة البنية التحتية الأساسية.'
+		},
+		{ 
+		  url: '/projects/ops/performance-ops.png', 
+		  titleEn: 'Live Operational KPI Telemetry', 
+		  titleAr: 'القياس اللحظي لمؤشرات الأداء (KPIs)',
+		  descEn: 'High-level overview of global enterprise metrics, tracking ANPR traffic flow, active subscribers, and operational revenue in real time.',
+		  descAr: 'نظرة عامة رفيعة المستوى على مقاييس المؤسسة، تتبع تدفق حركة المرور (ANPR)، والمشتركين النشطين، والإيرادات التشغيلية في الوقت الفعلي.'
+		},
+		{ 
+		  url: '/projects/ops/setshift-ops.png', 
+		  titleEn: 'Geofenced Shift Orchestration', 
+		  titleAr: 'إدارة الورديات بنطاق جغرافي (Geofencing)',
+		  descEn: 'Pinpoint workforce deployment using interactive mapping and strict GPS radius limits to guarantee accurate on-site field staff attendance.',
+		  descAr: 'التوجيه الدقيق للقوى العاملة باستخدام الخرائط التفاعلية وحدود نطاق جغرافي صارمة لضمان دقة حضور الموظفين الميدانيين في الموقع.'
 		}
 	  ]
 	},
