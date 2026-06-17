@@ -73,20 +73,22 @@ export default function AdminDashboard() {
 	setFormData({ title_en: '', title_ar: '', body_en: '', body_ar: '', media_url: '' });
   };
 
-  // ─── HELPER: Convert Google Drive links to Direct Image Links ───
 // ─── HELPER: Convert Google Drive links to Direct Image Links ───
 	const processMediaUrl = (url) => {
 	  if (!url) return '';
-	  // Look for Google Drive ID in standard share links
-	  const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
 	  
+	  // NEW: If you explicitly paste a preview link, leave it alone! (For Videos)
+	  if (url.includes('/preview')) {
+		return url; 
+	  }
+  
+	  // Otherwise, convert standard Drive links to image thumbnails
+	  const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
 	  if (driveMatch && driveMatch[1]) {
-		// Uses the Thumbnail API bypass (w1000 means width 1000px for high quality)
 		return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w1000`;
 	  }
-	  return url; // If not Google Drive, return as-is
+	  return url; 
 	};
-
   // Create or Update Record
   const handleSaveItem = async (e) => {
 	e.preventDefault();
