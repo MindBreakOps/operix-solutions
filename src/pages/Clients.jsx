@@ -6,6 +6,9 @@ export default function Clients() {
   const { isAr } = useLanguage();
   const [clientsData, setClientsData] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // NEW: State to track which card is tapped on mobile/touch screens
+  const [activeCard, setActiveCard] = useState(null);
 
   // Fetch Clients from Supabase CMS
   useEffect(() => {
@@ -61,48 +64,66 @@ export default function Clients() {
 		  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
 			
 			{/* PRO UI GRID */}
-			{clientsData.map((client) => (
-			  <div 
-				key={client.id} 
-				className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl hover:border-[#d4af37]/40 transition-all duration-300 group flex flex-col hover:-translate-y-1"
-			  >
-				
-				{/* Clean Logo Container */}
-				<div className="h-40 bg-slate-50/50 flex items-center justify-center p-8 border-b border-slate-100 relative">
-				  {/* Subtle Gold Glow on Hover */}
-				  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#d4af37]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-
-				  <img 
-					src={client.media_url || '/placeholder.png'} 
-					alt={isAr ? client.title_ar : client.title_en} 
-					/* THE MAGIC FIX: Grayscale default, color on hover, no weird film overlays */
-					className="w-full h-full object-contain filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 relative z-10" 
-					onError={(e) => { 
-					  e.target.style.display = 'none'; 
-					  e.target.parentElement.innerHTML = '<div class="text-slate-400 font-black tracking-widest uppercase text-xs z-10 relative">LOGO</div>'; 
-					}}
-				  />
-				</div>
-
-				{/* Content Area */}
-				<div className="p-6 flex flex-col flex-grow bg-white text-center justify-center">
-				  <h3 
-					className="text-lg font-black mb-1.5 text-[#1e2d40] group-hover:text-[#d4af37] transition-colors" 
-					style={{ direction: isAr ? 'rtl' : 'ltr' }}
-				  >
-					{isAr ? client.title_ar : client.title_en}
-				  </h3>
+			{clientsData.map((client) => {
+			  const isActive = activeCard === client.id;
+			  
+			  return (
+				<div 
+				  key={client.id} 
+				  // TOUCH FIX: Toggle active state on click/tap
+				  onClick={() => setActiveCard(isActive ? null : client.id)}
+				  className={`bg-white rounded-2xl border overflow-hidden flex flex-col transition-all duration-300 group cursor-pointer ${
+					isActive 
+					  ? 'shadow-xl border-[#d4af37]/40 -translate-y-1' // Active/Touched State
+					  : 'border-slate-200 shadow-sm hover:shadow-xl hover:border-[#d4af37]/40 hover:-translate-y-1' // Default + Desktop Hover State
+				  }`}
+				>
 				  
-				  <p 
-					className="text-[11px] text-slate-500 font-bold leading-relaxed uppercase tracking-wider" 
-					style={{ direction: isAr ? 'rtl' : 'ltr' }}
-				  >
-					{isAr ? client.body_ar : client.body_en}
-				  </p>
+				  {/* Clean Logo Container */}
+				  <div className="h-40 bg-slate-50/50 flex items-center justify-center p-8 border-b border-slate-100 relative">
+					{/* Subtle Gold Glow */}
+					<div className={`absolute inset-0 bg-gradient-to-b from-transparent to-[#d4af37]/5 transition-opacity duration-500 pointer-events-none ${
+					  isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+					}`}></div>
+
+					<img 
+					  src={client.media_url || '/placeholder.png'} 
+					  alt={isAr ? client.title_ar : client.title_en} 
+					  /* TOUCH FIX: Conditional classes for Grayscale/Color */
+					  className={`w-full h-full object-contain transition-all duration-500 relative z-10 ${
+						isActive 
+						  ? 'grayscale-0 opacity-100 scale-110' // Popped color state
+						  : 'filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110' // Desktop hover state
+					  }`} 
+					  onError={(e) => { 
+						e.target.style.display = 'none'; 
+						e.target.parentElement.innerHTML = '<div class="text-slate-400 font-black tracking-widest uppercase text-xs z-10 relative">LOGO</div>'; 
+					  }}
+					/>
+				  </div>
+
+				  {/* Content Area */}
+				  <div className="p-6 flex flex-col flex-grow bg-white text-center justify-center">
+					<h3 
+					  className={`text-lg font-black mb-1.5 transition-colors ${
+						isActive ? 'text-[#d4af37]' : 'text-[#1e2d40] group-hover:text-[#d4af37]'
+					  }`} 
+					  style={{ direction: isAr ? 'rtl' : 'ltr' }}
+					>
+					  {isAr ? client.title_ar : client.title_en}
+					</h3>
+					
+					<p 
+					  className="text-[11px] text-slate-500 font-bold leading-relaxed uppercase tracking-wider" 
+					  style={{ direction: isAr ? 'rtl' : 'ltr' }}
+					>
+					  {isAr ? client.body_ar : client.body_en}
+					</p>
+				  </div>
+				  
 				</div>
-				
-			  </div>
-			))}
+			  );
+			})}
 		  </div>
 		)}
 
