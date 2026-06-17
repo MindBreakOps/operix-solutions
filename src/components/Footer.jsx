@@ -4,23 +4,30 @@ import { Link } from 'react-router-dom';
 import {
   Mail, MapPin, MessageCircle, Phone, AtSign,
   Users, Settings, Stethoscope, FileCheck,
-  Globe, Shield, ChevronRight,
+  Globe, Shield, ChevronRight
 } from 'lucide-react';
 
+
+const YTIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+	<path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"/>
+	<polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/>
+  </svg>
+);
 // ─── Social icon: X / Twitter ───
 const XIcon = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
 	<path d="M4 4l11.733 16h4.267l-11.733-16z"/>
 	<path d="M4 20l6.768-6.768m2.46-2.46l6.772-6.772"/>
   </svg>
 );
 const FBIcon = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
 	<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
   </svg>
 );
 const IGIcon = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
 	<rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
 	<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
 	<line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
@@ -41,8 +48,8 @@ export default function Footer() {
 	{ to: '/',           label: isAr ? 'الرئيسية'              : 'Home' },
 	{ to: '/about',      label: isAr ? 'من نحن'                : 'About Us' },
 	{ to: '/services',   label: isAr ? 'خدماتنا'               : 'Our Services' },
-	{ to: '/vision',     label: isAr? 'رؤيتنا'                 :'Our Vision'},
-	{ to: '/projects',   label: isAr ? 'المشاريع والعمليات'    : 'Projects & Operations' },
+	{ to: '/vision',     label: isAr ? 'رؤيتنا'                 : 'Our Vision'},
+	{ to: '/products',   label: isAr ? 'منتجاتنا'               : 'Our Products' },
 	{ to: '/clients',    label: isAr ? 'العملاء والشركاء'      : 'Clients & Partners' },
 	{ to: '/news',       label: isAr ? 'الأخبار'               : 'News' },
 	{ to: '/contact',    label: isAr ? 'اتصل بنا'              : 'Contact' },
@@ -62,17 +69,19 @@ export default function Footer() {
 	{ email: 'sudan.office@operix-solutions.com', loc: 'Khartoum, Sudan', label: isAr ? 'المكتب السوداني' : 'Sudan Office' },
   ];
 
+  // Added YouTube with official #FF0000 brand color
   const socials = [
-	{ href: 'https://whatsapp.com/channel/0029VbCjmxEChq6KQEBPiX1C', Icon: MessageCircle, label: isAr ? 'قناة الواتساب' : 'WhatsApp Channel', color: 'hover:text-[#25D366]' },
-	{ href: 'https://wa.me/966500823643',                              Icon: Phone,         label: isAr ? 'واتساب الأعمال' : 'WhatsApp Business', color: 'hover:text-[#25D366]' },
-	{ href: 'https://x.com/operixsolutions?s=11',                     Icon: XIcon,         label: isAr ? 'إكس (تويتر)'   : 'X (Twitter)',       color: 'hover:text-white' },
-	{ href: 'https://www.facebook.com/share/1BoQkRsiJB/',             Icon: FBIcon,        label: isAr ? 'فيسبوك'        : 'Facebook',          color: 'hover:text-[#1877F2]' },
-	{ href: 'https://www.instagram.com/operix.solutions/',            Icon: IGIcon,        label: isAr ? 'إنستغرام'      : 'Instagram',         color: 'hover:text-[#E4405F]' },
-	{ href: 'https://www.threads.com/@operix.solutions',              Icon: AtSign,        label: isAr ? 'ثريدز'         : 'Threads',           color: 'hover:text-white' },
+	{ href: 'https://whatsapp.com/channel/0029VbCjmxEChq6KQEBPiX1C', Icon: MessageCircle, bg: 'bg-[#25D366]', color: 'text-white', title: 'WhatsApp Channel' },
+	{ href: 'https://wa.me/966500823643',                              Icon: Phone,         bg: 'bg-[#128C7E]', color: 'text-white', title: 'WhatsApp Business' },
+	{ href: 'https://x.com/operixsolutions?s=11',                     Icon: XIcon,         bg: 'bg-black border border-white/20', color: 'text-white', title: 'X (Twitter)' },
+	{ href: 'https://www.facebook.com/share/1BoQkRsiJB/',             Icon: FBIcon,        bg: 'bg-[#1877F2]', color: 'text-white', title: 'Facebook' },
+	{ href: 'https://www.instagram.com/operix.solutions/',            Icon: IGIcon,        bg: 'bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]', color: 'text-white', title: 'Instagram' },
+	{ href: 'https://www.youtube.com/@Operix.Solutions', Icon: YTIcon, bg: 'bg-[#FF0000]', color: 'text-white', title: 'YouTube' },
+	{ href: 'https://www.threads.com/@operix.solutions',              Icon: AtSign,        bg: 'bg-black border border-white/20', color: 'text-white', title: 'Threads' },
   ];
 
-return (
-  <footer className={`w-full ${isAr ? "font-['Cairo','Tajawal',sans-serif]" : "font-sans"}`} style={{ background: 'linear-gradient(180deg, #0d1826 0%, #0a1118 100%)' }}>
+  return (
+	<footer className={`w-full ${isAr ? "font-['Arial','Tahoma','Helvetica',sans-serif]" : "font-sans"}`} style={{ background: 'linear-gradient(180deg, #0d1826 0%, #0a1118 100%)' }}>
 
 	  {/* ─── GOLD RULE ─── */}
 	  <div className="w-full h-[2px]" style={{ background: 'linear-gradient(90deg, transparent 0%, #d4af37 30%, #f0d060 50%, #d4af37 70%, transparent 100%)' }} />
@@ -93,7 +102,6 @@ return (
 				className="group flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/4 border border-white/8 hover:border-[#d4af37]/40 hover:bg-[#d4af37]/6 transition-all duration-200"
 			  >
 				<Icon size={12} className="text-[#d4af37]/80 group-hover:text-[#d4af37] transition-colors shrink-0" />
-				{/* FIXED: Brightened text-slate-400 to text-slate-200 */}
 				<span className="text-[10px] font-bold text-slate-200 group-hover:text-white tracking-wide transition-colors whitespace-nowrap">{label}</span>
 			  </a>
 			))}
@@ -118,7 +126,6 @@ return (
 			  </div>
 			</div>
 
-			{/* FIXED: Brightened text-slate-400 to text-slate-200 */}
 			<p className="text-[12px] text-slate-200 leading-relaxed border-l-2 border-[#d4af37]/50 pl-3">
 			  {isAr
 				? 'مجموعة قيادة مؤسسية موحدة تنسق العمليات، المسارات الطبية، ودورات حياة رأس المال البشري في مركز تحكم واحد.'
@@ -132,7 +139,6 @@ return (
 				  <div className="flex items-center gap-1.5 mb-0.5">
 					<span className="text-[8px] font-black uppercase tracking-[0.2em] text-[#d4af37]/80">{label}</span>
 				  </div>
-				  {/* FIXED: Brightened text-slate-300 to text-slate-100 */}
 				  <a
 					href={`mailto:${email}`}
 					className="flex items-center gap-2 text-[11px] font-mono text-slate-100 hover:text-[#d4af37] transition-colors group-hover:tracking-wide"
@@ -141,7 +147,6 @@ return (
 					{email}
 				  </a>
 				  <div className="flex items-center gap-1.5 mt-0.5 pl-5">
-					{/* FIXED: Brightened text-slate-600 to text-slate-400 */}
 					<MapPin size={9} className="text-slate-400" />
 					<span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">{loc}</span>
 				  </div>
@@ -161,7 +166,6 @@ return (
 			<ul className="space-y-1.5">
 			  {corpNav.map(({ to, label }) => (
 				<li key={to}>
-				  {/* FIXED: Brightened text-slate-400 to text-slate-200 */}
 				  <Link
 					to={to}
 					className="group flex items-center gap-2 text-[12px] font-medium text-slate-200 hover:text-white transition-colors py-0.5"
@@ -185,7 +189,6 @@ return (
 			<ul className="space-y-1.5">
 			  {legal.map(({ to, label }) => (
 				<li key={label}>
-				  {/* FIXED: Brightened text-slate-400 to text-slate-200 */}
 				  <Link
 					to={to}
 					className="group flex items-center gap-2 text-[12px] font-medium text-slate-200 hover:text-white transition-colors py-0.5"
@@ -203,7 +206,6 @@ return (
 				<Shield size={11} className="text-[#d4af37]" />
 				<span className="text-[9px] font-black uppercase tracking-widest text-[#d4af37]">ZATCA Verified</span>
 			  </div>
-			  {/* FIXED: Brightened text-slate-500 to text-slate-300 */}
 			  <p className="text-[9px] text-slate-300 leading-snug">
 				{isAr ? 'متوافق مع المرحلة الثانية لهيئة الزكاة والدخل' : 'Phase 2 ZATCA e-invoicing compliant'}
 			  </p>
@@ -219,29 +221,23 @@ return (
 			  <div className="w-6 h-[1.5px] bg-[#d4af37]/60" />
 			</div>
 
-			<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-			  {socials.map(({ href, Icon, label, color }) => (
+			<div className="flex flex-wrap gap-3">
+			  {socials.map(({ href, Icon, bg, color, title }, idx) => (
 				<a
-				  key={href}
+				  key={idx}
 				  href={href}
 				  target="_blank"
 				  rel="noreferrer"
-				  className={`group flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 hover:bg-white/10 transition-all ${color}`}
+				  title={title}
+				  className={`w-10 h-10 flex items-center justify-center rounded-xl shadow-lg hover:scale-110 hover:-translate-y-1 transition-all duration-300 ${bg} ${color}`}
 				>
-				  {/* FIXED: Brightened text-slate-500 to text-slate-300 */}
-				  <span className="shrink-0 text-slate-300 group-hover:scale-110 transition-transform">
-					<Icon />
-				  </span>
-				  {/* FIXED: Brightened text-slate-400 to text-slate-200 */}
-				  <span className="text-[11px] font-semibold text-slate-200 group-hover:text-current transition-colors">
-					{label}
-				  </span>
+				  <Icon />
 				</a>
 			  ))}
 			</div>
 
 			{/* System status pill */}
-			<div className="mt-2 flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-900/40 border border-emerald-800/50">
+			<div className="mt-4 flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-900/40 border border-emerald-800/50 w-max">
 			  <span className="relative flex h-2 w-2 shrink-0">
 				<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
 				<span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -258,13 +254,11 @@ return (
 	  {/* ─── COPYRIGHT BAR ─── */}
 	  <div className="border-t border-white/10">
 		<div className="max-w-7xl mx-auto px-6 lg:px-10 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-		  {/* FIXED: Brightened text-slate-600 to text-slate-400 */}
 		  <p className="text-[10px] font-medium text-slate-400">
 			&copy; {new Date().getFullYear()} OPERIX Solutions.{' '}
 			{isAr ? 'جميع الحقوق محفوظة.' : 'All rights reserved.'}
 		  </p>
 		  <div className="flex items-center gap-3">
-			{/* FIXED: Brightened text-slate-700 to text-slate-400 */}
 			<span className="text-[9px] font-black uppercase tracking-[0.25em] text-slate-400">
 			  SECURE ENTERPRISE INFRASTRUCTURE
 			</span>

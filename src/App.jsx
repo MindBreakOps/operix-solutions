@@ -11,7 +11,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
 import Vision from './pages/Vision'
-import Projects from './pages/Projects';
+import Products from './pages/Products';
 import Clients from './pages/Clients';
 import News from './pages/News';
 import Legal from './pages/Legal';
@@ -36,7 +36,7 @@ export default function App() {
               <Route path="/about" element={<About />} />
               <Route path="/services" element={<Services />} />
               <Route path="/vision" element={<Vision />} />
-              <Route path="/projects" element={<Projects />} />
+              <Route path="/products" element={<Products />} />
               <Route path="/clients" element={<Clients />} />
               <Route path="/news" element={<News />} />
               <Route path="/legal" element={<Legal />} />
