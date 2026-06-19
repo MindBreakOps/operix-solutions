@@ -121,7 +121,7 @@ export default function News() {
   useEffect(() => () => { document.body.style.overflow = 'unset'; }, []);
 
   return (
-	<div className="w-full bg-[#f8fafc] min-h-screen font-sans" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+	<div className="w-full bg-[#f8fafc] min-h-screen font-sans pb-12" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
 
 	  <style>{`
 		@keyframes floatGlow {
@@ -140,6 +140,18 @@ export default function News() {
 		  from { opacity: 0; transform: scale(0.96) translateY(10px); }
 		  to   { opacity: 1; transform: scale(1) translateY(0); }
 		}
+		@keyframes shimmerGold {
+		  0% { background-position: -200% center; }
+		  100% { background-position: 200% center; }
+		}
+		.premium-gold-text {
+		  background: linear-gradient(to right, #c5a059 0%, #f3de9a 40%, #c5a059 80%);
+		  background-size: 200% auto;
+		  color: transparent;
+		  -webkit-background-clip: text;
+		  background-clip: text;
+		  animation: shimmerGold 5s linear infinite;
+		}
 		.hero-tag { animation: fadeSlideUp 0.6s cubic-bezier(0.22,1,0.36,1) 0.1s both; }
 		.hero-h1  { animation: fadeSlideUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.2s both; }
 		.hero-p   { animation: fadeSlideUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.35s both; }
@@ -156,18 +168,19 @@ export default function News() {
 	  `}</style>
 
 	  {/* ── HERO HEADER ─────────────────────────────────────────── */}
-	  <div className="relative overflow-hidden bg-white border-b border-slate-200">
-		<div className="absolute -top-20 left-1/2 -translate-x-1/2 w-[550px] h-[320px] rounded-full pointer-events-none"
-		  style={{ background: 'radial-gradient(ellipse, #d4af3718 0%, transparent 70%)', animation: 'floatGlow 7s ease-in-out infinite' }} />
-		<div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-24 text-center">
+	  <div className="relative overflow-hidden bg-[#1e2d40] border-b border-slate-700 py-20 px-6">
+		<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[360px] rounded-full pointer-events-none"
+		  style={{ background: 'radial-gradient(ellipse, #d4af3715 0%, transparent 70%)', animation: 'floatGlow 7s ease-in-out infinite' }} />
+		
+		<div className="relative z-10 max-w-7xl mx-auto text-center">
 		  <span className="hero-tag inline-flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest text-[#d4af37] bg-[#d4af37]/10 px-4 py-1.5 rounded-full border border-[#d4af37]/20 mb-5">
 			<Rss size={11} />
 			{isAr ? "المركز الإعلامي" : "Media Center"}
 		  </span>
-		  <h1 className="hero-h1 text-3xl md:text-5xl lg:text-6xl font-black font-serif tracking-tight text-[#1e2d40] max-w-3xl mx-auto pb-1 leading-tight mb-4">
+		  <h1 className="hero-h1 text-3xl md:text-5xl lg:text-6xl font-black font-serif tracking-tight max-w-3xl mx-auto pb-1 leading-tight mb-4 premium-gold-text drop-shadow-lg">
 			{isAr ? "أخبار المنظومة التشغيلية" : "Ecosystem Intelligence & News"}
 		  </h1>
-		  <p className="hero-p text-slate-500 text-sm md:text-base font-medium max-w-xl mx-auto">
+		  <p className="hero-p text-[#e5d0a1] opacity-90 text-sm md:text-base font-medium max-w-xl mx-auto">
 			{isAr
 			  ? "تحديثات لحظية حول إطلاق الأنظمة الجديدة، والبيانات التشغيلية."
 			  : "Real-time updates on system rollouts, operational telemetry, and feature drops."}
@@ -180,7 +193,7 @@ export default function News() {
 		{loading ? (
 		  <LoadingSkeleton />
 		) : newsItems.length === 0 ? (
-		  <div className="flex flex-col items-center justify-center py-24 gap-4">
+		  <div className="flex flex-col items-center justify-center py-24 gap-4 bg-white rounded-3xl border border-dashed border-slate-200">
 			<div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center">
 			  <Rss size={24} className="text-slate-300" />
 			</div>

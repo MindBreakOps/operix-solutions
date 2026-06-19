@@ -448,189 +448,211 @@ export default function Projects() {
   };
 
   return (
-	<div className="projects-wrapper w-full px-6 py-12 space-y-20 font-sans">
+	<div className="projects-wrapper w-full font-sans bg-[#f8fafc] min-h-screen pb-12">
 	  
-	  {/* ─── HEADER ─── */}
-	  <div
-		style={{
-		  animation: 'fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) both',
-		}}
-		className="text-center max-w-2xl mx-auto space-y-4"
-	  >
-		<style>{`
-		  @keyframes fadeSlideUp {
-			from { opacity: 0; transform: translateY(24px); }
-			to   { opacity: 1; transform: translateY(0); }
-		  }
-		  @keyframes fadeIn {
-			from { opacity: 0; }
-			to   { opacity: 1; }
-		  }
-		  @keyframes scaleIn {
-			from { opacity: 0; transform: scale(0.96) translateY(8px); }
-			to   { opacity: 1; transform: scale(1) translateY(0); }
-		  }
-		  @keyframes imgFade {
-			from { opacity: 0; transform: scale(1.02); }
-			to   { opacity: 1; transform: scale(1); }
-		  }
-		  .care-preview-btn { position: relative; overflow: hidden; }
-		  .care-preview-btn::after {
-			content: '';
-			position: absolute; inset: 0;
-			background: linear-gradient(135deg, rgba(212,175,55,0.15), transparent);
-			opacity: 0; transition: opacity 0.3s;
-		  }
-		  .care-preview-btn:hover::after { opacity: 1; }
-		  .thumb-strip::-webkit-scrollbar { height: 4px; }
-		  .thumb-strip::-webkit-scrollbar-track { background: #1e2d40; }
-		  .thumb-strip::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 2px; }
-		`}</style>
-		<span
-		  style={{ animation: 'fadeSlideUp 0.5s 0.1s cubic-bezier(0.16,1,0.3,1) both' }}
-		  className="text-[10px] font-black uppercase tracking-widest text-[#d4af37] block"
+	  <style>{`
+		@keyframes fadeSlideUp {
+		  from { opacity: 0; transform: translateY(24px); }
+		  to   { opacity: 1; transform: translateY(0); }
+		}
+		@keyframes fadeIn {
+		  from { opacity: 0; }
+		  to   { opacity: 1; }
+		}
+		@keyframes scaleIn {
+		  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+		  to   { opacity: 1; transform: scale(1) translateY(0); }
+		}
+		@keyframes imgFade {
+		  from { opacity: 0; transform: scale(1.02); }
+		  to   { opacity: 1; transform: scale(1); }
+		}
+		@keyframes shimmerGold {
+		  0% { background-position: -200% center; }
+		  100% { background-position: 200% center; }
+		}
+		.premium-gold-text {
+		  background: linear-gradient(to right, #c5a059 0%, #f3de9a 40%, #c5a059 80%);
+		  background-size: 200% auto;
+		  color: transparent;
+		  -webkit-background-clip: text;
+		  background-clip: text;
+		  animation: shimmerGold 5s linear infinite;
+		}
+		.care-preview-btn { position: relative; overflow: hidden; }
+		.care-preview-btn::after {
+		  content: '';
+		  position: absolute; inset: 0;
+		  background: linear-gradient(135deg, rgba(212,175,55,0.15), transparent);
+		  opacity: 0; transition: opacity 0.3s;
+		}
+		.care-preview-btn:hover::after { opacity: 1; }
+		.thumb-strip::-webkit-scrollbar { height: 4px; }
+		.thumb-strip::-webkit-scrollbar-track { background: #1e2d40; }
+		.thumb-strip::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 2px; }
+	  `}</style>
+
+	  {/* ─── HERO HEADER ─── */}
+	  <div className="relative overflow-hidden bg-[#1e2d40] border-b border-slate-700 py-20 px-6">
+		
+		{/* Subtle Background Glow */}
+		<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[360px] rounded-full pointer-events-none"
+		  style={{ background: 'radial-gradient(ellipse, #d4af3715 0%, transparent 70%)' }} />
+
+		<div
+		  style={{
+			animation: 'fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) both',
+		  }}
+		  className="text-center max-w-3xl mx-auto space-y-4 relative z-10"
 		>
-		  {isAr ? "البنية التحتية السحابية" : "Cloud Infrastructure"}
-		</span>
-		<h1
-		  style={{ animation: 'fadeSlideUp 0.6s 0.15s cubic-bezier(0.16,1,0.3,1) both' }}
-		  className="text-3xl md:text-5xl font-black text-[#1e2d40] leading-tight"
-		>
-		  {isAr ? "مصفوفة الأنظمة المستضافة" : "Deployed Systems Matrix"}
-		</h1>
-		<p
-		  style={{ animation: 'fadeSlideUp 0.6s 0.2s cubic-bezier(0.16,1,0.3,1) both' }}
-		  className="text-slate-500 text-sm md:text-base font-medium"
-		>
-		  {isAr 
-			? "بوابة تفاعلية للوصول المباشر إلى المنصات الرقمية المستضافة والنشطة ضمن منظومة أوبيريكس للحلول المتكاملة، ومشاريع العملاء البارزة." 
-			: "Interactive portal gateway to the live OPERIX ecosystem cloud platforms, real-time operational environments, and featured client deployments."}
-		</p>
+		  <span
+			style={{ animation: 'fadeSlideUp 0.5s 0.1s cubic-bezier(0.16,1,0.3,1) both' }}
+			className="inline-block text-[10px] font-black uppercase tracking-widest text-[#d4af37] bg-[#d4af37]/10 px-4 py-1.5 rounded-full border border-[#d4af37]/20"
+		  >
+			{isAr ? "البنية التحتية السحابية" : "Cloud Infrastructure"}
+		  </span>
+		  <h1
+			style={{ animation: 'fadeSlideUp 0.6s 0.15s cubic-bezier(0.16,1,0.3,1) both' }}
+			className="text-3xl md:text-5xl lg:text-6xl font-black leading-tight premium-gold-text drop-shadow-lg font-serif"
+		  >
+			{isAr ? "مصفوفة الأنظمة المستضافة" : "Deployed Systems Matrix"}
+		  </h1>
+		  <p
+			style={{ animation: 'fadeSlideUp 0.6s 0.2s cubic-bezier(0.16,1,0.3,1) both' }}
+			className="text-[#e5d0a1] text-sm md:text-base font-medium opacity-90 max-w-2xl mx-auto"
+		  >
+			{isAr 
+			  ? "بوابة تفاعلية للوصول المباشر إلى المنصات الرقمية المستضافة والنشطة ضمن منظومة أوبيريكس للحلول المتكاملة، ومشاريع العملاء البارزة." 
+			  : "Interactive portal gateway to the live OPERIX ecosystem cloud platforms, real-time operational environments, and featured client deployments."}
+		  </p>
+		</div>
 	  </div>
 
-	  {/* ─── TIER 1: OPERIX CORE ─── */}
-	  <section className="max-w-6xl mx-auto space-y-8">
-		<div
-		  style={{ animation: 'fadeSlideUp 0.5s 0.25s cubic-bezier(0.16,1,0.3,1) both' }}
-		  className="border-b border-slate-200 pb-4"
-		>
-		  <h2 className="text-xl font-black text-[#1e2d40] uppercase tracking-wider">
-			{isAr ? "أنظمة أوبيريكس الأساسية" : "Core OPERIX Ecosystem"}
-		  </h2>
-		</div>
+	  <div className="px-6 py-16 space-y-20">
+		{/* ─── TIER 1: OPERIX CORE ─── */}
+		<section className="max-w-6xl mx-auto space-y-8">
+		  <div
+			style={{ animation: 'fadeSlideUp 0.5s 0.25s cubic-bezier(0.16,1,0.3,1) both' }}
+			className="border-b border-slate-200 pb-4"
+		  >
+			<h2 className="text-xl font-black text-[#1e2d40] uppercase tracking-wider">
+			  {isAr ? "أنظمة أوبيريكس الأساسية" : "Core OPERIX Ecosystem"}
+			</h2>
+		  </div>
 
-		<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
-		  {corePlatforms.map((sys, idx) => (
-			<div
-			  key={sys.id}
-			  style={{ animation: `fadeSlideUp 0.6s ${0.3 + idx * 0.08}s cubic-bezier(0.16,1,0.3,1) both` }}
-			  className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:border-[#d4af37]/50 transition-all duration-300 group flex flex-col h-auto"
-			>
-			  
-			  {/* Interactive Image (Top) */}
+		  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
+			{corePlatforms.map((sys, idx) => (
 			  <div
-				className="h-48 sm:h-56 border-b border-slate-200 relative overflow-hidden bg-slate-100 group-hover:bg-slate-200 transition-colors cursor-pointer"
-				onClick={() => window.open(sys.url, '_blank')}
+				key={sys.id}
+				style={{ animation: `fadeSlideUp 0.6s ${0.3 + idx * 0.08}s cubic-bezier(0.16,1,0.3,1) both` }}
+				className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:border-[#d4af37]/50 transition-all duration-300 group flex flex-col h-auto"
 			  >
-				<img 
-				  src={sys.image} 
-				  alt={sys.titleEn} 
-				  className="w-full h-full object-cover object-left-top opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
-				/>
-				{sys.interactiveBadge}
-				{/* Care card: show preview count badge */}
-				{sys.id === 'care' && sys.previews.length > 0 && (
-				  <div className="absolute bottom-4 right-4 bg-[#0a0f16]/80 backdrop-blur border border-slate-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full flex items-center gap-1.5">
-					<ImageIcon size={11} /> {sys.previews.length} SCREENS
-				  </div>
-				)}
-			  </div>
-
-			  {/* Info Side (Bottom) */}
-			  <div className="p-6 sm:p-8 flex flex-col flex-grow bg-white">
-				<div className="flex items-center gap-3 mb-4">
-				  <div className={`w-10 h-10 ${sys.color} rounded-xl flex items-center justify-center shadow-md shrink-0`}>
-					{sys.icon}
-				  </div>
-				  <div>
-					<h3 className="font-black text-lg text-[#1e2d40] leading-tight m-0">{isAr ? sys.titleAr : sys.titleEn}</h3>
-					<p className="text-[10px] font-bold uppercase tracking-wider text-[#d4af37] mt-0.5 m-0">{isAr ? sys.subAr : sys.subEn}</p>
-				  </div>
-				</div>
 				
-				<p className="text-slate-500 text-xs leading-relaxed font-medium line-clamp-3 mb-6 flex-grow">
-				  {isAr ? sys.descAr : sys.descEn}
-				</p>
-
-				{/* Dual Action Buttons */}
-				<div className="flex items-center gap-3 mt-auto pt-4 border-t border-slate-100" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
-				  <a href={sys.url} target="_blank" rel="noopener noreferrer" className="flex-1 flex justify-center items-center gap-2 bg-[#1e2d40] hover:bg-[#d4af37] text-white py-2.5 rounded-xl font-black text-[10px] tracking-wider uppercase transition-colors shadow-sm">
-					{isAr ? "دخول المنصة" : "Launch"} <ExternalLink size={12} />
-				  </a>
-				  
-				  {sys.previews && sys.previews.length > 0 && (
-					<button 
-					  onClick={() => openPreview(sys)}
-					  className={`care-preview-btn flex-1 flex justify-center items-center gap-2 py-2.5 rounded-xl font-black text-[10px] tracking-wider uppercase transition-all shadow-sm border ${sys.id === 'care' ? 'bg-blue-950 text-[#d4af37] border-blue-900 hover:bg-[#d4af37] hover:text-[#0a0f16] hover:border-[#d4af37]' : 'bg-slate-50 hover:bg-[#1e2d40] hover:text-[#d4af37] text-slate-600 border-slate-200 hover:border-transparent'}`}
-					>
-					  {isAr ? "استعراض النظام" : "Preview UI"} <ImageIcon size={12} />
-					</button>
+				{/* Interactive Image (Top) */}
+				<div
+				  className="h-48 sm:h-56 border-b border-slate-200 relative overflow-hidden bg-slate-100 group-hover:bg-slate-200 transition-colors cursor-pointer"
+				  onClick={() => window.open(sys.url, '_blank')}
+				>
+				  <img 
+					src={sys.image} 
+					alt={sys.titleEn} 
+					className="w-full h-full object-cover object-left-top opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+				  />
+				  {sys.interactiveBadge}
+				  {/* Care card: show preview count badge */}
+				  {sys.id === 'care' && sys.previews.length > 0 && (
+					<div className="absolute bottom-4 right-4 bg-[#0a0f16]/80 backdrop-blur border border-slate-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full flex items-center gap-1.5">
+					  <ImageIcon size={11} /> {sys.previews.length} SCREENS
+					</div>
 				  )}
 				</div>
-			  </div>
 
-			</div>
-		  ))}
-		</div>
-	  </section>
-
-	  {/* ─── TIER 2: CLIENT PROJECTS ─── */}
-	  <section className="max-w-6xl mx-auto space-y-8 pt-6">
-		<div className="border-b border-slate-200 pb-4 flex items-center gap-3">
-		  <h2 className="text-xl font-black text-[#1e2d40] uppercase tracking-wider">
-			{isAr ? "مشاريع وتطبيقات العملاء" : "Featured Client Deployments"}
-		  </h2>
-		</div>
-
-		<div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
-		  {clientProjects.map((proj, idx) => (
-			<div
-			  key={proj.id}
-			  style={{ animation: `fadeSlideUp 0.6s ${0.1 + idx * 0.1}s cubic-bezier(0.16,1,0.3,1) both` }}
-			  className="bg-white border border-slate-200 rounded-3xl overflow-hidden flex flex-col shadow-sm hover:shadow-xl hover:border-[#d4af37]/40 transition-all duration-300 group"
-			>
-			  <div className="h-40 w-full relative overflow-hidden bg-slate-100 border-b border-slate-200 cursor-pointer" onClick={() => window.open(proj.url, '_blank')}>
-				<img 
-				  src={proj.image} 
-				  alt={proj.titleEn} 
-				  className="w-full h-full object-cover object-top opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
-				/>
-			  </div>
-
-			  <div className="p-6 flex flex-col justify-between flex-grow space-y-4 relative z-10">
-				<div className="space-y-4">
-				  <div className={`w-10 h-10 ${proj.color} rounded-xl flex items-center justify-center shadow-sm -mt-10 relative border-4 border-white`}>
-					{proj.icon}
+				{/* Info Side (Bottom) */}
+				<div className="p-6 sm:p-8 flex flex-col flex-grow bg-white">
+				  <div className="flex items-center gap-3 mb-4">
+					<div className={`w-10 h-10 ${sys.color} rounded-xl flex items-center justify-center shadow-md shrink-0`}>
+					  {sys.icon}
+					</div>
+					<div>
+					  <h3 className="font-black text-lg text-[#1e2d40] leading-tight m-0">{isAr ? sys.titleAr : sys.titleEn}</h3>
+					  <p className="text-[10px] font-bold uppercase tracking-wider text-[#d4af37] mt-0.5 m-0">{isAr ? sys.subAr : sys.subEn}</p>
+					</div>
 				  </div>
-				  <div>
-					<h3 className="font-black text-lg text-[#1e2d40] leading-tight m-0">{isAr ? proj.titleAr : proj.titleEn}</h3>
-					<p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-1 m-0">{isAr ? proj.subAr : proj.subEn}</p>
-				  </div>
-				  <p className="text-slate-500 text-xs leading-relaxed font-medium">
-					{isAr ? proj.descAr : proj.descEn}
+				  
+				  <p className="text-slate-500 text-xs leading-relaxed font-medium line-clamp-3 mb-6 flex-grow">
+					{isAr ? sys.descAr : sys.descEn}
 				  </p>
+
+				  {/* Dual Action Buttons */}
+				  <div className="flex items-center gap-3 mt-auto pt-4 border-t border-slate-100" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
+					<a href={sys.url} target="_blank" rel="noopener noreferrer" className="flex-1 flex justify-center items-center gap-2 bg-[#1e2d40] hover:bg-[#d4af37] text-white py-2.5 rounded-xl font-black text-[10px] tracking-wider uppercase transition-colors shadow-sm">
+					  {isAr ? "دخول المنصة" : "Launch"} <ExternalLink size={12} />
+					</a>
+					
+					{sys.previews && sys.previews.length > 0 && (
+					  <button 
+						onClick={() => openPreview(sys)}
+						className={`care-preview-btn flex-1 flex justify-center items-center gap-2 py-2.5 rounded-xl font-black text-[10px] tracking-wider uppercase transition-all shadow-sm border ${sys.id === 'care' ? 'bg-blue-950 text-[#d4af37] border-blue-900 hover:bg-[#d4af37] hover:text-[#0a0f16] hover:border-[#d4af37]' : 'bg-slate-50 hover:bg-[#1e2d40] hover:text-[#d4af37] text-slate-600 border-slate-200 hover:border-transparent'}`}
+					  >
+						{isAr ? "استعراض النظام" : "Preview UI"} <ImageIcon size={12} />
+					  </button>
+					)}
+				  </div>
 				</div>
-				
-				<div className="pt-4 relative z-10 mt-auto border-t border-slate-100">
-				  <a href={proj.url} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-between text-[#1e2d40] py-2 font-black text-[10px] tracking-wider uppercase transition-colors hover:text-[#d4af37]">
-					{isAr ? "زيارة الموقع المباشر" : "Visit Live Portal"} <ExternalLink size={14} className="text-slate-400 group-hover:text-[#d4af37] transition-colors" />
-				  </a>
+
+			  </div>
+			))}
+		  </div>
+		</section>
+
+		{/* ─── TIER 2: CLIENT PROJECTS ─── */}
+		<section className="max-w-6xl mx-auto space-y-8 pt-6">
+		  <div className="border-b border-slate-200 pb-4 flex items-center gap-3">
+			<h2 className="text-xl font-black text-[#1e2d40] uppercase tracking-wider">
+			  {isAr ? "مشاريع وتطبيقات العملاء" : "Featured Client Deployments"}
+			</h2>
+		  </div>
+
+		  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
+			{clientProjects.map((proj, idx) => (
+			  <div
+				key={proj.id}
+				style={{ animation: `fadeSlideUp 0.6s ${0.1 + idx * 0.1}s cubic-bezier(0.16,1,0.3,1) both` }}
+				className="bg-white border border-slate-200 rounded-3xl overflow-hidden flex flex-col shadow-sm hover:shadow-xl hover:border-[#d4af37]/40 transition-all duration-300 group"
+			  >
+				<div className="h-40 w-full relative overflow-hidden bg-slate-100 border-b border-slate-200 cursor-pointer" onClick={() => window.open(proj.url, '_blank')}>
+				  <img 
+					src={proj.image} 
+					alt={proj.titleEn} 
+					className="w-full h-full object-cover object-top opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+				  />
+				</div>
+
+				<div className="p-6 flex flex-col justify-between flex-grow space-y-4 relative z-10">
+				  <div className="space-y-4">
+					<div className={`w-10 h-10 ${proj.color} rounded-xl flex items-center justify-center shadow-sm -mt-10 relative border-4 border-white`}>
+					  {proj.icon}
+					</div>
+					<div>
+					  <h3 className="font-black text-lg text-[#1e2d40] leading-tight m-0">{isAr ? proj.titleAr : proj.titleEn}</h3>
+					  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-1 m-0">{isAr ? proj.subAr : proj.subEn}</p>
+					</div>
+					<p className="text-slate-500 text-xs leading-relaxed font-medium">
+					  {isAr ? proj.descAr : proj.descEn}
+					</p>
+				  </div>
+				  
+				  <div className="pt-4 relative z-10 mt-auto border-t border-slate-100">
+					<a href={proj.url} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-between text-[#1e2d40] py-2 font-black text-[10px] tracking-wider uppercase transition-colors hover:text-[#d4af37]">
+					  {isAr ? "زيارة الموقع المباشر" : "Visit Live Portal"} <ExternalLink size={14} className="text-slate-400 group-hover:text-[#d4af37] transition-colors" />
+					</a>
+				  </div>
 				</div>
 			  </div>
-			</div>
-		  ))}
-		</div>
-	  </section>
+			))}
+		  </div>
+		</section>
+	  </div>
 
 	  {/* ─── UPGRADED PREVIEW MODAL (TOUCH-FRIENDLY & SWIPE ENABLED) ─── */}
 	  {activePreview && activePreview.previews && activePreview.previews.length > 0 && (

@@ -50,24 +50,62 @@ export default function Services() {
   }, [selectedService]);
 
   return (
-	<div className="w-full bg-[#f8fafc] min-h-screen py-20 px-4 sm:px-6 font-sans">
-	  <div className="max-w-7xl mx-auto space-y-16">
-		
-		{/* ─── HEADER ─── */}
-		<div className="text-center space-y-4 max-w-3xl mx-auto border-b border-slate-200/60 pb-10">
-		  <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#d4af37] bg-[#d4af37]/10 px-4 py-1.5 rounded-full border border-[#d4af37]/20 inline-block shadow-sm mb-2">
+	<div className="w-full bg-[#f8fafc] min-h-screen font-sans pb-12">
+
+	  <style>{`
+		@keyframes fadeSlideUp {
+		  from { opacity: 0; transform: translateY(24px); }
+		  to   { opacity: 1; transform: translateY(0); }
+		}
+		@keyframes shimmerGold {
+		  0% { background-position: -200% center; }
+		  100% { background-position: 200% center; }
+		}
+		.premium-gold-text {
+		  background: linear-gradient(to right, #c5a059 0%, #f3de9a 40%, #c5a059 80%);
+		  background-size: 200% auto;
+		  color: transparent;
+		  -webkit-background-clip: text;
+		  background-clip: text;
+		  animation: shimmerGold 5s linear infinite;
+		}
+	  `}</style>
+
+	  {/* ─── HERO HEADER ─── */}
+	  <div className="relative overflow-hidden bg-[#1e2d40] border-b border-slate-700 py-20 px-6">
+		{/* Subtle Background Glow */}
+		<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[360px] rounded-full pointer-events-none"
+		  style={{ background: 'radial-gradient(ellipse, #d4af3715 0%, transparent 70%)' }} />
+
+		<div
+		  style={{ animation: 'fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) both' }}
+		  className="text-center max-w-3xl mx-auto space-y-4 relative z-10"
+		>
+		  <span
+			style={{ animation: 'fadeSlideUp 0.5s 0.1s cubic-bezier(0.16,1,0.3,1) both' }}
+			className="inline-block text-[10px] font-extrabold uppercase tracking-widest text-[#d4af37] bg-[#d4af37]/10 px-4 py-1.5 rounded-full border border-[#d4af37]/20 shadow-sm"
+		  >
 			{isAr ? "الحلول التشغيلية" : "ENTERPRISE SOLUTIONS"}
 		  </span>
-		  <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-serif tracking-tight bg-gradient-to-r from-[#1e2d40] to-[#d4af37] bg-clip-text text-transparent pb-2">
+		  <h1
+			style={{ animation: 'fadeSlideUp 0.6s 0.15s cubic-bezier(0.16,1,0.3,1) both' }}
+			className="text-4xl md:text-5xl lg:text-6xl font-black font-serif tracking-tight premium-gold-text drop-shadow-lg pb-2"
+		  >
 			{isAr ? "خدمات المنظومة الرقمية" : "Our Ecosystem Offerings"}
 		  </h1>
-		  <p className="text-slate-600 text-sm md:text-base font-medium max-w-2xl mx-auto">
+		  <p
+			style={{ animation: 'fadeSlideUp 0.6s 0.2s cubic-bezier(0.16,1,0.3,1) both' }}
+			className="text-[#e5d0a1] opacity-90 text-sm md:text-base font-medium max-w-2xl mx-auto"
+		  >
 			{isAr 
 			  ? "حلول تشغيلية فورية متكاملة ومصممة خصيصاً لإدارة عملياتك بذكاء." 
 			  : "Real-time infrastructure architectures built to manage corporate deployment modules seamlessly."}
 		  </p>
 		</div>
+	  </div>
 
+	  <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 space-y-16">
+		
 		{/* ─── SERVICES GRID ─── */}
 		{loading ? (
 		  <div className="flex flex-col items-center justify-center py-24 text-[#d4af37]">

@@ -192,6 +192,18 @@ export default function Contact() {
 		  from { opacity: 0; transform: translateY(24px); }
 		  to   { opacity: 1; transform: translateY(0); }
 		}
+		@keyframes shimmerGold {
+		  0% { background-position: -200% center; }
+		  100% { background-position: 200% center; }
+		}
+		.premium-gold-text {
+		  background: linear-gradient(to right, #c5a059 0%, #f3de9a 40%, #c5a059 80%);
+		  background-size: 200% auto;
+		  color: transparent;
+		  -webkit-background-clip: text;
+		  background-clip: text;
+		  animation: shimmerGold 5s linear infinite;
+		}
 		.submit-btn { transition: all 0.25s cubic-bezier(0.22,1,0.36,1); }
 		.submit-btn:not(:disabled):hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(30,45,64,0.25); }
 		.info-item { transition: all 0.25s cubic-bezier(0.22,1,0.36,1); }
@@ -202,18 +214,19 @@ export default function Contact() {
 		.custom-select-wrapper select { -webkit-appearance: none; appearance: none; }
 	  `}</style>
 
-	  {/* ── PAGE HEADER ─────────────────────────────────────────── */}
-	  <div className="relative overflow-hidden bg-white border-b border-slate-200">
-		<div className="absolute -top-16 right-1/4 w-[400px] h-[280px] rounded-full pointer-events-none"
+	  {/* ── PAGE HEADER (Updated to Dark Blue + Metallic Gold) ── */}
+	  <div className="relative overflow-hidden bg-[#1e2d40] border-b border-slate-700">
+		<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[360px] rounded-full pointer-events-none"
 		  style={{ background: 'radial-gradient(ellipse, #d4af3715 0%, transparent 70%)', animation: 'floatGlow 7s ease-in-out infinite' }} />
-		<div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 text-center lg:text-left">
+		
+		<div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center lg:text-left">
 		  <span className="hero-tag inline-block text-[10px] font-extrabold uppercase tracking-widest text-[#d4af37] bg-[#d4af37]/10 px-4 py-1.5 rounded-full border border-[#d4af37]/20 mb-4">
 			{isAr ? "تواصل معنا" : "Get in Touch"}
 		  </span>
-		  <h1 className="hero-h1 text-3xl md:text-5xl font-black text-[#1e2d40] mb-4 leading-tight tracking-tight">
+		  <h1 className="hero-h1 text-4xl md:text-5xl lg:text-6xl font-black font-serif leading-tight tracking-tight premium-gold-text drop-shadow-lg mb-4">
 			{isAr ? "لنبنِ المستقبل معاً" : "Let's Build Together"}
 		  </h1>
-		  <p className="hero-p text-base md:text-lg text-slate-500 font-medium max-w-2xl mx-auto lg:mx-0">
+		  <p className="hero-p text-[#e5d0a1] opacity-90 text-base md:text-lg font-medium max-w-2xl mx-auto lg:mx-0">
 			{isAr
 			  ? "لنجعل أحلامك في الحلول التقنية حقيقة مع أوبريكس سوليوشنز. أدخل مواصفات منشأتك للتشاور مع مهندسي تنفيذ الأنظمة لدينا."
 			  : "Let's make your technical solutions dream come true with OPERIX Solutions. Submit your specifications to consult with our system implementation architects."}
@@ -221,7 +234,7 @@ export default function Contact() {
 		</div>
 	  </div>
 
-	  <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+	  <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
 		<Reveal>
 		  <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col lg:flex-row">
 
