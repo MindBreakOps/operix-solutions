@@ -1,355 +1,1003 @@
-import React, { useState, useEffect } from 'react';
-import { Smartphone, Play, CheckCircle, Users, X, Activity, Settings, BookOpen, Globe } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Smartphone, Play, CheckCircle, Users, X, Activity, Settings, BookOpen, Globe, ChevronRight, Zap, Shield, Star } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
+/* ─────────────────────────────────────────────────────────
+   TRANSLATIONS
+───────────────────────────────────────────────────────── */
 const translations = {
   en: {
-	heroBadge: 'Native Ecosystem',
-	heroTitle: 'Enterprise in your pocket.',
-	heroSub: 'Explore the native mobile extensions of the OPERIX Ecosystem. Designed for speed, reliability, and seamless synchronization with your core command center.',
+	heroBadge: 'Native iOS Ecosystem',
+	heroTitle: 'Enterprise.\nIn your pocket.',
+	heroSub: 'Native iOS applications built for the OPERIX platform — fast, secure, and synchronized with your command center in real time.',
 	loginArch: 'Login Architecture',
-	loginText1: 'All mobile applications enforce a strict two-step authentication process: users must first resolve their unique ',
+	loginText1: 'All apps enforce a strict two-step auth: users resolve their unique ',
 	workspaceDomain: 'Workspace Domain',
 	loginText2: ' before accessing the secure login portal.',
 	builtFor: 'Built For',
 	coreCap: 'Core Capabilities',
-	launchPreview: 'Launch Interactive Preview',
+	launchPreview: 'Watch Preview',
 	livePreview: 'Live Preview',
-	previewDesc: 'Experience the mobile UI flow. Interactions have been recorded directly from a native device.',
+	previewDesc: 'Recorded directly from a native iOS device.',
+	tapToWatch: 'Tap to watch',
 	apps: [
 	  {
 		id: 'ops-hr',
-		title: 'OPERIX Hub (Ops & HR)',
+		title: 'OPERIX Hub',
+		subtitle: 'Ops & HR',
 		badge: 'Enterprise Mobility',
-		icon: <Settings size={24} />,
-		color: 'text-blue-600',
-		bgTheme: 'bg-blue-50',
-		desc: "A unified, high-performance mobile interface combining core HR functions with live field operations. Securely access the system by entering your organization's workspace domain followed by your login credentials.",
-		accomplishmentsTitle: 'What it accomplishes',
-		accomplishments: 'Eliminates paper logs, automates attendance, and bridges the gap between managers and frontline staff by centralizing all daily operations and HR requests.',
-		audience: 'Field Staff, Operations Managers, and General Employees.',
+		accentColor: '#3b82f6',
+		accentLight: 'rgba(59,130,246,0.10)',
+		icon: <Settings size={20} />,
+		desc: "Unified mobile command for HR and field operations. Enter your workspace domain, authenticate, and your entire operational environment is at your fingertips.",
+		accomplishments: 'Eliminates paper logs, automates attendance, and bridges managers with frontline staff.',
+		audience: 'Field Staff · Operations Managers · General Employees',
 		capabilities: [
-		  'Dedicated Ops tab for assigned manager/staff tasks',
-		  'Face-ID punch in/out & automated timesheets',
-		  'Instant payslip access & leave/normal requests',
-		  'Full employee file with info and documents'
+		  'Dedicated Ops tab for assigned tasks',
+		  'Face ID punch in/out & auto timesheets',
+		  'Instant payslip & leave request access',
+		  'Full employee file with documents',
 		],
-		videoUrl: '/videos/ops-hr-mobile.mp4',
-		poster: '/projects/mobile-poster-ops.jpg'
+		videoUrl: '/videos/ops-hr-mobile.MP4',
+		poster: '/projects/mobile-poster-ops.jpg',
 	  },
 	  {
 		id: 'care',
-		title: 'OPERIX Care Mobile',
+		title: 'OPERIX Care',
+		subtitle: 'Clinical Mobile',
 		badge: 'Clinical Operations',
-		icon: <Activity size={24} />,
-		color: 'text-rose-600',
-		bgTheme: 'bg-rose-50',
-		desc: "Comprehensive clinical and hospital management on the go. Medical staff and administrators can seamlessly log in via their hospital's dedicated workspace domain.",
-		accomplishmentsTitle: 'What it accomplishes',
-		accomplishments: 'Dramatically speeds up patient triage, simplifies billing, and gives specialized departments (like Pharmacy and Blood Bank) real-time access to critical data.',
-		audience: 'Attending Physicians, Nurses, Receptionists, and Clinicians.',
+		accentColor: '#f43f5e',
+		accentLight: 'rgba(244,63,94,0.10)',
+		icon: <Activity size={20} />,
+		desc: "Full clinical and hospital management on the go. Medical staff log in via their hospital workspace domain for instant access to patient data and workflows.",
+		accomplishments: 'Speeds up triage, simplifies billing, and gives Pharmacy and Blood Bank real-time data access.',
+		audience: 'Physicians · Nurses · Receptionists · Clinicians',
 		capabilities: [
-		  'Reception: Invoices, tickets, check-ins & emergencies',
-		  'Dedicated secure tabs for Doctors and Nurses',
-		  'Pharmacy, Operations, and Blood Bank management',
-		  'Comprehensive live patient file access'
+		  'Reception: invoices, tickets & emergencies',
+		  'Secure dedicated tabs for Doctors & Nurses',
+		  'Pharmacy, Operations & Blood Bank mgmt',
+		  'Comprehensive live patient file access',
 		],
-		videoUrl: '/videos/ops-care-mobile.mp4',
-		poster: '/projects/mobile-poster-care.jpg'
+		videoUrl: '/videos/ops-care-mobile.MP4',
+		poster: '/projects/mobile-poster-care.jpg',
 	  },
 	  {
 		id: 'binabbas',
-		title: 'Bin Abbas Portal',
-		badge: 'Community & Education',
-		icon: <BookOpen size={24} />,
-		color: 'text-emerald-600',
-		bgTheme: 'bg-emerald-50',
-		desc: "A dedicated institutional application for community members and students to seamlessly access religious resources and educational profiles via their workspace domain.",
-		accomplishmentsTitle: 'What it accomplishes',
-		accomplishments: 'Digitizes the student journey, creating a centralized, easily accessible hub for Islamic learning, daily prayers, and institutional engagement.',
-		audience: 'Students, Registered Community Members, and Institute Staff.',
+		title: 'Bin Abbas',
+		subtitle: 'Community Portal',
+		badge: 'Education & Community',
+		accentColor: '#10b981',
+		accentLight: 'rgba(16,185,129,0.10)',
+		icon: <BookOpen size={20} />,
+		desc: "A dedicated iOS app for students and community members to access Islamic resources, educational profiles, and institutional updates — all via their workspace domain.",
+		accomplishments: 'Digitizes the student journey with a hub for Islamic learning, prayer times, and institutional engagement.',
+		audience: 'Students · Community Members · Institute Staff',
 		capabilities: [
-		  'Interactive Moshaf with Tafsir and reciting audio',
-		  'Accurate daily Prayer timers and Adhan alerts',
-		  'Live news feed and institutional updates',
-		  'Instant digital certificate exporting'
+		  'Interactive Moshaf with Tafsir & audio',
+		  'Accurate prayer timers & Adhan alerts',
+		  'Live news feed & institutional updates',
+		  'Instant digital certificate export',
 		],
-		videoUrl: '/videos/bin-abbas-mobile.mp4',
-		poster: '/projects/mobile-poster-abbas.jpg'
-	  }
-	]
+		videoUrl: '/videos/bin-abbas-mobile.MP4',
+		poster: '/projects/mobile-poster-abbas.jpg',
+	  },
+	],
   },
   ar: {
-	heroBadge: 'النظام الأصلي',
-	heroTitle: 'المؤسسة في جيبك.',
-	heroSub: 'استكشف تطبيقات الجوال الأصلية ضمن نظام أوبيريكس. مصممة للسرعة والموثوقية والمزامنة الفورية مع مركز القيادة الرئيسي الخاص بك.',
+	heroBadge: 'نظام iOS الأصلي',
+	heroTitle: 'المؤسسة.\nفي جيبك.',
+	heroSub: 'تطبيقات iOS أصلية مبنية لمنصة أوبيريكس — سريعة وآمنة ومتزامنة مع مركز القيادة في الوقت الفعلي.',
 	loginArch: 'هيكلة تسجيل الدخول',
-	loginText1: 'تطبق جميع تطبيقات الجوال عملية مصادقة صارمة من خطوتين: يجب على المستخدمين أولاً إدخال ',
+	loginText1: 'تطبق جميع التطبيقات مصادقة من خطوتين: يجب إدخال ',
 	workspaceDomain: 'نطاق مساحة العمل',
-	loginText2: ' الخاص بهم قبل الوصول إلى بوابة الدخول الآمنة.',
+	loginText2: ' قبل الوصول إلى بوابة الدخول الآمنة.',
 	builtFor: 'مصمم من أجل',
 	coreCap: 'القدرات الأساسية',
-	launchPreview: 'تشغيل العرض التفاعلي',
+	launchPreview: 'مشاهدة العرض',
 	livePreview: 'عرض مباشر',
-	previewDesc: 'اكتشف واجهة المستخدم على الجوال. تم تسجيل التفاعلات مباشرة من جهاز حقيقي.',
+	previewDesc: 'مسجل مباشرة من جهاز iOS حقيقي.',
+	tapToWatch: 'اضغط للمشاهدة',
 	apps: [
 	  {
 		id: 'ops-hr',
-		title: 'أوبيريكس للعمليات والموارد',
+		title: 'أوبيريكس هب',
+		subtitle: 'العمليات والموارد',
 		badge: 'تنقل المؤسسة',
-		icon: <Settings size={24} />,
-		color: 'text-blue-600',
-		bgTheme: 'bg-blue-50',
-		desc: 'واجهة جوال موحدة وعالية الأداء تجمع بين وظائف الموارد البشرية الأساسية والعمليات الميدانية الحية. ادخل للنظام بأمان عبر إدخال نطاق مؤسستك متبوعاً ببيانات الدخول.',
-		accomplishmentsTitle: 'ماذا يحقق',
-		accomplishments: 'يقضي على السجلات الورقية، ويؤتمت الحضور، ويسد الفجوة بين المديرين وموظفي الخطوط الأمامية من خلال مركزة العمليات اليومية وطلبات الموارد البشرية.',
-		audience: 'الموظفون الميدانيون، مديرو العمليات، وكافة الموظفين.',
+		accentColor: '#3b82f6',
+		accentLight: 'rgba(59,130,246,0.10)',
+		icon: <Settings size={20} />,
+		desc: 'واجهة جوال موحدة للموارد البشرية والعمليات الميدانية. أدخل نطاق مؤسستك وسجل دخولك للوصول الفوري.',
+		accomplishments: 'يقضي على السجلات الورقية ويؤتمت الحضور ويربط المديرين بموظفي الخطوط الأمامية.',
+		audience: 'الموظفون الميدانيون · مديرو العمليات · كافة الموظفين',
 		capabilities: [
-		  'قسم خاص للعمليات للمهام المعينة للمدير/الموظف',
-		  'تسجيل الحضور بالبصمة (Face-ID) وجداول آلية',
-		  'وصول فوري لمسير الرواتب وطلبات الإجازات/العامة',
-		  'ملف موظف كامل بالمعلومات والمستندات'
+		  'قسم خاص للعمليات والمهام المعينة',
+		  'تسجيل الحضور بـ Face ID وجداول آلية',
+		  'وصول فوري لمسير الرواتب والطلبات',
+		  'ملف موظف كامل بالمعلومات والمستندات',
 		],
-		videoUrl: '/videos/ops-hr-mobile.mp4',
-		poster: '/projects/mobile-poster-ops.jpg'
+		videoUrl: '/videos/ops-hr-mobile.MP4',
+		poster: '/projects/mobile-poster-ops.jpg',
 	  },
 	  {
 		id: 'care',
-		title: 'أوبيريكس كير (الرعاية)',
+		title: 'أوبيريكس كير',
+		subtitle: 'الرعاية السريرية',
 		badge: 'العمليات السريرية',
-		icon: <Activity size={24} />,
-		color: 'text-rose-600',
-		bgTheme: 'bg-rose-50',
-		desc: 'إدارة سريرية ومستشفيات شاملة أثناء التنقل. يمكن للطاقم الطبي والإداريين تسجيل الدخول بسلاسة عبر نطاق مساحة العمل الخاص بالمستشفى.',
-		accomplishmentsTitle: 'ماذا يحقق',
-		accomplishments: 'يسرّع بشكل كبير فرز المرضى، ويبسط الفوترة، ويمنح الأقسام المتخصصة (كصيدلية وبنك الدم) وصولاً فورياً للبيانات الحرجة.',
-		audience: 'الأطباء المعالجون، الممرضون، موظفو الاستقبال، والسريريون.',
+		accentColor: '#f43f5e',
+		accentLight: 'rgba(244,63,94,0.10)',
+		icon: <Activity size={20} />,
+		desc: 'إدارة سريرية ومستشفيات شاملة أثناء التنقل. يسجل الطاقم الطبي دخوله عبر نطاق مساحة عمل المستشفى.',
+		accomplishments: 'يسرع فرز المرضى ويبسط الفوترة ويمنح الأقسام المتخصصة وصولاً فورياً.',
+		audience: 'الأطباء · الممرضون · موظفو الاستقبال · السريريون',
 		capabilities: [
-		  'الاستقبال: الفواتير، التذاكر، الدخول والطوارئ',
-		  'أقسام آمنة ومخصصة للأطباء والممرضين',
-		  'إدارة الصيدلية، العمليات، وبنك الدم',
-		  'وصول شامل لملف المريض الحي'
+		  'الاستقبال: الفواتير والتذاكر والطوارئ',
+		  'أقسام آمنة مخصصة للأطباء والممرضين',
+		  'إدارة الصيدلية والعمليات وبنك الدم',
+		  'وصول شامل لملف المريض الحي',
 		],
-		videoUrl: '/videos/ops-care-mobile.mp4',
-		poster: '/projects/mobile-poster-care.jpg'
+		videoUrl: '/videos/ops-care-mobile.MP4',
+		poster: '/projects/mobile-poster-care.jpg',
 	  },
 	  {
 		id: 'binabbas',
 		title: 'بوابة ابن عباس',
-		badge: 'المجتمع والتعليم',
-		icon: <BookOpen size={24} />,
-		color: 'text-emerald-600',
-		bgTheme: 'bg-emerald-50',
-		desc: 'تطبيق مؤسسي مخصص لأعضاء المجتمع والطلاب للوصول السلس إلى الموارد الدينية وملفاتهم التعليمية عبر نطاق مساحة العمل الخاص بهم.',
-		accomplishmentsTitle: 'ماذا يحقق',
-		accomplishments: 'يرقمن رحلة الطالب، ويخلق مركزاً يسهل الوصول إليه للتعلم الإسلامي، الصلوات اليومية، والمشاركة المؤسسية.',
-		audience: 'الطلاب، أعضاء المجتمع المسجلون، وموظفو المعهد.',
+		subtitle: 'المجتمع والتعليم',
+		badge: 'التعليم والمجتمع',
+		accentColor: '#10b981',
+		accentLight: 'rgba(16,185,129,0.10)',
+		icon: <BookOpen size={20} />,
+		desc: 'تطبيق iOS مخصص للطلاب وأعضاء المجتمع للوصول إلى الموارد الإسلامية والملفات التعليمية.',
+		accomplishments: 'يرقمن رحلة الطالب ويخلق مركزاً للتعلم الإسلامي والصلوات والمشاركة المؤسسية.',
+		audience: 'الطلاب · أعضاء المجتمع · موظفو المعهد',
 		capabilities: [
-		  'مصحف تفاعلي مع التفسير والتلاوة الصوتية',
+		  'مصحف تفاعلي مع التفسير والتلاوة',
 		  'مواقيت صلاة دقيقة وتنبيهات الأذان',
 		  'موجز أخبار حي وتحديثات مؤسسية',
-		  'تصدير فوري للشهادات الرقمية'
+		  'تصدير فوري للشهادات الرقمية',
 		],
-		videoUrl: '/videos/bin-abbas-mobile.mp4',
-		poster: '/projects/mobile-poster-abbas.jpg'
-	  }
-	]
-  }
+		videoUrl: '/videos/bin-abbas-mobile.MP4',
+		poster: '/projects/mobile-poster-abbas.jpg',
+	  },
+	],
+  },
 };
 
+/* ─────────────────────────────────────────────────────────
+   IPHONE 17 FRAME — pill Dynamic Island, no notch, flat
+   titanium-style edges
+───────────────────────────────────────────────────────── */
+function IPhone17({ videoUrl, accentColor, isPlaying = true }) {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+	const v = videoRef.current;
+	if (!v) return;
+	v.load();
+	if (isPlaying) v.play().catch(() => {});
+  }, [videoUrl, isPlaying]);
+
+  return (
+	<div className="iphone17-shell" style={{ '--accent': accentColor }}>
+	  {/* Outer shell */}
+	  <div className="iphone17-body">
+		{/* Side buttons */}
+		<div className="iphone17-btn-mute" />
+		<div className="iphone17-btn-vol1" />
+		<div className="iphone17-btn-vol2" />
+		<div className="iphone17-btn-power" />
+
+		{/* Screen bezel */}
+		<div className="iphone17-screen-wrap">
+		  {/* Dynamic Island pill */}
+		  <div className="iphone17-dynamic-island" />
+
+		  {/* Video content */}
+		  <div className="iphone17-screen">
+			<video
+			  ref={videoRef}
+			  src={videoUrl}
+			  autoPlay
+			  loop
+			  muted
+			  playsInline
+			  className="iphone17-video"
+			/>
+		  </div>
+
+		  {/* Home bar */}
+		  <div className="iphone17-home-bar" />
+		</div>
+	  </div>
+	</div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────
+   MODAL
+───────────────────────────────────────────────────────── */
+function VideoModal({ app, onClose, isAr, t }) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+	requestAnimationFrame(() => setVisible(true));
+	const onKey = (e) => e.key === 'Escape' && handleClose();
+	window.addEventListener('keydown', onKey);
+	return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  function handleClose() {
+	setVisible(false);
+	setTimeout(onClose, 320);
+  }
+
+  return (
+	<div
+	  className="modal-backdrop"
+	  style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.32s ease' }}
+	  onClick={handleClose}
+	>
+	  {/* Close */}
+	  <button
+		className="modal-close"
+		style={{ [isAr ? 'left' : 'right']: '1.5rem', top: '1.5rem' }}
+		onClick={handleClose}
+	  >
+		<X size={20} />
+	  </button>
+
+	  {/* Content */}
+	  <div
+		className="modal-content"
+		style={{
+		  transform: visible ? 'translateY(0) scale(1)' : 'translateY(40px) scale(0.96)',
+		  opacity: visible ? 1 : 0,
+		  transition: 'transform 0.38s cubic-bezier(0.16,1,0.3,1), opacity 0.32s ease',
+		}}
+		onClick={(e) => e.stopPropagation()}
+	  >
+		{/* Left info panel */}
+		<div className={`modal-info ${isAr ? 'modal-info-rtl' : ''}`}>
+		  <span className="modal-tag" style={{ background: app.accentColor }}>
+			{t.livePreview}
+		  </span>
+		  <h2 className="modal-app-title">{app.title}</h2>
+		  <p className="modal-app-sub">{app.subtitle}</p>
+		  <p className="modal-preview-desc">{t.previewDesc}</p>
+
+		  <div className="modal-caps">
+			{app.capabilities.map((c, i) => (
+			  <div key={i} className="modal-cap-item">
+				<span className="modal-cap-dot" style={{ background: app.accentColor }} />
+				{c}
+			  </div>
+			))}
+		  </div>
+		</div>
+
+		{/* Phone */}
+		<div className="modal-phone">
+		  <IPhone17 videoUrl={app.videoUrl} accentColor={app.accentColor} />
+		</div>
+	  </div>
+	</div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────
+   APP CARD
+───────────────────────────────────────────────────────── */
+function AppCard({ app, onOpen, isAr, t, index }) {
+  const [hovered, setHovered] = useState(false);
+  const isReversed = index % 2 !== 0;
+
+  return (
+	<div
+	  className={`app-card ${isReversed ? 'app-card-reverse' : ''}`}
+	  style={{ '--accent': app.accentColor, '--accent-light': app.accentLight }}
+	>
+	  {/* ── TEXT SIDE ── */}
+	  <div className="app-card-text">
+		{/* Badge */}
+		<span className="app-badge" style={{ color: app.accentColor, background: app.accentLight }}>
+		  {app.badge}
+		</span>
+
+		{/* Title */}
+		<div className="app-title-row">
+		  <div className="app-icon-wrap" style={{ background: app.accentLight }}>
+			<span style={{ color: app.accentColor }}>{app.icon}</span>
+		  </div>
+		  <div>
+			<h2 className="app-name">{app.title}</h2>
+			<p className="app-subtitle-label">{app.subtitle}</p>
+		  </div>
+		</div>
+
+		<p className="app-desc">{app.desc}</p>
+
+		{/* Audience */}
+		<div className="app-info-block">
+		  <span className="app-info-label">
+			<Users size={12} style={{ display: 'inline', marginRight: 4 }} />
+			{t.builtFor}
+		  </span>
+		  <p className="app-audience">{app.audience}</p>
+		</div>
+
+		{/* Login note */}
+		<div className="app-login-block">
+		  <Globe size={12} className="app-login-icon" style={{ color: app.accentColor }} />
+		  <p>
+			{t.loginText1}
+			<strong style={{ color: app.accentColor }}>{t.workspaceDomain}</strong>
+			{t.loginText2}
+		  </p>
+		</div>
+
+		{/* Capabilities */}
+		<div className="app-caps-grid">
+		  {app.capabilities.map((c, i) => (
+			<div key={i} className="app-cap">
+			  <CheckCircle size={14} style={{ color: app.accentColor, flexShrink: 0 }} />
+			  <span>{c}</span>
+			</div>
+		  ))}
+		</div>
+
+		{/* CTA */}
+		<button
+		  className="app-cta"
+		  style={{ '--accent': app.accentColor }}
+		  onClick={() => onOpen(app)}
+		>
+		  <Play size={15} fill="currentColor" />
+		  {t.launchPreview}
+		  <ChevronRight size={15} />
+		</button>
+	  </div>
+
+	  {/* ── PHONE SIDE ── */}
+	  <div
+		className="app-card-phone"
+		onMouseEnter={() => setHovered(true)}
+		onMouseLeave={() => setHovered(false)}
+		onClick={() => onOpen(app)}
+	  >
+		{/* Ambient glow */}
+		<div
+		  className="phone-glow"
+		  style={{
+			background: app.accentColor,
+			opacity: hovered ? 0.22 : 0.1,
+			transition: 'opacity 0.5s ease',
+		  }}
+		/>
+
+		{/* The phone */}
+		<div
+		  className="phone-wrapper"
+		  style={{
+			transform: hovered ? 'translateY(-10px) rotateY(-4deg) scale(1.03)' : 'translateY(0) rotateY(0deg) scale(1)',
+			transition: 'transform 0.5s cubic-bezier(0.16,1,0.3,1)',
+		  }}
+		>
+		  {/* Static poster preview (not full interactive video in card) */}
+		  <div className="iphone17-shell" style={{ '--accent': app.accentColor }}>
+			<div className="iphone17-body">
+			  <div className="iphone17-btn-mute" />
+			  <div className="iphone17-btn-vol1" />
+			  <div className="iphone17-btn-vol2" />
+			  <div className="iphone17-btn-power" />
+			  <div className="iphone17-screen-wrap">
+				<div className="iphone17-dynamic-island" />
+				<div className="iphone17-screen">
+				  {app.poster ? (
+					<img src={app.poster} alt={app.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+				  ) : (
+					<div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #1e2d40, #0f1621)' }} />
+				  )}
+				</div>
+				<div className="iphone17-home-bar" />
+			  </div>
+			</div>
+		  </div>
+
+		  {/* Play overlay */}
+		  <div
+			className="phone-play-overlay"
+			style={{ opacity: hovered ? 1 : 0, transition: 'opacity 0.3s ease' }}
+		  >
+			<div
+			  className="phone-play-btn"
+			  style={{ background: app.accentColor }}
+			>
+			  <Play size={22} fill="white" color="white" style={{ marginLeft: 3 }} />
+			</div>
+			<span className="phone-tap-label">{t.tapToWatch}</span>
+		  </div>
+		</div>
+	  </div>
+	</div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────
+   MAIN COMPONENT
+───────────────────────────────────────────────────────── */
 export default function MobileApps() {
   const { isAr } = useLanguage();
   const t = translations[isAr ? 'ar' : 'en'];
-  const [activeVideo, setActiveVideo] = useState(null);
+  const [activeApp, setActiveApp] = useState(null);
 
-  // Prevent background scrolling when iPhone modal is open
   useEffect(() => {
-	if (activeVideo) document.body.style.overflow = 'hidden';
-	else document.body.style.overflow = 'unset';
-	return () => { document.body.style.overflow = 'unset'; };
-  }, [activeVideo]);
+	document.body.style.overflow = activeApp ? 'hidden' : '';
+	return () => { document.body.style.overflow = ''; };
+  }, [activeApp]);
+
+  const heroLines = t.heroTitle.split('\n');
 
   return (
-	<div 
-	  className={`min-h-screen bg-[#f8fafc] font-sans pb-24 ${isAr ? 'text-right' : 'text-left'}`} 
-	  dir={isAr ? 'rtl' : 'ltr'}
-	>
-	  
-	  {/* ─── HEADER (Matches Navbar Color) ─── */}
-	  <header className="bg-[#1e2d40] py-16 px-6 text-center relative overflow-hidden">
-		<div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-[#d4af37]/10 blur-[100px] rounded-full pointer-events-none" />
-		<div className="max-w-3xl mx-auto relative z-10">
-		  <span className="flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#d4af37] mb-4">
-			<Smartphone size={14} /> {t.heroBadge}
-		  </span>
-		  <h1 className="text-4xl md:text-5xl font-black text-white leading-tight mb-4">
-			{t.heroTitle}
-		  </h1>
-		  <p className="text-slate-300 font-medium leading-relaxed">
-			{t.heroSub}
-		  </p>
-		</div>
-	  </header>
+	<>
+	  {/* ── GLOBAL STYLES ── */}
+	  <style>{`
+		/* ── iPhone 17 Shell ── */
+		.iphone17-shell {
+		  display: flex;
+		  align-items: center;
+		  justify-content: center;
+		  width: 100%;
+		  height: 100%;
+		}
+		.iphone17-body {
+		  position: relative;
+		  width: 270px;
+		  height: 585px;
+		  background: linear-gradient(160deg, #2a2a2e 0%, #1a1a1e 50%, #2a2a2e 100%);
+		  border-radius: 44px;
+		  box-shadow:
+			0 0 0 1.5px rgba(255,255,255,0.18),
+			0 0 0 3px #111114,
+			0 0 0 4px rgba(255,255,255,0.07),
+			0 32px 80px rgba(0,0,0,0.6),
+			0 8px 24px rgba(0,0,0,0.4),
+			inset 0 1px 0 rgba(255,255,255,0.12);
+		  flex-shrink: 0;
+		}
 
-	  {/* ─── APP PREVIEW LIST ─── */}
-	  <main className="max-w-6xl mx-auto px-6 mt-16 space-y-24">
-		{t.apps.map((app, index) => (
-		  <div key={app.id} className={`flex flex-col lg:flex-row gap-12 lg:gap-20 items-center ${index % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`}>
-			
-			{/* TEXT & DETAILS SIDE */}
-			<div className="w-full lg:w-1/2 space-y-8">
-			  <div>
-				<div className="flex items-center gap-4 mb-4">
-				  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm border border-slate-100 ${app.bgTheme} ${app.color}`}>
-					{app.icon}
-				  </div>
-				  <div>
-					<h2 className="text-2xl font-black text-[#1e2d40]">{app.title}</h2>
-					<span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{app.badge}</span>
-				  </div>
-				</div>
-				<p className="text-sm text-slate-600 font-medium leading-loose">
-				  {app.desc}
-				</p>
-			  </div>
+		/* Side buttons — left */
+		.iphone17-btn-mute {
+		  position: absolute;
+		  left: -3px;
+		  top: 90px;
+		  width: 3px;
+		  height: 28px;
+		  background: linear-gradient(180deg, #3a3a3e, #222226);
+		  border-radius: 2px 0 0 2px;
+		  box-shadow: -1px 0 3px rgba(0,0,0,0.5);
+		}
+		.iphone17-btn-vol1 {
+		  position: absolute;
+		  left: -3px;
+		  top: 132px;
+		  width: 3px;
+		  height: 48px;
+		  background: linear-gradient(180deg, #3a3a3e, #222226);
+		  border-radius: 2px 0 0 2px;
+		  box-shadow: -1px 0 3px rgba(0,0,0,0.5);
+		}
+		.iphone17-btn-vol2 {
+		  position: absolute;
+		  left: -3px;
+		  top: 192px;
+		  width: 3px;
+		  height: 48px;
+		  background: linear-gradient(180deg, #3a3a3e, #222226);
+		  border-radius: 2px 0 0 2px;
+		  box-shadow: -1px 0 3px rgba(0,0,0,0.5);
+		}
+		/* Power — right */
+		.iphone17-btn-power {
+		  position: absolute;
+		  right: -3px;
+		  top: 148px;
+		  width: 3px;
+		  height: 64px;
+		  background: linear-gradient(180deg, #3a3a3e, #222226);
+		  border-radius: 0 2px 2px 0;
+		  box-shadow: 1px 0 3px rgba(0,0,0,0.5);
+		}
 
-			  <div className="space-y-4">
-				<div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-				  <h4 className="text-xs font-black uppercase tracking-wider text-[#1e2d40] mb-2 flex items-center gap-2">
-					<Globe size={14} className="text-[#d4af37]" /> {t.loginArch}
-				  </h4>
-				  <p className="text-xs text-slate-500 leading-relaxed font-medium">
-					{t.loginText1} <strong>{t.workspaceDomain}</strong> {t.loginText2}
-				  </p>
-				</div>
-				
-				<div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-				  <h4 className="text-xs font-black uppercase tracking-wider text-[#1e2d40] mb-2 flex items-center gap-2">
-					<Users size={14} className="text-[#d4af37]" /> {t.builtFor}
-				  </h4>
-				  <p className="text-xs text-slate-500 font-bold">{app.audience}</p>
-				</div>
-			  </div>
+		/* Screen area */
+		.iphone17-screen-wrap {
+		  position: absolute;
+		  inset: 10px;
+		  border-radius: 36px;
+		  overflow: hidden;
+		  background: #000;
+		  display: flex;
+		  flex-direction: column;
+		}
 
-			  <div>
-				<h4 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-4">{t.coreCap}</h4>
-				<ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-				  {app.capabilities.map((cap, i) => (
-					<li key={i} className="flex items-start gap-2 text-xs font-bold text-[#1e2d40]">
-					  <CheckCircle size={16} className="text-[#d4af37] shrink-0" />
-					  {cap}
-					</li>
-				  ))}
-				</ul>
-			  </div>
+		/* Dynamic Island — pill, centered top */
+		.iphone17-dynamic-island {
+		  position: absolute;
+		  top: 10px;
+		  left: 50%;
+		  transform: translateX(-50%);
+		  width: 62px;
+		  height: 20px;
+		  background: #000;
+		  border-radius: 20px;
+		  z-index: 10;
+		  box-shadow: 0 0 0 1px rgba(255,255,255,0.04);
+		}
+
+		.iphone17-screen {
+		  position: absolute;
+		  inset: 0;
+		}
+		.iphone17-video {
+		  width: 100%;
+		  height: 100%;
+		  object-fit: cover;
+		  display: block;
+		}
+
+		/* Home bar */
+		.iphone17-home-bar {
+		  position: absolute;
+		  bottom: 8px;
+		  left: 50%;
+		  transform: translateX(-50%);
+		  width: 100px;
+		  height: 4px;
+		  background: rgba(255,255,255,0.45);
+		  border-radius: 4px;
+		  z-index: 10;
+		}
+
+		/* ── Page ── */
+		.mobile-page {
+		  min-height: 100vh;
+		  background: #f8fafc;
+		  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+		  padding-bottom: 6rem;
+		}
+
+		/* ── Hero ── */
+		.hero {
+		  background: #1e2d40;
+		  padding: 7rem 1.5rem 5rem;
+		  text-align: center;
+		  position: relative;
+		  overflow: hidden;
+		}
+		.hero-glow {
+		  position: absolute;
+		  top: -80px;
+		  left: 50%;
+		  transform: translateX(-50%);
+		  width: 600px;
+		  height: 400px;
+		  background: radial-gradient(ellipse, rgba(212,175,55,0.18) 0%, transparent 70%);
+		  pointer-events: none;
+		}
+		.hero-badge {
+		  display: inline-flex;
+		  align-items: center;
+		  gap: 6px;
+		  font-size: 10px;
+		  font-weight: 800;
+		  letter-spacing: 0.18em;
+		  text-transform: uppercase;
+		  color: #d4af37;
+		  margin-bottom: 1.5rem;
+		  padding: 6px 14px;
+		  border: 1px solid rgba(212,175,55,0.25);
+		  border-radius: 100px;
+		  background: rgba(212,175,55,0.07);
+		}
+		.hero-title {
+		  font-size: clamp(2.8rem, 6vw, 4.5rem);
+		  font-weight: 900;
+		  color: #fff;
+		  line-height: 1.05;
+		  letter-spacing: -0.03em;
+		  margin-bottom: 1.25rem;
+		  white-space: pre-line;
+		}
+		.hero-title-accent {
+		  color: #d4af37;
+		}
+		.hero-sub {
+		  font-size: 0.95rem;
+		  color: rgba(255,255,255,0.5);
+		  max-width: 520px;
+		  margin: 0 auto;
+		  line-height: 1.75;
+		  font-weight: 400;
+		}
+
+		/* ── App Cards ── */
+		.cards-wrapper {
+		  max-width: 1100px;
+		  margin: 5rem auto;
+		  padding: 0 1.5rem;
+		  display: flex;
+		  flex-direction: column;
+		  gap: 7rem;
+		}
+
+		.app-card {
+		  display: flex;
+		  flex-direction: column;
+		  gap: 3rem;
+		  align-items: center;
+		}
+		@media (min-width: 1024px) {
+		  .app-card { flex-direction: row; gap: 5rem; }
+		  .app-card-reverse { flex-direction: row-reverse; }
+		}
+
+		.app-card-text {
+		  flex: 1;
+		  display: flex;
+		  flex-direction: column;
+		  gap: 1.25rem;
+		}
+
+		.app-badge {
+		  display: inline-block;
+		  font-size: 9px;
+		  font-weight: 800;
+		  letter-spacing: 0.15em;
+		  text-transform: uppercase;
+		  padding: 4px 10px;
+		  border-radius: 100px;
+		}
+
+		.app-title-row {
+		  display: flex;
+		  align-items: center;
+		  gap: 14px;
+		}
+		.app-icon-wrap {
+		  width: 48px;
+		  height: 48px;
+		  border-radius: 14px;
+		  display: flex;
+		  align-items: center;
+		  justify-content: center;
+		  flex-shrink: 0;
+		}
+		.app-name {
+		  font-size: 1.75rem;
+		  font-weight: 900;
+		  color: #0f1621;
+		  letter-spacing: -0.03em;
+		  line-height: 1;
+		}
+		.app-subtitle-label {
+		  font-size: 0.7rem;
+		  font-weight: 700;
+		  color: #94a3b8;
+		  letter-spacing: 0.1em;
+		  text-transform: uppercase;
+		  margin-top: 2px;
+		}
+		.app-desc {
+		  font-size: 0.88rem;
+		  color: #475569;
+		  line-height: 1.8;
+		  font-weight: 400;
+		}
+
+		.app-info-block {
+		  background: #fff;
+		  border: 1px solid #e2e8f0;
+		  border-radius: 14px;
+		  padding: 14px 16px;
+		}
+		.app-info-label {
+		  display: flex;
+		  align-items: center;
+		  font-size: 9px;
+		  font-weight: 800;
+		  letter-spacing: 0.15em;
+		  text-transform: uppercase;
+		  color: #94a3b8;
+		  margin-bottom: 6px;
+		}
+		.app-audience {
+		  font-size: 0.78rem;
+		  font-weight: 600;
+		  color: #1e2d40;
+		  line-height: 1.6;
+		}
+
+		.app-login-block {
+		  display: flex;
+		  align-items: flex-start;
+		  gap: 8px;
+		  font-size: 0.75rem;
+		  color: #64748b;
+		  line-height: 1.7;
+		  background: #f8fafc;
+		  border: 1px solid #e2e8f0;
+		  border-radius: 12px;
+		  padding: 12px 14px;
+		}
+		.app-login-icon { flex-shrink: 0; margin-top: 2px; }
+
+		.app-caps-grid {
+		  display: grid;
+		  grid-template-columns: 1fr 1fr;
+		  gap: 10px;
+		}
+		.app-cap {
+		  display: flex;
+		  align-items: flex-start;
+		  gap: 8px;
+		  font-size: 0.75rem;
+		  font-weight: 600;
+		  color: #1e2d40;
+		  line-height: 1.5;
+		}
+
+		.app-cta {
+		  display: inline-flex;
+		  align-items: center;
+		  gap: 8px;
+		  padding: 12px 22px;
+		  border-radius: 100px;
+		  background: var(--accent);
+		  color: #fff;
+		  font-size: 0.82rem;
+		  font-weight: 700;
+		  border: none;
+		  cursor: pointer;
+		  letter-spacing: 0.01em;
+		  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+		  align-self: flex-start;
+		}
+		.app-cta:hover {
+		  transform: translateY(-2px);
+		  filter: brightness(1.1);
+		  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+		}
+		.app-cta:active { transform: translateY(0); }
+
+		/* ── Phone wrapper in card ── */
+		.app-card-phone {
+		  flex: 1;
+		  display: flex;
+		  align-items: center;
+		  justify-content: center;
+		  cursor: pointer;
+		  perspective: 800px;
+		  min-height: 620px;
+		  position: relative;
+		}
+		.phone-glow {
+		  position: absolute;
+		  width: 300px;
+		  height: 300px;
+		  border-radius: 50%;
+		  filter: blur(80px);
+		  pointer-events: none;
+		}
+		.phone-wrapper {
+		  position: relative;
+		  z-index: 1;
+		  transform-style: preserve-3d;
+		}
+		.phone-play-overlay {
+		  position: absolute;
+		  inset: 0;
+		  display: flex;
+		  flex-direction: column;
+		  align-items: center;
+		  justify-content: center;
+		  z-index: 20;
+		  pointer-events: none;
+		}
+		.phone-play-btn {
+		  width: 60px;
+		  height: 60px;
+		  border-radius: 50%;
+		  display: flex;
+		  align-items: center;
+		  justify-content: center;
+		  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+		  backdrop-filter: blur(8px);
+		}
+		.phone-tap-label {
+		  margin-top: 10px;
+		  font-size: 11px;
+		  font-weight: 700;
+		  letter-spacing: 0.12em;
+		  text-transform: uppercase;
+		  color: #fff;
+		  text-shadow: 0 1px 8px rgba(0,0,0,0.6);
+		  background: rgba(15,22,33,0.55);
+		  padding: 4px 12px;
+		  border-radius: 100px;
+		}
+
+		/* ── Modal ── */
+		.modal-backdrop {
+		  position: fixed;
+		  inset: 0;
+		  z-index: 200;
+		  background: rgba(5,8,16,0.92);
+		  backdrop-filter: blur(16px);
+		  display: flex;
+		  align-items: center;
+		  justify-content: center;
+		  padding: 1rem;
+		}
+		.modal-close {
+		  position: absolute;
+		  z-index: 10;
+		  width: 44px;
+		  height: 44px;
+		  border-radius: 50%;
+		  background: rgba(255,255,255,0.08);
+		  border: 1px solid rgba(255,255,255,0.15);
+		  color: #fff;
+		  display: flex;
+		  align-items: center;
+		  justify-content: center;
+		  cursor: pointer;
+		  transition: background 0.2s;
+		}
+		.modal-close:hover { background: rgba(255,255,255,0.16); }
+
+		.modal-content {
+		  display: flex;
+		  flex-direction: column;
+		  align-items: center;
+		  gap: 3rem;
+		  max-width: 900px;
+		  width: 100%;
+		}
+		@media (min-width: 900px) {
+		  .modal-content { flex-direction: row; align-items: center; }
+		}
+
+		.modal-info {
+		  flex: 1;
+		  color: #fff;
+		  text-align: left;
+		}
+		.modal-info-rtl { text-align: right; }
+
+		.modal-tag {
+		  display: inline-block;
+		  font-size: 9px;
+		  font-weight: 800;
+		  letter-spacing: 0.2em;
+		  text-transform: uppercase;
+		  color: #0f1621;
+		  padding: 4px 12px;
+		  border-radius: 100px;
+		  margin-bottom: 1rem;
+		}
+		.modal-app-title {
+		  font-size: 2.2rem;
+		  font-weight: 900;
+		  letter-spacing: -0.03em;
+		  line-height: 1;
+		  margin-bottom: 4px;
+		}
+		.modal-app-sub {
+		  font-size: 0.75rem;
+		  font-weight: 600;
+		  color: rgba(255,255,255,0.4);
+		  letter-spacing: 0.1em;
+		  text-transform: uppercase;
+		  margin-bottom: 1rem;
+		}
+		.modal-preview-desc {
+		  font-size: 0.82rem;
+		  color: rgba(255,255,255,0.45);
+		  line-height: 1.7;
+		  margin-bottom: 1.5rem;
+		}
+		.modal-caps {
+		  display: flex;
+		  flex-direction: column;
+		  gap: 10px;
+		}
+		.modal-cap-item {
+		  display: flex;
+		  align-items: center;
+		  gap: 10px;
+		  font-size: 0.8rem;
+		  color: rgba(255,255,255,0.7);
+		  font-weight: 500;
+		}
+		.modal-cap-dot {
+		  width: 6px;
+		  height: 6px;
+		  border-radius: 50%;
+		  flex-shrink: 0;
+		}
+
+		.modal-phone {
+		  flex-shrink: 0;
+		  width: 290px;
+		  height: 630px;
+		  display: flex;
+		  align-items: center;
+		  justify-content: center;
+		}
+		.modal-phone .iphone17-body {
+		  width: 268px;
+		  height: 580px;
+		}
+
+		/* ── Divider between cards ── */
+		.cards-divider {
+		  width: 1px;
+		  height: 80px;
+		  background: linear-gradient(to bottom, transparent, #e2e8f0, transparent);
+		  margin: 0 auto;
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+		  * { transition: none !important; animation: none !important; }
+		}
+	  `}</style>
+
+	  <div className={`mobile-page ${isAr ? 'text-right' : 'text-left'}`} dir={isAr ? 'rtl' : 'ltr'}>
+
+		{/* ── HERO ── */}
+		<header className="hero">
+		  <div className="hero-glow" />
+		  <div style={{ position: 'relative', zIndex: 1 }}>
+			<div className="hero-badge">
+			  <Smartphone size={12} />
+			  {t.heroBadge}
 			</div>
-
-			{/* PREVIEW CARD SIDE */}
-			<div className="w-full lg:w-1/2 flex justify-center">
-			  <div 
-				onClick={() => setActiveVideo(app)}
-				className="group relative w-full max-w-[340px] aspect-[4/5] bg-white rounded-[2rem] border border-slate-200 shadow-xl overflow-hidden cursor-pointer hover:shadow-2xl hover:-translate-y-2 hover:border-[#d4af37]/50 transition-all duration-500"
-			  >
-				{/* Poster Image / Background */}
-				<div className="absolute inset-0 bg-slate-100">
-				  {app.poster ? (
-					<img src={app.poster} alt={app.title} className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />
-				  ) : (
-					<div className="w-full h-full bg-gradient-to-br from-[#1e2d40] to-slate-900" />
-				  )}
-				</div>
-
-				{/* Overlay & Play Button */}
-				<div className="absolute inset-0 bg-[#0f1621]/40 group-hover:bg-[#0f1621]/20 transition-colors duration-300 flex flex-col items-center justify-center backdrop-blur-[2px] group-hover:backdrop-blur-0">
-				  <div className="w-16 h-16 bg-white/20 backdrop-blur-md border border-white/30 rounded-full flex items-center justify-center text-white group-hover:bg-[#d4af37] group-hover:border-transparent group-hover:scale-110 transition-all duration-300 shadow-2xl">
-					<Play size={24} className={isAr ? "mr-1" : "ml-1"} fill="currentColor" />
-				  </div>
-				  <span className="text-white text-xs font-black uppercase tracking-widest mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-md">
-					{t.launchPreview}
-				  </span>
-				</div>
-			  </div>
-			</div>
-
+			<h1 className="hero-title">
+			  {heroLines.map((line, i) =>
+				i === 0
+				  ? <span key={i}>{line}<br /></span>
+				  : <span key={i} className="hero-title-accent">{line}</span>
+			  )}
+			</h1>
+			<p className="hero-sub">{t.heroSub}</p>
 		  </div>
-		))}
-	  </main>
+		</header>
 
-	  {/* ─── IPHONE 13 PRO MAX MODAL ─── */}
-	  {activeVideo && (
-		<div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-		  
-		  {/* Dark Backdrop */}
-		  <div 
-			className="absolute inset-0 bg-[#0f1621]/95 backdrop-blur-md transition-opacity cursor-pointer" 
-			onClick={() => setActiveVideo(null)}
-		  ></div>
+		{/* ── APP CARDS ── */}
+		<main className="cards-wrapper">
+		  {t.apps.map((app, index) => (
+			<React.Fragment key={app.id}>
+			  {index > 0 && <div className="cards-divider" />}
+			  <AppCard
+				app={app}
+				onOpen={setActiveApp}
+				isAr={isAr}
+				t={t}
+				index={index}
+			  />
+			</React.Fragment>
+		  ))}
+		</main>
 
-		  {/* Close Button */}
-		  <button 
-			onClick={() => setActiveVideo(null)}
-			className={`absolute top-6 ${isAr ? 'left-6' : 'right-6'} md:top-10 md:${isAr ? 'left-10' : 'right-10'} w-12 h-12 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full flex items-center justify-center text-white transition-all z-20`}
-		  >
-			<X size={24} />
-		  </button>
+	  </div>
 
-		  {/* iPhone 13 Pro Max CSS Mockup */}
-		  <div className="relative z-10 animate-in fade-in zoom-in duration-500">
-			{/* App Info Floating next to phone (Desktop only) */}
-			<div className={`hidden lg:block absolute top-1/2 -translate-y-1/2 w-64 ${isAr ? 'left-full ml-12 text-left' : 'right-full mr-12 text-right'}`}>
-			  <span className="inline-block px-3 py-1 bg-[#d4af37] text-[#1e2d40] text-[10px] font-black uppercase tracking-widest rounded-full mb-3">
-				{t.livePreview}
-			  </span>
-			  <h3 className="text-2xl font-black text-white mb-2">{activeVideo.title}</h3>
-			  <p className="text-xs text-slate-400 font-medium leading-relaxed">
-				{t.previewDesc}
-			  </p>
-			</div>
-
-			{/* The Device Frame */}
-			<div className="relative w-[300px] h-[650px] md:w-[340px] md:h-[736px] bg-black rounded-[3.5rem] border-[14px] border-[#1e2d40] shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden ring-1 ring-white/10">
-			  
-			  {/* Top Notch */}
-			  <div className="absolute top-0 inset-x-0 h-7 bg-[#1e2d40] rounded-b-3xl w-40 mx-auto z-20 flex justify-center items-center gap-2">
-				<div className="w-12 h-1.5 bg-black/50 rounded-full" />
-				<div className="w-2.5 h-2.5 bg-[#0f1621] rounded-full border border-white/10 relative">
-				  <div className="absolute inset-0 m-auto w-1 h-1 bg-blue-900 rounded-full shadow-[0_0_4px_#3b82f6]" />
-				</div>
-			  </div>
-
-			  {/* Screen Content (The Video) */}
-			  <div className="absolute inset-0 bg-[#0f1621] flex items-center justify-center">
-				{/* 
-				  Using key={activeVideo.id} forces React to remount the video element when switching apps.
-				  Explicitly wrapping the source tag and maintaining muted/playsInline is crucial for autoplay rules. 
-				*/}
-				<video 
-				  key={activeVideo.id}
-				  autoPlay 
-				  loop 
-				  muted 
-				  playsInline
-				  className="w-full h-full object-cover"
-				>
-				  <source src={activeVideo.videoUrl} type="video/mp4" />
-				  Your browser does not support the video tag.
-				</video>
-			  </div>
-
-			  {/* Bottom Home Indicator */}
-			  <div className="absolute bottom-2 inset-x-0 h-1 bg-white/50 rounded-full w-1/3 mx-auto z-20" />
-			</div>
-
-			{/* Hardware Buttons */}
-			<div className="absolute top-24 -left-[17px] w-1 h-8 bg-[#1e2d40] rounded-l-md" /> {/* Mute */}
-			<div className="absolute top-36 -left-[17px] w-1 h-12 bg-[#1e2d40] rounded-l-md" /> {/* Vol Up */}
-			<div className="absolute top-52 -left-[17px] w-1 h-12 bg-[#1e2d40] rounded-l-md" /> {/* Vol Down */}
-			<div className="absolute top-40 -right-[17px] w-1 h-16 bg-[#1e2d40] rounded-r-md" /> {/* Power */}
-		  </div>
-
-		</div>
+	  {/* ── MODAL ── */}
+	  {activeApp && (
+		<VideoModal
+		  app={activeApp}
+		  onClose={() => setActiveApp(null)}
+		  isAr={isAr}
+		  t={t}
+		/>
 	  )}
-
-	</div>
+	</>
   );
 }
