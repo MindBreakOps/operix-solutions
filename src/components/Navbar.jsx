@@ -4,7 +4,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { 
   Globe, Menu, X, LogIn, 
   Home, Info, Briefcase, Package, 
-  Users, Newspaper, Phone, Shield, Eye 
+  Users, Newspaper, Phone, Shield, Eye, Smartphone 
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -20,8 +20,9 @@ const navItems = [
 	  { path: '/', label: t.navHome || 'Home', icon: Home },
 	  { path: '/about', label: t.navAbout || 'About', icon: Info },
 	  { path: '/services', label: t.navServices || 'Services', icon: Briefcase },
-	 { path: '/vision', label: t.navVision || 'Vision', icon: Eye },
+	  { path: '/vision', label: t.navVision || 'Vision', icon: Eye },
 	  { path: '/products', label: t.navProducts || 'Products', icon: Package },
+	  { path: '/mobile-apps', label: t.navMobileApps || 'Mobile Apps', icon: Smartphone }, // <-- Added Mobile Apps Link
 	  { path: '/clients', label: t.navClients || 'Clients', icon: Users },
 	  { path: '/news', label: t.navNews || 'News', icon: Newspaper },
 	  { path: '/contact', label: t.navContact || 'Contact', icon: Phone },

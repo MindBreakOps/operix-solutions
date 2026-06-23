@@ -45,14 +45,15 @@ export default function Footer() {
   ];
 
   const corpNav = [
-	{ to: '/',           label: isAr ? 'الرئيسية'              : 'Home' },
-	{ to: '/about',      label: isAr ? 'من نحن'                : 'About Us' },
-	{ to: '/services',   label: isAr ? 'خدماتنا'               : 'Our Services' },
-	{ to: '/vision',     label: isAr ? 'رؤيتنا'                 : 'Our Vision'},
-	{ to: '/products',   label: isAr ? 'منتجاتنا'               : 'Our Products' },
-	{ to: '/clients',    label: isAr ? 'العملاء والشركاء'      : 'Clients & Partners' },
-	{ to: '/news',       label: isAr ? 'الأخبار'               : 'News' },
-	{ to: '/contact',    label: isAr ? 'اتصل بنا'              : 'Contact' },
+	{ to: '/',             label: isAr ? 'الرئيسية'              : 'Home' },
+	{ to: '/about',        label: isAr ? 'من نحن'                : 'About Us' },
+	{ to: '/services',     label: isAr ? 'خدماتنا'               : 'Our Services' },
+	{ to: '/vision',       label: isAr ? 'رؤيتنا'                 : 'Our Vision'},
+	{ to: '/products',     label: isAr ? 'منتجاتنا'               : 'Our Products' },
+	{ to: '/mobile-apps',  label: isAr ? 'تطبيقات الجوال'        : 'Mobile Apps' }, // <-- Added Mobile Apps Link
+	{ to: '/clients',      label: isAr ? 'العملاء والشركاء'      : 'Clients & Partners' },
+	{ to: '/news',         label: isAr ? 'الأخبار'               : 'News' },
+	{ to: '/contact',      label: isAr ? 'اتصل بنا'              : 'Contact' },
 	{ 
 		to: 'https://www.sudan.operix-solutions.com', 
 		label: isAr ? 'أوبيريكس 249' : 'OPERIX 249', 
@@ -74,7 +75,6 @@ export default function Footer() {
 	{ email: 'sudan.office@operix-solutions.com', loc: 'Khartoum, Sudan', label: isAr ? 'المكتب السوداني' : 'Sudan Office' },
   ];
 
-  // Added YouTube with official #FF0000 brand color
   const socials = [
 	{ href: 'https://whatsapp.com/channel/0029VbCjmxEChq6KQEBPiX1C', Icon: MessageCircle, bg: 'bg-[#25D366]', color: 'text-white', title: 'WhatsApp Channel' },
 	{ href: 'https://wa.me/966500823643',                              Icon: Phone,         bg: 'bg-[#128C7E]', color: 'text-white', title: 'WhatsApp Business' },

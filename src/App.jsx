@@ -10,14 +10,14 @@ import GlobalLayout from './components/GlobalLayout';
 import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
-import Vision from './pages/Vision'
+import Vision from './pages/Vision';
 import Products from './pages/Products';
 import Clients from './pages/Clients';
 import News from './pages/News';
 import Legal from './pages/Legal';
 import Contact from './pages/Contact';
 import Subscription from './pages/Subscription';
-
+import MobileApps from './pages/MobileApps'; // <-- Added Mobile Apps Import
 
 // Admin Gateways
 import CmsLogin from './pages/CmsLogin';
@@ -42,6 +42,7 @@ export default function App() {
               <Route path="/legal" element={<Legal />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/subscription" element={<Subscription />} />
+              <Route path="/mobile-apps" element={<MobileApps />} /> {/* <-- Added Mobile Apps Route */}
             </Route>
 
             {/* SECURE INTERNAL ADMINISTRATIVE PORTALS */}
