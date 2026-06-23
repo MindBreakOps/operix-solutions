@@ -377,7 +377,7 @@ export default function Projects() {
 	  subAr: 'البوابة المؤسسية',
 	  descEn: 'Dedicated administrative portal mapped for institutional resource planning, community outreach tracking, and digital archive management.',
 	  descAr: 'بوابة إدارية مخصصة لتخطيط الموارد المؤسسية، وتتبع التواصل المجتمعي، وإدارة الأرشيف الرقمي.',
-	  url: 'https://www.aljmaan.operix-solutions.online/abdullah-bin-abbas-qc',
+	  url: 'bin-abbas.operix-solutions.online',
 	  icon: <Landmark size={20} />,
 	  color: 'bg-white text-emerald-800 border border-slate-100',
 	  image: '/projects/abbas.png'
