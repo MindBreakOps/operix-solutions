@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { LanguageProvider } from './context/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
 
@@ -50,6 +51,7 @@ export default function App() {
             <Route path="/admindashboard" element={<AdminDashboard />} />
 
           </Routes>
+          <SpeedInsights />
         </AuthProvider>
       </BrowserRouter>
     </LanguageProvider>
