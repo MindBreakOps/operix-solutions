@@ -383,14 +383,14 @@ export default function Projects() {
 	  image: '/projects/abbas.png'
 	},
 	{
-	  id: 'naseem',
-	  titleEn: 'Naseem City',
-	  titleAr: 'مدينة النسيم',
+	  id: 'Community Hub',
+	  titleEn: 'Hasad',
+	  titleAr: 'بوابة حصاد الالكترونية',
 	  subEn: 'Smart Community Hub',
 	  subAr: 'مركز المجتمع الذكي',
 	  descEn: 'Real estate and property management ecosystem handling resident requests, facility maintenance logs, and community billing cycles.',
 	  descAr: 'منظومة إدارة العقارات والممتلكات للتعامل مع طلبات السكان، وسجلات صيانة المرافق، ودورات الفوترة المجتمعية.',
-	  url: 'https://www.aljmaan.operix-solutions.online/Naseem_City',
+	  url: 'https://www.hasad.operix-solutions.online/Naseem_City',
 	  icon: <Building2 size={20} />,
 	  color: 'bg-red-900 text-white',
 	  image: '/projects/naseem.png'
