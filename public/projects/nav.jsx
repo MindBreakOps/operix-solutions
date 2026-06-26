@@ -13,7 +13,7 @@ export default function Navbar() {
 
   const navItems = [
 	{ path: '/', label: t.navHome || 'Home' },
-	{ path: '/about', label: t.navAbout || 'About Us' },
+	{ path: '/about', label: t.navAbout || 'About' },
 	{ path: '/services', label: t.navServices || 'Our Services' },
 	{ path: '/projects', label: t.navProjects || 'Projects & Ops' },
 	{ path: '/clients', label: t.navClients || 'Clients & Partners' },
