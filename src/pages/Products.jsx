@@ -157,7 +157,7 @@ export default function Projects() {
 	  subAr: 'منظومة الإدارة المدرسية',
 	  descEn: 'Cloud-based school management platform purpose-built for Ministry of Education standards across the Middle East. Combines academic governance with modern technology to empower school leaders and teachers.',
 	  descAr: 'منصة سحابية متكاملة مصممة خصيصاً لتلبي معايير وزارات التعليم في الشرق الأوسط. نجمع بين رصانة الإدارة الأكاديمية وسلاسة التقنية الحديثة لتمكين قادة المدارس والمعلمين.',
-	  url: 'https://www.edu.operix-solutions.com',
+	  url: 'https://www.edu.operix-solutions.online',
 	  icon: <GraduationCap size={20} />,
 	  accentColor: '#f59e0b',
 	  badgeBg: 'bg-[#1a3a6b]/90',
