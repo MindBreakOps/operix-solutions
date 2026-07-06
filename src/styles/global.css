@@ -37,5 +37,19 @@ h4 {
   @apply !text-sm sm:!text-base !font-black; 
   font-family: Georgia, Cambria, "Times New Roman", Times, serif; 
 }
+/* ─── 4. LEAFLET MAP CUSTOMIZATION ─── */
 
-/* ─── END OF CSS ─── */
+/* 1. Make the Sea Dark Navy */
+.leaflet-container {
+  background-color: var(--color-navy) !important;
+}
+
+/* 2. Hide the default image tiles so ONLY your Gold GeoJSON map shows */
+.leaflet-tile-pane {
+  display: none !important; 
+}
+
+/* 3. Hide Leaflet attribution for a cleaner enterprise look (optional) */
+.leaflet-control-container {
+  display: none !important;
+}

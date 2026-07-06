@@ -4,8 +4,7 @@ import { supabaseClient as supabase } from '../config/supabase';
 import { useLanguage } from '../context/LanguageContext';
 import {
   ArrowRight, ArrowLeft, ExternalLink, Globe2, Building2, Car,
-  BadgeCheck, Stethoscope, Users, Settings, FileCheck, TrendingUp, Zap,Shield,
-  Server, ShieldCheck, Activity, GraduationCap
+  BadgeCheck, Stethoscope, Users, Settings, FileCheck, TrendingUp, Zap
 } from 'lucide-react';
 import ReviewsSection from './ReviewsSection';
 
@@ -144,119 +143,71 @@ export default function Home() {
 	runTelemetry();
   }, []);
 
-  // ── 1. MAP INITIALIZATION & GEOJSON RENDERING (Runs Once) ──
-	useEffect(() => {
-	  if (!mapReady || !window.L || !mapContainerRef.current || mapInstanceRef.current) return;
-	  
-	  const L = window.L;
-	  const map = L.map(mapContainerRef.current, {
-		zoomControl: false, attributionControl: false,
-		maxBounds: [[-90, -180], [90, 180]], maxBoundsViscosity: 1.0
-	  }).setView([24.0, 35.0], 2);
-	  
-	  mapInstanceRef.current = map;
-  
-	  // Fetch the vector geometry of the world
-	  fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
-		.then(res => res.json())
-		.then(geojsonData => {
-		  // Draw the Premium Gold Lands
-		  L.geoJSON(geojsonData, {
-			style: {
-			  fillColor: '#c9a84c', 
-			  weight: 0.8,
-			  color: '#1e2d40',     
-			  fillOpacity: 0.95
-			}
-		  }).addTo(map);
-		})
-		.catch(err => console.error("Error loading vector map data:", err));
-  
-	}, [mapReady]);
-	
-		// ── 2. RENDER LIVE VISITORS (Runs when Supabase data arrives) ──
-		  useEffect(() => {
-			// Only run if the map is ready and we actually have country data
-			if (!mapInstanceRef.current || !window.L || Object.keys(activeCountries).length === 0) return;
-			
-			const map = mapInstanceRef.current;
-			const L = window.L;
-		
-			// Clear existing markers if this re-runs (prevents duplicates)
-			map.eachLayer((layer) => {
-			  if (layer instanceof L.CircleMarker) {
-				map.removeLayer(layer);
-			  }
-			});
-		
-			// Draw the shining visitor markers on top
-			Object.entries(activeCountries).forEach(([code, count]) => {
-			  const coords = countryCoordinates[code];
-			  if (!coords) return;
-			  const r = Math.min(6 + count * 1.5, 24);
-			  
-			  const circle = L.circleMarker([coords.lat, coords.lon], {
-				radius: r, 
-				fillColor: '#ffffff', 
-				color: '#1e2d40',     
-				weight: 2, 
-				opacity: 1, 
-				fillOpacity: 1,
-				className: 'live-pulse-marker'
-			  }).addTo(map);
-			  
-			  circle.bindPopup(`<b style="color:#1e2d40">${coords.name}</b><br/><span style="color:#c9a84c;font-weight:700">${count} visits</span>`);
-			});
-		
-		  }, [activeCountries, mapReady]);
+  useEffect(() => {
+	if (!mapReady || !window.L || Object.keys(activeCountries).length === 0 || !mapContainerRef.current || mapInstanceRef.current) return;
+	const L = window.L;
+	const map = L.map(mapContainerRef.current, {
+	  zoomControl: false, attributionControl: false,
+	  maxBounds: [[-90, -180], [90, 180]], maxBoundsViscosity: 1.0
+	}).setView([24.0, 35.0], 2);
+	mapInstanceRef.current = map;
+	L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+	  maxZoom: 18, minZoom: 2, noWrap: true
+	}).addTo(map);
+	Object.entries(activeCountries).forEach(([code, count]) => {
+	  const coords = countryCoordinates[code];
+	  if (!coords) return;
+	  const r = Math.min(6 + count * 1.5, 24);
+	  const circle = L.circleMarker([coords.lat, coords.lon], {
+		radius: r, fillColor: '#c5a059', color: '#fff',
+		weight: 1.5, opacity: 0.9, fillOpacity: 0.75
+	  }).addTo(map);
+	  circle.bindPopup(`<b style="color:#1e2d40">${coords.name}</b><br/><span style="color:#c5a059;font-weight:700">${count} visits</span>`);
+	});
+  }, [mapReady, activeCountries]);
+
   const ecosystems = [
 	{
 	  icon: <Settings size={20} />, title: 'OPERIX Operations', accentColor: '#3b82f6',
 	  badge: isAr ? 'إدارة ميدانية' : 'FIELD OPS',
-	  desc: isAr ? 'مركز قيادة لإدارة الأسطول، وتوجيه القوى العاملة، وكاميرات التعرف الذكي (ANPR).' : 'Command center for fleet logistics, gig workforce orchestration, and ANPR gateways.',
-	  url: 'https://www.ops.operix-solutions.online'
-	},
-	{
-	  icon: <FileCheck size={20} />, title: 'OPERIX FMIS', accentColor: '#c9a84c',
-	  badge: isAr ? 'نظام مالي' : 'CORPORATE LEDGER',
-	  desc: isAr ? 'نظام إدارة مالية وتسويات متوافق مع المرحلة الثانية لهيئة الزكاة والدخل (ZATCA).' : 'Corporate ledger reconciliation, automated budgets, and ZATCA Phase 2 compliance.',
-	  url: 'https://www.fmis.operix-solutions.online'
+	  desc: isAr ? 'محور العمليات الأساسي ومراقبة الكاميرات الذكية.' : 'Core operations hub, ANPR monitoring, and gig deployment.',
+	  url: 'https:///www.ops.operix-solutions.online'
 	},
 	{
 	  icon: <Users size={20} />, title: 'OPERIX HRIS', accentColor: '#10b981',
 	  badge: isAr ? 'الموارد البشرية' : 'HUMAN CAPITAL',
-	  desc: isAr ? 'أتمتة الحضور الجغرافي، معالجة الرواتب، والفرز الآلي للسير الذاتية بالذكاء الاصطناعي.' : 'GPS-enforced attendance, AI-powered CV scanning, and master employee directories.',
-	  url: 'https://www.hris.operix-solutions.online'
+	  desc: isAr ? 'أتمتة الحضور عبر GPS والخدمة الذاتية للموظفين.' : 'GPS-enforced attendance, payroll automation, and self-service.',
+	  url: 'https:///www.hris.operix-solutions.online'
+	},
+	{
+	  icon: <FileCheck size={20} />, title: 'OPERIX FMIS', accentColor: '#c5a059',
+	  badge: isAr ? 'معتمد من هيئة الزكاة' : 'ZATCA PHASE 2',
+	  desc: isAr ? 'إدارة مالية مؤسسية متوافقة تماماً.' : 'Enterprise finance. Fully compliant. From quotes to ZATCA invoices.',
+	  url: 'https://www.fmis.operix-solutions.online'
 	},
 	{
 	  icon: <Stethoscope size={20} />, title: 'OPERIX Care', accentColor: '#f43f5e',
-	  badge: isAr ? 'إدارة سريرية' : 'CLINICAL CORE',
-	  desc: isAr ? 'منظومة إدارة طبية متقدمة تشمل الاستشارات عبر الإدخال الصوتي وسجلات المرضى.' : 'Advanced medical workflow ecosystem featuring voice-to-text clinical notes and triage.',
-	  url: 'https://www.care.operix-solutions.online'
-	},
-	{
-	  icon: <GraduationCap size={20} />, title: 'OPERIX Edu', accentColor: '#6366f1',
-	  badge: isAr ? 'إدارة مدرسية' : 'EDUCATION',
-	  desc: isAr ? 'منصة سحابية متكاملة للرصد الأكاديمي، وتتبع السلوك، وإصدار الشهادات (Dox Studio).' : 'Enterprise school administration combining academic tracking with the Dox Studio generator.',
-	  url: 'https://www.edu.operix-solutions.com'
+	  badge: isAr ? 'إدارة المستشفيات' : 'CLINICAL HIS',
+	  desc: isAr ? 'منظومة الإدارة الطبية المتقدمة والتشخيص الصوتي.' : 'Advanced medical ecosystem, patient history, and voice notes.',
+	  url: 'https:///www.care.operix-solutions.online'
 	}
   ];
 
-  const coreValues = [
+  const opCards = [
 	{
-	  icon: <Server size={22} />, color: '#1e2d40',
-	  title: isAr ? "بنية مؤسسية موحدة" : "Unified Architecture",
-	  desc: isAr ? "استبدال الأنظمة المجزأة ببيئة رقمية واحدة متصلة بالكامل عبر كافة الأقسام." : "Replace fragmented legacy software with a highly scalable, integrated digital environment."
+	  icon: <Building2 size={22} />, color: '#1e2d40',
+	  title: isAr ? "إدارة المرافق" : "Facility Management",
+	  desc: isAr ? "إدارة شاملة للمرافق التجارية ومواقف السيارات الذكية." : "Comprehensive management of commercial facilities and smart parking grids."
 	},
 	{
-	  icon: <Activity size={22} />, color: '#c9a84c',
-	  title: isAr ? "تحليلات لحظية عن بعد" : "Real-Time Telemetry",
-	  desc: isAr ? "مراقبة تدفق العمليات وتحديثات البيانات الحية لحظة بلحظة لدعم اتخاذ القرار." : "Live data visualization and dynamic reporting to empower C-level decision-making."
+	  icon: <Car size={22} />, color: '#c5a059',
+	  title: isAr ? "الفالي والفعاليات" : "VIP Valet & Events",
+	  desc: isAr ? "خدمات ركن السيارات لكبار الشخصيات وإدارة لوجستيات الفعاليات." : "Flawless VIP valet services and logistics management for large-scale events."
 	},
 	{
-	  icon: <ShieldCheck size={22} />, color: '#10b981',
-	  title: isAr ? "أمان وامتثال معتمد" : "Security & Compliance",
-	  desc: isAr ? "تشفير سحابي متقدم وتوافق تام مع اللوائح الحكومية وأنظمة هيئة الزكاة والدخل." : "Bank-grade encryption and full regulatory compliance with ZATCA Phase 2 invoicing standards."
+	  icon: <BadgeCheck size={22} />, color: '#10b981',
+	  title: isAr ? "الكوادر البشرية الخبيرة" : "Expert Human Capital",
+	  desc: isAr ? "فريق متكامل جاهز لإدارة العمليات الميدانية اليومية." : "Our master task force manages day-to-day field operations for unparalleled efficiency."
 	}
   ];
 
@@ -280,38 +231,36 @@ export default function Home() {
 		  from { opacity: 0; transform: translateY(-16px); }
 		  to { opacity: 1; transform: translateY(0); }
 		}
+		@keyframes ping-slow {
+		  0% { transform: scale(1); opacity: 0.8; }
+		  100% { transform: scale(2.2); opacity: 0; }
+		}
 		@keyframes shimmerGold {
 		  0% { background-position: -200% center; }
 		  100% { background-position: 200% center; }
 		}
-		@keyframes markerGlow {
-		  0% { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5)); transform: scale(1); }
-		  100% { filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1)); transform: scale(1.15); }
-		}
-		
 		.hero-tag { animation: fadeSlideDown 0.6s cubic-bezier(0.22,1,0.36,1) 0.1s both; }
 		.hero-h1  { animation: fadeSlideUp 0.75s cubic-bezier(0.22,1,0.36,1) 0.2s both; }
 		.hero-p   { animation: fadeSlideUp 0.75s cubic-bezier(0.22,1,0.36,1) 0.35s both; }
 		.hero-cta { animation: fadeSlideUp 0.75s cubic-bezier(0.22,1,0.36,1) 0.5s both; }
 		.hero-stats { animation: fadeSlideUp 0.75s cubic-bezier(0.22,1,0.36,1) 0.65s both; }
-		
 		.eco-card { transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease; }
 		.eco-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(30,45,64,0.12); }
-		
 		.op-card { transition: all 0.3s cubic-bezier(0.22,1,0.36,1); }
 		.op-card:hover { transform: translateY(-3px); }
-		
 		.cta-btn { transition: all 0.25s cubic-bezier(0.22,1,0.36,1); }
-		.cta-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(201, 168, 76, 0.35); }
-		
-		/* The Shining White Pulse against the Gold Land */
-		.live-pulse-marker path {
-		  animation: markerGlow 1.2s infinite alternate ease-in-out;
-		  transform-origin: center;
+		.cta-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(197, 160, 89, 0.35); }
+		.dot-ping::after {
+		  content: '';
+		  position: absolute;
+		  inset: 0;
+		  border-radius: 50%;
+		  background: #c5a059;
+		  animation: ping-slow 1.8s cubic-bezier(0,0,0.2,1) infinite;
 		}
-
+		/* ── PREMIUM GOLD TEXT EFFECT ── */
 		.premium-gold-text {
-		  background: linear-gradient(to right, #c9a84c 0%, #fef08a 40%, #c9a84c 80%);
+		  background: linear-gradient(to right, #c5a059 0%, #f3de9a 40%, #c5a059 80%);
 		  background-size: 200% auto;
 		  color: transparent;
 		  -webkit-background-clip: text;
@@ -329,7 +278,7 @@ export default function Home() {
 		}} />
 		
 		<div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full pointer-events-none"
-		  style={{ background: 'radial-gradient(ellipse, #c9a84c20 0%, transparent 70%)', animation: 'floatGlow 7s ease-in-out infinite' }} />
+		  style={{ background: 'radial-gradient(ellipse, #c5a05920 0%, transparent 70%)', animation: 'floatGlow 7s ease-in-out infinite' }} />
 		<div className="absolute -bottom-20 -left-20 w-[340px] h-[340px] rounded-full pointer-events-none"
 		  style={{ background: 'radial-gradient(ellipse, #ffffff05 0%, transparent 70%)', animation: 'floatGlow 9s ease-in-out infinite reverse' }} />
 
@@ -337,58 +286,60 @@ export default function Home() {
 		  <div className="max-w-3xl mx-auto text-center" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
 			
 			{/* Tag */}
-			<div className="hero-tag inline-flex items-center gap-2 bg-[#c9a84c]/10 border border-[#c9a84c]/30 text-[#c9a84c] px-4 py-1.5 rounded-full mb-6 shadow-[0_0_15px_rgba(201,168,76,0.15)]">
-			  <ShieldCheck size={14} />
+			<div className="hero-tag inline-flex items-center gap-2 bg-[#c5a059]/10 border border-[#c5a059]/30 text-[#c5a059] px-4 py-1.5 rounded-full mb-6 shadow-[0_0_15px_rgba(197,160,89,0.15)]">
+			  <span className="relative w-2 h-2 flex-shrink-0">
+				<span className="dot-ping relative inline-block w-2 h-2 bg-[#c5a059] rounded-full" />
+			  </span>
 			  <span className="text-[10px] font-black uppercase tracking-widest">
-				{isAr ? "البنية التحتية البرمجية للمؤسسات" : "Enterprise Software Architecture"}
+				{isAr ? "الجيل القادم من البنية التشغيلية" : "NEXT-GEN OPERATIONAL INFRASTRUCTURE"}
 			  </span>
 			</div>
 
 			{/* H1 */}
 			<h1 className="hero-h1 text-4xl md:text-5xl lg:text-[3.75rem] font-black tracking-tight leading-[1.08] mb-5 text-white">
 			  {isAr ? (
-				<>مركز القيادة الموحد<br />للمؤسسات الحديثة <span className="premium-gold-text">.</span></>
+				<>تمكين المنشآت الكبرى<br />عبر <span className="premium-gold-text">{brandName}</span></>
 			  ) : (
-				<>The Unified Command Center<br />for Modern Enterprise <span className="premium-gold-text">.</span></>
+				<>Empowering Enterprises<br />with <span className="premium-gold-text">{brandName}</span></>
 			  )}
 			</h1>
 
 			{/* Paragraph */}
 			<p className="hero-p text-sm md:text-base text-slate-300 font-medium leading-relaxed max-w-2xl mx-auto mb-8">
 			  {isAr
-				? "تتخصص أوبيريكس في تصميم ونشر بنى تحتية سحابية موحدة، تستبدل الأنظمة القديمة والمجزأة ببيئات رقمية آمنة تعمل في الوقت الفعلي وتدير كافة عملياتك ومواردك."
-				: `${brandName} architects highly scalable, secure cloud infrastructure. We replace fragmented legacy software with unified, real-time digital environments to run your entire enterprise.`}
+				? "نحن لا نكتفي ببناء الأنظمة الذكية فحسب، بل نوفر الكوادر الخبيرة لتشغيل وإدارة المرافق، مواقف السيارات، والفعاليات الكبرى على أرض الواقع."
+				: "We don't just build intelligent systems. We deploy expert personnel to run your facilities, parking grids, and large-scale events flawlessly on the ground."}
 			</p>
 
 			{/* CTA Buttons */}
 			<div className="hero-cta flex flex-wrap justify-center gap-4">
 			  <button
 				onClick={() => navigate('/contact')}
-				className="cta-btn bg-gradient-to-r from-[#c9a84c] to-[#fef08a] hover:from-[#fef08a] hover:to-[#fffbd1] text-[#1e2d40] px-8 py-3.5 rounded-xl text-[11px] font-black tracking-widest uppercase inline-flex items-center gap-2 shadow-lg"
+				className="cta-btn bg-gradient-to-r from-[#c5a059] to-[#d4af37] hover:from-[#d4af37] hover:to-[#f3de9a] text-[#1e2d40] px-8 py-3.5 rounded-xl text-[11px] font-black tracking-widest uppercase inline-flex items-center gap-2 shadow-lg"
 			  >
 				{isAr ? "طلب عرض تجريبي" : "SCHEDULE A DEMO"}
 				{isAr ? <ArrowLeft size={15} /> : <ArrowRight size={15} />}
 			  </button>
 			  <button
 				onClick={() => navigate('/about')}
-				className="cta-btn bg-white/5 border border-white/20 hover:bg-white/10 hover:border-[#c9a84c] text-white px-8 py-3.5 rounded-xl text-[11px] font-black tracking-widest uppercase inline-flex items-center gap-2 shadow-sm"
+				className="cta-btn bg-white/5 border border-white/20 hover:bg-white/10 hover:border-[#c5a059] text-white px-8 py-3.5 rounded-xl text-[11px] font-black tracking-widest uppercase inline-flex items-center gap-2 shadow-sm"
 			  >
-				{isAr ? "تعرف على الشركة" : "ABOUT OPERIX"}
+				{isAr ? "تعرف علينا" : "LEARN MORE"}
 			  </button>
 			</div>
 
 			{/* Stat bar */}
 			<div className="hero-stats mt-14 flex flex-wrap justify-center gap-10">
 			  {[
-				{ label: isAr ? 'زيارة موثقة للأنظمة' : 'ENTERPRISE HITS', val: hits },
-				{ label: isAr ? 'مستخدم فريد' : 'UNIQUE LOGINS', val: visitors },
+				{ label: isAr ? 'زيارة موثقة' : 'TOTAL HITS', val: hits },
+				{ label: isAr ? 'زائر فريد' : 'UNIQUE VISITORS', val: visitors },
 				{ label: isAr ? 'دولة نشطة' : 'ACTIVE COUNTRIES', val: Object.keys(activeCountries).length },
 			  ].map((s, i) => (
 				<div key={i} className="flex flex-col items-center">
 				  <span className="text-3xl font-black text-white tabular-nums">
 					<Counter target={s.val} />
 				  </span>
-				  <span className="text-[10px] font-bold text-[#c9a84c] uppercase tracking-widest mt-1.5">{s.label}</span>
+				  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">{s.label}</span>
 				</div>
 			  ))}
 			</div>
@@ -398,64 +349,61 @@ export default function Home() {
 
 	  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 space-y-16">
 
-		{/* ── COMPANY VALUES + MAP BENTO ───────────────────────────── */}
+		{/* ── OPERATIONS + MAP BENTO ───────────────────────────── */}
 		<Reveal>
 		  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
 
-			{/* Core Values Panel */}
-			<div className="lg:col-span-6 bg-white border border-slate-200 rounded-2xl p-7 md:p-9 shadow-sm flex flex-col">
+			{/* Operations Panel */}
+			<div className="lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-7 md:p-9 shadow-sm flex flex-col">
 			  <div className="flex items-center gap-2 mb-1">
-				<Shield size={16} className="text-[#c9a84c]" />
-				<span className="text-[10px] font-black uppercase tracking-widest text-[#c9a84c]">
-				  {isAr ? "الرؤية المؤسسية" : "Corporate Vision"}
+				<Zap size={16} className="text-[#c5a059]" />
+				<span className="text-[10px] font-black uppercase tracking-widest text-[#c5a059]">
+				  {isAr ? "الكفاءة التشغيلية" : "Operational Excellence"}
 				</span>
 			  </div>
 			  <h2 className="text-2xl font-black font-serif text-[#1e2d40] mb-2">
-				{isAr ? "بنية مؤسسية متطورة" : "Enterprise-Grade Architecture"}
+				{isAr ? "إدارة تشغيلية متكاملة" : "Full-Spectrum Operations"}
 			  </h2>
 			  <p className="text-slate-500 text-sm font-medium mb-7">
 				{isAr
-				  ? "نحن نؤمن بأن استقرار العمليات يبدأ من قوة البنية التحتية. أنظمتنا مصممة للعمل في أصعب البيئات."
-				  : "We believe operational success requires unbreakable infrastructure. Our systems are engineered to scale seamlessly."}
+				  ? "نستخدم أنظمتنا الخاصة لإدارة مشاريعك وتوفير كوادرنا لتشغيلها."
+				  : "We deploy our proprietary systems alongside our master task force to guarantee success."}
 			  </p>
-			  
-			  <div className="flex flex-col gap-4 flex-grow">
-				{coreValues.map((card, i) => (
-				  <div key={i} className="op-card bg-slate-50 border border-slate-200 rounded-xl p-5 flex items-center gap-4 hover:bg-white hover:border-[#c9a84c]/40 hover:shadow-md cursor-default" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
-					<div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm bg-white border border-slate-200"
-					  style={{ color: card.color }}>
+			  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-grow">
+				{opCards.map((card, i) => (
+				  <div key={i} className="op-card bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col items-start hover:bg-white hover:border-[#c5a059]/30 hover:shadow-md cursor-default">
+					<div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 flex-shrink-0"
+					  style={{ backgroundColor: card.color + '15', color: card.color }}>
 					  {card.icon}
 					</div>
-					<div>
-					  <h3 className="text-sm font-black text-[#1e2d40] mb-1">{card.title}</h3>
-					  <p className="text-[11px] text-slate-500 font-medium leading-relaxed">{card.desc}</p>
-					</div>
+					<h3 className="text-sm font-black text-[#1e2d40] mb-1">{card.title}</h3>
+					<p className="text-[11px] text-slate-500 font-medium leading-relaxed">{card.desc}</p>
 				  </div>
 				))}
 			  </div>
 			</div>
 
-			{/* Premium Gold & Navy Map Panel */}
-			<div className="lg:col-span-6 bg-[#1e2d40] border border-[#1e2d40] rounded-2xl p-6 shadow-xl flex flex-col relative overflow-hidden">
-			  <div className="absolute inset-0 pointer-events-none" style={{
-				backgroundImage: 'radial-gradient(ellipse at top right, #c9a84c15 0%, transparent 60%)'
-			  }} />
-			  <div className="flex items-center justify-between mb-4 relative z-10">
+			{/* Map Panel */}
+			<div className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col">
+			  <div className="flex items-center justify-between mb-4">
 				<div className="flex items-center gap-2">
-				  <Globe2 size={14} className="text-[#c9a84c]" />
-				  <span className="text-[10px] font-black uppercase tracking-widest text-[#c9a84c]">
-					{isAr ? "الخريطة السحابية الحية" : "Live Cloud Telemetry"}
-				  </span>
+				  <Globe2 size={14} className="text-[#c5a059]" />
+				  <span className="text-[10px] font-black uppercase tracking-widest text-[#c5a059]">
+					{isAr ? "الخريطة الحية" : "Live Signal Map"}
+				</span>
 				</div>
 				<div className="flex gap-2">
-				  <span className="text-[10px] font-black text-[#c9a84c] bg-[#15202e] border border-[#c9a84c]/30 px-2.5 py-1 rounded-lg">
-					{isAr ? 'اتصالات نشطة' : 'ACTIVE NODES'}
+				  <span className="text-[10px] font-black text-[#1e2d40] bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-lg">
+					{isAr ? 'زوار' : 'VISITORS'}: <Counter target={visitors} />
+				  </span>
+				  <span className="text-[10px] font-black text-[#1e2d40] bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-lg">
+					{isAr ? 'زيارات' : 'HITS'}: <Counter target={hits} />
 				  </span>
 				</div>
 			  </div>
 			  <div ref={mapContainerRef}
-				className="rounded-xl border border-slate-700 shadow-inner flex-grow min-h-[300px] overflow-hidden relative z-10"
-				style={{ width: '100%', backgroundColor: '#1e2d40' }} // Sea color = Dark Navy
+				className="rounded-xl border border-slate-200 shadow-inner flex-grow min-h-[260px] overflow-hidden"
+				style={{ width: '100%', backgroundColor: '#f8fafc' }}
 			  />
 			</div>
 		  </div>
@@ -464,46 +412,45 @@ export default function Home() {
 		{/* ── ECOSYSTEM GRID ───────────────────────────────────── */}
 		<div>
 		  <Reveal className="mb-7">
-			<div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
+			<div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2">
 			  <div>
-				<span className="text-[10px] font-black uppercase tracking-widest text-[#c9a84c] block mb-1">
-				  {isAr ? "المنظومة السحابية المتكاملة" : "Integrated Cloud Matrix"}
+				<span className="text-[10px] font-black uppercase tracking-widest text-[#c5a059] block mb-1">
+				  {isAr ? "المنظومة السحابية" : "Cloud Ecosystem"}
 				</span>
 				<h2 className="text-2xl font-black font-serif text-[#1e2d40]">
 				  {isAr ? `منظومة ${brandName}` : `The ${brandName} Ecosystem`}
 				</h2>
 			  </div>
-			  <p className="text-sm text-slate-500 font-medium max-w-md">
-				{isAr ? "حلول برمجية متخصصة ومترابطة لدعم القطاعات الإدارية، الطبية، والتعليمية." : "Specialized, interconnected SaaS solutions powering operational, clinical, and academic sectors."}
+			  <p className="text-sm text-slate-500 font-medium max-w-sm">
+				{isAr ? "حلول برمجية متخصصة ومترابطة لدعم عملياتك." : "Specialized, interconnected SaaS solutions powering your operations."}
 			  </p>
 			</div>
 		  </Reveal>
 
-		  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
+		  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 w-full">
 			{ecosystems.map((sys, i) => (
 			  <Reveal key={i} delay={i * 80}>
 				<div className="eco-card bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col h-full relative overflow-hidden group">
 				  {/* Accent line top */}
-				  <div className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl transition-all duration-500"
-					style={{ background: `linear-gradient(90deg, transparent, ${sys.accentColor}, transparent)`, opacity: 0.8 }} />
-				  
+				  <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl transition-all duration-500"
+					style={{ background: `linear-gradient(90deg, transparent, ${sys.accentColor}, transparent)`, opacity: 0.5 }} />
 				  {/* Hover glow */}
 				  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
-					style={{ background: `radial-gradient(circle at top right, ${sys.accentColor}08 0%, transparent 60%)` }} />
+					style={{ background: `radial-gradient(circle at 0% 0%, ${sys.accentColor}08 0%, transparent 60%)` }} />
 
 				  <div className="flex justify-between items-start mb-5 relative z-10">
-					<div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-sm border bg-white"
-					  style={{ color: sys.accentColor, borderColor: sys.accentColor + '30' }}>
+					<div className="w-11 h-11 rounded-xl flex items-center justify-center shadow-sm border"
+					  style={{ backgroundColor: sys.accentColor + '15', color: sys.accentColor, borderColor: sys.accentColor + '25' }}>
 					  {sys.icon}
 					</div>
-					<span className="text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border bg-slate-50"
-					  style={{ color: sys.accentColor, borderColor: sys.accentColor + '30' }}>
+					<span className="text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border"
+					  style={{ color: sys.accentColor, backgroundColor: sys.accentColor + '12', borderColor: sys.accentColor + '25' }}>
 					  {sys.badge}
 					</span>
 				  </div>
 
-				  <h3 className="text-base font-black text-[#1e2d40] mb-2 relative z-10">{sys.title}</h3>
-				  <p className="text-[12px] text-slate-500 font-medium leading-relaxed mb-5 flex-grow relative z-10">{sys.desc}</p>
+				  <h3 className="text-sm font-black text-[#1e2d40] mb-2 relative z-10">{sys.title}</h3>
+				  <p className="text-[11px] text-slate-500 font-medium leading-relaxed mb-5 flex-grow relative z-10">{sys.desc}</p>
 
 				  <div className="border-t border-slate-100 pt-4 mt-auto relative z-10">
 					<a href={sys.url} target="_blank" rel="noopener noreferrer"
@@ -512,8 +459,8 @@ export default function Home() {
 					  onMouseEnter={e => e.currentTarget.style.color = sys.accentColor}
 					  onMouseLeave={e => e.currentTarget.style.color = '#1e2d40'}
 					>
-					  {isAr ? 'وصول للمنصة' : 'LAUNCH PORTAL'}
-					  <ExternalLink size={14} className="transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
+					  {isAr ? 'زيارة المنصة' : 'LAUNCH PORTAL'}
+					  <ExternalLink size={12} className="transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
 					</a>
 				  </div>
 				</div>
@@ -525,9 +472,9 @@ export default function Home() {
 		{/* ── REVIEWS ──────────────────────────────────────────── */}
 		<Reveal>
 		  <div className="pt-2 border-t border-slate-200">
-			<div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 mb-7" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
+			<div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 mb-7">
 			  <div>
-				<span className="text-[10px] font-black uppercase tracking-widest text-[#c9a84c] block mb-1">
+				<span className="text-[10px] font-black uppercase tracking-widest text-[#c5a059] block mb-1">
 				  {isAr ? "التقييمات الموثقة" : "Verified Reviews"}
 				</span>
 				<h2 className="text-2xl font-black font-serif text-[#1e2d40]">
@@ -549,30 +496,30 @@ export default function Home() {
 		  <div className="relative overflow-hidden bg-[#1e2d40] rounded-2xl p-8 md:p-12 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
 			{/* Background detail */}
 			<div className="absolute -right-16 -top-16 w-64 h-64 rounded-full pointer-events-none"
-			  style={{ background: 'radial-gradient(ellipse, #c9a84c20 0%, transparent 70%)' }} />
+			  style={{ background: 'radial-gradient(ellipse, #c5a05918 0%, transparent 70%)' }} />
 			<div className="absolute bottom-0 left-1/4 w-px h-full pointer-events-none"
-			  style={{ background: 'linear-gradient(180deg, transparent, #c9a84c30, transparent)' }} />
+			  style={{ background: 'linear-gradient(180deg, transparent, #c5a05918, transparent)' }} />
 
 			<div className="relative z-10 text-center md:text-left" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
-			  <div className="inline-flex items-center gap-2 bg-[#c9a84c]/15 border border-[#c9a84c]/25 text-[#c9a84c] px-3 py-1 rounded-full mb-3">
+			  <div className="inline-flex items-center gap-2 bg-[#c5a059]/15 border border-[#c5a059]/25 text-[#c5a059] px-3 py-1 rounded-full mb-3">
 				<TrendingUp size={12} />
 				<span className="text-[10px] font-black uppercase tracking-widest">
-				  {isAr ? "تحديث البنية التحتية" : "Infrastructure Upgrade"}
+				  {isAr ? "ارفع كفاءة منشأتك" : "Elevate Your Enterprise"}
 				</span>
 			  </div>
 			  <h2 className="text-2xl md:text-3xl font-black font-serif text-white mb-2">
-				{isAr ? "استعد لتوحيد عملياتك المؤسسية؟" : "Ready to Unify Your Operations?"}
+				{isAr ? "ارفع كفاءة منشأتك اليوم" : "Ready to Transform Operations?"}
 			  </h2>
 			  <p className="text-sm text-slate-400 font-medium max-w-md">
 				{isAr
-				  ? "اطلب عرضاً توضيحياً حياً وتعرف على كيفية إدارة النظام لمشروعك."
-				  : "Request a live demonstration and see how our command center manages your workflow."}
+				  ? "اطلب عرضاً توضيحياً حياً وتعرف على كيفية إدارة فرقنا لمشروعك على أرض الواقع."
+				  : "Request a live demonstration and learn how our teams manage your project on the ground."}
 			  </p>
 			</div>
 
 			<button
 			  onClick={() => navigate('/contact')}
-			  className="cta-btn shrink-0 bg-gradient-to-r from-[#c9a84c] to-[#fef08a] hover:from-[#fef08a] hover:to-[#fffbd1] text-[#1e2d40] px-8 py-4 rounded-xl text-[11px] font-black uppercase tracking-widest shadow-lg whitespace-nowrap relative z-10 inline-flex items-center gap-2"
+			  className="cta-btn shrink-0 bg-gradient-to-r from-[#c5a059] to-[#d4af37] hover:from-[#d4af37] hover:to-[#f3de9a] text-[#1e2d40] px-8 py-4 rounded-xl text-[11px] font-black uppercase tracking-widest shadow-lg whitespace-nowrap relative z-10 inline-flex items-center gap-2"
 			>
 			  {isAr ? "طلب العرض الآن" : "SCHEDULE A DEMO"}
 			  {isAr ? <ArrowLeft size={15} /> : <ArrowRight size={15} />}
