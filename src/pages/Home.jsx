@@ -8,7 +8,13 @@ import {
   Server, ShieldCheck, Activity, GraduationCap
 } from 'lucide-react';
 import ReviewsSection from './ReviewsSection';
-
+import logoOps from '../logos/opx-ops.png';
+import logoFmis from '../logos/opx-fmis.png';
+import logoHris from '../logos/opx-hris.jpg';
+import logoCare from '../logos/opx-care.jpg';
+import logoEdu from '../logos/opx-edu.png';
+import logoBinAbbas from '../logos/binabbas.png';
+import logoHasad from '../logos/hasad.png';
 /* ── Shared reveal hook ───────────────────────────────────────── */
 function useReveal(threshold = 0.12) {
   const ref = useRef(null);
@@ -213,7 +219,7 @@ const [activeProduct, setActiveProduct] = useState(null);
   const productsData = [
 	  {
 		id: 'opx-ops',
-		logo: '/src/logos/opx-opx.png',
+		logo: '../logos/opx-opx.png',
 		title: 'OPERIX Operations',
 		badge: 'FLEET & WORKFORCE MATRIX',
 		desc: 'The core operations hub replacing manual logbooks. Features comprehensive ANPR parking, valet management, and real-time gig workforce deployment tracking.',
@@ -221,7 +227,7 @@ const [activeProduct, setActiveProduct] = useState(null);
 	  },
 	  {
 		id: 'opx-fmis',
-		logo: '/src/logos/opx-fmis.png',
+		logo: '../logos/opx-fmis.png',
 		title: 'OPERIX FMIS',
 		badge: 'CORPORATE LEDGER SYSTEM',
 		desc: 'Financial management ecosystem, corporate ledger reconciliation, ZATCA Phase 2 Integration Matrix, and automated budget loops.',
@@ -229,7 +235,7 @@ const [activeProduct, setActiveProduct] = useState(null);
 	  },
 	  {
 		id: 'opx-hris',
-		logo: '/src/logos/opx-hris.jpg',
+		logo: '../logos/opx-hris.jpg',
 		title: 'OPERIX HRIS',
 		badge: 'HUMAN CAPITAL INFRASTRUCTURE',
 		desc: 'Complete HR automation — GPS-enforced attendance tracking, automated salary deductions, and seamless employee self-service pipelines.',
@@ -237,7 +243,7 @@ const [activeProduct, setActiveProduct] = useState(null);
 	  },
 	  {
 		id: 'opx-care',
-		logo: '/src/logos/opx-care.jpg',
+		logo: '../logos/opx-care.jpg',
 		title: 'OPERIX Health Care',
 		badge: 'CLINICAL MANAGEMENT CORE',
 		desc: 'Advanced hospital management ecosystem. End-to-end clinical workflow from patient intake and triage through physician consultation, pharmacy dispensary, surgical.',
@@ -245,7 +251,7 @@ const [activeProduct, setActiveProduct] = useState(null);
 	  },
 	  {
 		id: 'opx-edu',
-		logo: '/src/logos/opx-edu.png',
+		logo: '../logos/opx-edu.png',
 		title: 'OPERIX Edu',
 		badge: 'SCHOOL MANAGEMENT PLATFORM',
 		desc: 'Cloud-based school management platform purpose-built for Ministry of Education standards across the Middle East. Combines academic governance with modern technology.',
@@ -253,7 +259,7 @@ const [activeProduct, setActiveProduct] = useState(null);
 	  },
 	  {
 		id: 'binabbas',
-		logo: '/src/logos/binabbas.png',
+		logo: '../logos/binabbas.png',
 		title: 'Abdullah Bin Abbas',
 		badge: 'INSTITUTIONAL PORTAL',
 		desc: 'Dedicated administrative portal mapped for institutional resource planning, community outreach tracking, and digital archive management.',
@@ -261,7 +267,7 @@ const [activeProduct, setActiveProduct] = useState(null);
 	  },
 	  {
 		id: 'hasad',
-		logo: '/src/logos/hasad.png',
+		logo: '../logos/hasad.png',
 		title: 'Hasad',
 		badge: 'SMART COMMUNITY HUB',
 		desc: 'Real estate and property management ecosystem handling resident requests, facility maintenance logs, and community billing cycles.',
