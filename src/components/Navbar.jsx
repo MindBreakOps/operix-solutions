@@ -28,14 +28,13 @@ export default function Navbar() {
 
   return (
 	<>
-	  {/* Self-contained CSS for the "Living Teeth" continuous animations */}
 	  <style>{`
 		@keyframes breathingWave {
 		  0%, 100% {
 			transform: translateY(0px);
 		  }
 		  50% {
-			transform: translateY(5px);
+			transform: translateY(4px);
 		  }
 		}
 		@keyframes activePulse {
@@ -74,40 +73,34 @@ export default function Navbar() {
 			</Link>
 		  </div>
 
-		  {/* Center: Links with Icons (Living Teeth Layout) */}
-		  <div className="hidden lg:flex items-start justify-center gap-2 xl:gap-3 flex-none self-start -mt-2.5 px-4 relative z-10">
+		  {/* Center: Links with Icons (Refined Living Teeth Layout) */}
+		  <div className="hidden lg:flex items-start justify-center gap-1.5 xl:gap-2.5 flex-none self-start -mt-2.5 px-4 relative z-10">
 			{navItems.map((item, index) => {
 			  const Icon = item.icon;
 			  const isActive = location.pathname === item.path;
 			  
-			  // DYNAMIC HEIGHT: Long word = longer tooth
-			  const toothLength = 16 + (item.label.length * 4); 
-
-			  // STAGGERED DELAY: Multiplies the index so each tooth moves slightly after the previous one, creating a wave
-			  const animationDelay = `${index * 0.2}s`;
+			  // STAGGERED DELAY: Slightly faster wave cascade
+			  const animationDelay = `${index * 0.12}s`;
 
 			  return (
 				<Link 
 				  key={item.path} 
 				  to={item.path}
-				  style={{ 
-					paddingBottom: `${toothLength}px`,
-					animationDelay: animationDelay 
-				  }}
-				  className={`flex flex-col items-center pt-3.5 px-2 min-w-[65px] rounded-b-lg transition-colors duration-300 ${
+				  style={{ animationDelay: animationDelay }}
+				  className={`group flex flex-col items-center pt-4 pb-5 px-1.5 w-[72px] xl:w-[84px] rounded-b-xl transition-all duration-300 ${
 					isActive 
-					  ? 'bg-[#d4af37] text-[#1e2d40] animate-active-tooth font-black' 
-					  : 'bg-[#1e2d40] text-white hover:bg-[#2a3f5a] hover:text-[#d4af37] animate-tooth shadow-md hover:!translate-y-2' 
+					  ? 'bg-[#d4af37] text-[#1e2d40] animate-active-tooth font-black pb-6 shadow-lg' 
+					  : 'bg-[#1e2d40] text-white hover:bg-[#2a3f5a] hover:text-[#d4af37] animate-tooth shadow-md hover:pb-7' 
 				  }`}
 				>
 				  <Icon 
-					size={18} 
+					size={20} 
 					strokeWidth={1.5} 
-					className={`mb-2 transition-transform duration-300 ${
-					  isActive ? 'scale-110' : 'opacity-90 group-hover:scale-110'
+					className={`mb-1.5 transition-transform duration-300 ${
+					  isActive ? 'scale-110' : 'opacity-90 group-hover:scale-110 group-hover:-translate-y-0.5'
 					}`} 
 				  />
-				  <span className="text-[11px] xl:text-[12px] font-bold whitespace-nowrap">
+				  <span className="text-[10px] xl:text-[11px] font-bold text-center leading-tight whitespace-break-spaces">
 					{item.label}
 				  </span>
 				</Link>
@@ -115,7 +108,7 @@ export default function Navbar() {
 			})}
 		  </div>
 
-		  {/* Right: Actions (Language, Login, Pricing, Demo) */}
+		  {/* Right: Actions */}
 		  <div className="hidden lg:flex flex-1 items-center justify-end gap-5 xl:gap-6 min-w-0">
 			<button 
 			  onClick={toggleLanguage} 

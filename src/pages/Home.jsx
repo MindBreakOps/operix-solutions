@@ -4,7 +4,7 @@ import { supabaseClient as supabase } from '../config/supabase';
 import { useLanguage } from '../context/LanguageContext';
 import {
   ArrowRight, ArrowLeft, ExternalLink, Globe2, Building2, Car,
-  BadgeCheck, Stethoscope, Users, Settings, FileCheck, TrendingUp, Zap,Shield,
+  BadgeCheck, Stethoscope, Users, Settings, FileCheck, TrendingUp, Zap,Shield, 
   Server, ShieldCheck, Activity, GraduationCap
 } from 'lucide-react';
 import ReviewsSection from './ReviewsSection';
@@ -13,6 +13,7 @@ import ReviewsSection from './ReviewsSection';
 function useReveal(threshold = 0.12) {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
+  const [activeProduct, setActiveProduct] = useState(null);
   useEffect(() => {
 	const el = ref.current;
 	if (!el) return;
@@ -68,7 +69,7 @@ export default function Home() {
   const [activeCountries, setActiveCountries] = useState({});
   const [mapReady, setMapReady] = useState(false);
   const [heroLoaded, setHeroLoaded] = useState(false);
-
+const [activeProduct, setActiveProduct] = useState(null);
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const brandName = "OPERIX Solutions";
@@ -209,56 +210,81 @@ export default function Home() {
 			});
 		
 		  }, [activeCountries, mapReady]);
-  const ecosystems = [
-	{
-	  icon: <Settings size={20} />, title: 'OPERIX Operations', accentColor: '#3b82f6',
-	  badge: isAr ? 'إدارة ميدانية' : 'FIELD OPS',
-	  desc: isAr ? 'مركز قيادة لإدارة الأسطول، وتوجيه القوى العاملة، وكاميرات التعرف الذكي (ANPR).' : 'Command center for fleet logistics, gig workforce orchestration, and ANPR gateways.',
-	  url: 'https://www.ops.operix-solutions.online'
-	},
-	{
-	  icon: <FileCheck size={20} />, title: 'OPERIX FMIS', accentColor: '#c9a84c',
-	  badge: isAr ? 'نظام مالي' : 'CORPORATE LEDGER',
-	  desc: isAr ? 'نظام إدارة مالية وتسويات متوافق مع المرحلة الثانية لهيئة الزكاة والدخل (ZATCA).' : 'Corporate ledger reconciliation, automated budgets, and ZATCA Phase 2 compliance.',
-	  url: 'https://www.fmis.operix-solutions.online'
-	},
-	{
-	  icon: <Users size={20} />, title: 'OPERIX HRIS', accentColor: '#10b981',
-	  badge: isAr ? 'الموارد البشرية' : 'HUMAN CAPITAL',
-	  desc: isAr ? 'أتمتة الحضور الجغرافي، معالجة الرواتب، والفرز الآلي للسير الذاتية بالذكاء الاصطناعي.' : 'GPS-enforced attendance, AI-powered CV scanning, and master employee directories.',
-	  url: 'https://www.hris.operix-solutions.online'
-	},
-	{
-	  icon: <Stethoscope size={20} />, title: 'OPERIX Care', accentColor: '#f43f5e',
-	  badge: isAr ? 'إدارة سريرية' : 'CLINICAL CORE',
-	  desc: isAr ? 'منظومة إدارة طبية متقدمة تشمل الاستشارات عبر الإدخال الصوتي وسجلات المرضى.' : 'Advanced medical workflow ecosystem featuring voice-to-text clinical notes and triage.',
-	  url: 'https://www.care.operix-solutions.online'
-	},
-	{
-	  icon: <GraduationCap size={20} />, title: 'OPERIX Edu', accentColor: '#6366f1',
-	  badge: isAr ? 'إدارة مدرسية' : 'EDUCATION',
-	  desc: isAr ? 'منصة سحابية متكاملة للرصد الأكاديمي، وتتبع السلوك، وإصدار الشهادات (Dox Studio).' : 'Enterprise school administration combining academic tracking with the Dox Studio generator.',
-	  url: 'https://www.edu.operix-solutions.com'
-	}
-  ];
-
-  const coreValues = [
-	{
-	  icon: <Server size={22} />, color: '#1e2d40',
-	  title: isAr ? "بنية مؤسسية موحدة" : "Unified Architecture",
-	  desc: isAr ? "استبدال الأنظمة المجزأة ببيئة رقمية واحدة متصلة بالكامل عبر كافة الأقسام." : "Replace fragmented legacy software with a highly scalable, integrated digital environment."
-	},
-	{
-	  icon: <Activity size={22} />, color: '#c9a84c',
-	  title: isAr ? "تحليلات لحظية عن بعد" : "Real-Time Telemetry",
-	  desc: isAr ? "مراقبة تدفق العمليات وتحديثات البيانات الحية لحظة بلحظة لدعم اتخاذ القرار." : "Live data visualization and dynamic reporting to empower C-level decision-making."
-	},
-	{
-	  icon: <ShieldCheck size={22} />, color: '#10b981',
-	  title: isAr ? "أمان وامتثال معتمد" : "Security & Compliance",
-	  desc: isAr ? "تشفير سحابي متقدم وتوافق تام مع اللوائح الحكومية وأنظمة هيئة الزكاة والدخل." : "Bank-grade encryption and full regulatory compliance with ZATCA Phase 2 invoicing standards."
-	}
-  ];
+  const productsData = [
+	  {
+		id: 'opx-ops',
+		logo: '/src/logos/opx-opx.png',
+		title: 'OPERIX Operations',
+		badge: 'FLEET & WORKFORCE MATRIX',
+		desc: 'The core operations hub replacing manual logbooks. Features comprehensive ANPR parking, valet management, and real-time gig workforce deployment tracking.',
+		stats: 'ZATCA VERIFIED • 4 SCREENS'
+	  },
+	  {
+		id: 'opx-fmis',
+		logo: '/src/logos/opx-fmis.png',
+		title: 'OPERIX FMIS',
+		badge: 'CORPORATE LEDGER SYSTEM',
+		desc: 'Financial management ecosystem, corporate ledger reconciliation, ZATCA Phase 2 Integration Matrix, and automated budget loops.',
+		stats: 'GPS FENCE ACTIVE • 7 SCREENS'
+	  },
+	  {
+		id: 'opx-hris',
+		logo: '/src/logos/opx-hris.jpg',
+		title: 'OPERIX HRIS',
+		badge: 'HUMAN CAPITAL INFRASTRUCTURE',
+		desc: 'Complete HR automation — GPS-enforced attendance tracking, automated salary deductions, and seamless employee self-service pipelines.',
+	
+	  },
+	  {
+		id: 'opx-care',
+		logo: '/src/logos/opx-care.jpg',
+		title: 'OPERIX Health Care',
+		badge: 'CLINICAL MANAGEMENT CORE',
+		desc: 'Advanced hospital management ecosystem. End-to-end clinical workflow from patient intake and triage through physician consultation, pharmacy dispensary, surgical.',
+		
+	  },
+	  {
+		id: 'opx-edu',
+		logo: '/src/logos/opx-edu.png',
+		title: 'OPERIX Edu',
+		badge: 'SCHOOL MANAGEMENT PLATFORM',
+		desc: 'Cloud-based school management platform purpose-built for Ministry of Education standards across the Middle East. Combines academic governance with modern technology.',
+		
+	  },
+	  {
+		id: 'binabbas',
+		logo: '/src/logos/binabbas.png',
+		title: 'Abdullah Bin Abbas',
+		badge: 'INSTITUTIONAL PORTAL',
+		desc: 'Dedicated administrative portal mapped for institutional resource planning, community outreach tracking, and digital archive management.',
+		
+	  },
+	  {
+		id: 'hasad',
+		logo: '/src/logos/hasad.png',
+		title: 'Hasad',
+		badge: 'SMART COMMUNITY HUB',
+		desc: 'Real estate and property management ecosystem handling resident requests, facility maintenance logs, and community billing cycles.',
+		
+	  }
+	];
+	const coreValues = [
+		{
+		  icon: <Server size={22} />, color: '#1e2d40',
+		  title: isAr ? "بنية مؤسسية موحدة" : "Unified Architecture",
+		  desc: isAr ? "استبدال الأنظمة المجزأة ببيئة رقمية واحدة متصلة بالكامل عبر كافة الأقسام." : "Replace fragmented legacy software with a highly scalable, integrated digital environment."
+		},
+		{
+		  icon: <Activity size={22} />, color: '#c9a84c',
+		  title: isAr ? "تحليلات لحظية عن بعد" : "Real-Time Telemetry",
+		  desc: isAr ? "مراقبة تدفق العمليات وتحديثات البيانات الحية لحظة بلحظة لدعم اتخاذ القرار." : "Live data visualization and dynamic reporting to empower C-level decision-making."
+		},
+		{
+		  icon: <ShieldCheck size={22} />, color: '#10b981',
+		  title: isAr ? "أمان وامتثال معتمد" : "Security & Compliance",
+		  desc: isAr ? "تشفير سحابي متقدم وتوافق تام مع اللوائح الحكومية وأنظمة هيئة الزكاة والدخل." : "Bank-grade encryption and full regulatory compliance with ZATCA Phase 2 invoicing standards."
+		}
+	  ];
 
   return (
 	<div className="w-full bg-[#f8fafc] min-h-screen font-sans" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
@@ -461,7 +487,7 @@ export default function Home() {
 		  </div>
 		</Reveal>
 
-		{/* ── ECOSYSTEM GRID ───────────────────────────────────── */}
+		{/* ── PRODUCTS ECOSYSTEM GRID ───────────────────────────────────── */}
 		<div>
 		  <Reveal className="mb-7">
 			<div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
@@ -478,47 +504,78 @@ export default function Home() {
 			  </p>
 			</div>
 		  </Reveal>
-
+		
 		  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
-			{ecosystems.map((sys, i) => (
-			  <Reveal key={i} delay={i * 80}>
-				<div className="eco-card bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col h-full relative overflow-hidden group">
-				  {/* Accent line top */}
-				  <div className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl transition-all duration-500"
-					style={{ background: `linear-gradient(90deg, transparent, ${sys.accentColor}, transparent)`, opacity: 0.8 }} />
-				  
-				  {/* Hover glow */}
-				  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
-					style={{ background: `radial-gradient(circle at top right, ${sys.accentColor}08 0%, transparent 60%)` }} />
-
-				  <div className="flex justify-between items-start mb-5 relative z-10">
-					<div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-sm border bg-white"
-					  style={{ color: sys.accentColor, borderColor: sys.accentColor + '30' }}>
-					  {sys.icon}
+			{productsData.map((product, i) => {
+			  const isActive = activeProduct === product.id;
+			  
+			  return (
+				<Reveal key={product.id} delay={i * 80}>
+				  <div 
+					onClick={() => setActiveProduct(isActive ? null : product.id)}
+					className={`bg-white rounded-2xl border overflow-hidden flex flex-col transition-all duration-500 group cursor-pointer ${
+					  isActive 
+						? 'shadow-xl border-[#c9a84c]/40 -translate-y-1' 
+						: 'border-slate-200 shadow-sm hover:shadow-xl hover:border-[#c9a84c]/40 hover:-translate-y-1'
+					}`}
+				  >
+					
+					{/* Logo Area (Starts Grayscale, colors on hover/touch) */}
+					<div className="h-44 bg-slate-50/50 flex items-center justify-center p-8 border-b border-slate-100 relative">
+					  <div className={`absolute inset-0 bg-gradient-to-b from-transparent to-[#c9a84c]/5 transition-opacity duration-500 pointer-events-none ${
+						isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+					  }`}></div>
+		
+					  <img 
+						src={product.logo} 
+						alt={product.title} 
+						className={`w-full h-full object-contain transition-all duration-500 relative z-10 ${
+						  isActive 
+							? 'grayscale-0 opacity-100 scale-110' 
+							: 'filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110'
+						}`} 
+						onError={(e) => { 
+						  e.currentTarget.style.display = 'none'; 
+						  if (e.currentTarget.parentElement) {
+							  e.currentTarget.parentElement.innerHTML = '<div class="text-slate-400 font-black tracking-widest uppercase text-xs z-10 relative">LOGO</div>'; 
+						  }
+						}}
+					  />
 					</div>
-					<span className="text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border bg-slate-50"
-					  style={{ color: sys.accentColor, borderColor: sys.accentColor + '30' }}>
-					  {sys.badge}
-					</span>
+		
+					{/* Title & Badge (Always Visible) */}
+					<div className="p-6 pb-2 text-center bg-white z-20 flex flex-col justify-center">
+					  <h3 className={`text-lg font-black mb-1 transition-colors ${
+						isActive ? 'text-[#c9a84c]' : 'text-[#1e2d40] group-hover:text-[#c9a84c]'
+					  }`}>
+						{product.title}
+					  </h3>
+					  <span className="text-[10px] text-slate-400 font-bold leading-relaxed uppercase tracking-widest">
+						{product.badge}
+					  </span>
+					</div>
+					
+					{/* Expanding Info Area (Revealed on hover/touch) */}
+					<div className={`transition-all duration-500 ease-in-out overflow-hidden bg-white px-6 ${
+					  isActive ? 'max-h-64 opacity-100 pb-6' : 'max-h-0 opacity-0 group-hover:max-h-64 group-hover:opacity-100 group-hover:pb-6'
+					}`}>
+					  <p className="text-sm text-slate-500 font-medium leading-relaxed mb-4 text-center">
+						{product.desc}
+					  </p>
+					  
+					  {product.stats && (
+						<div className="border-t border-slate-100 pt-4 flex items-center justify-center">
+						  <span className="text-[9px] font-black uppercase tracking-widest text-[#1e2d40] bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg">
+							{product.stats}
+						  </span>
+						</div>
+					  )}
+					</div>
+		
 				  </div>
-
-				  <h3 className="text-base font-black text-[#1e2d40] mb-2 relative z-10">{sys.title}</h3>
-				  <p className="text-[12px] text-slate-500 font-medium leading-relaxed mb-5 flex-grow relative z-10">{sys.desc}</p>
-
-				  <div className="border-t border-slate-100 pt-4 mt-auto relative z-10">
-					<a href={sys.url} target="_blank" rel="noopener noreferrer"
-					  className="text-[10px] font-black uppercase tracking-widest flex items-center justify-between group/link transition-colors"
-					  style={{ color: '#1e2d40' }}
-					  onMouseEnter={e => e.currentTarget.style.color = sys.accentColor}
-					  onMouseLeave={e => e.currentTarget.style.color = '#1e2d40'}
-					>
-					  {isAr ? 'وصول للمنصة' : 'LAUNCH PORTAL'}
-					  <ExternalLink size={14} className="transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
-					</a>
-				  </div>
-				</div>
-			  </Reveal>
-			))}
+				</Reveal>
+			  );
+			})}
 		  </div>
 		</div>
 
