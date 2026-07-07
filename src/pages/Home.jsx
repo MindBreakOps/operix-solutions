@@ -216,64 +216,64 @@ const [activeProduct, setActiveProduct] = useState(null);
 			});
 		
 		  }, [activeCountries, mapReady]);
-  const productsData = [
-	  {
-		id: 'opx-ops',
-		logo: '../logos/opx-opx.png',
-		title: 'OPERIX Operations',
-		badge: 'FLEET & WORKFORCE MATRIX',
-		desc: 'The core operations hub replacing manual logbooks. Features comprehensive ANPR parking, valet management, and real-time gig workforce deployment tracking.',
-		stats: 'ZATCA VERIFIED • 4 SCREENS'
-	  },
-	  {
-		id: 'opx-fmis',
-		logo: '../logos/opx-fmis.png',
-		title: 'OPERIX FMIS',
-		badge: 'CORPORATE LEDGER SYSTEM',
-		desc: 'Financial management ecosystem, corporate ledger reconciliation, ZATCA Phase 2 Integration Matrix, and automated budget loops.',
-		stats: 'GPS FENCE ACTIVE • 7 SCREENS'
-	  },
-	  {
-		id: 'opx-hris',
-		logo: '../logos/opx-hris.jpg',
-		title: 'OPERIX HRIS',
-		badge: 'HUMAN CAPITAL INFRASTRUCTURE',
-		desc: 'Complete HR automation — GPS-enforced attendance tracking, automated salary deductions, and seamless employee self-service pipelines.',
-	
-	  },
-	  {
-		id: 'opx-care',
-		logo: '../logos/opx-care.jpg',
-		title: 'OPERIX Health Care',
-		badge: 'CLINICAL MANAGEMENT CORE',
-		desc: 'Advanced hospital management ecosystem. End-to-end clinical workflow from patient intake and triage through physician consultation, pharmacy dispensary, surgical.',
-		
-	  },
-	  {
-		id: 'opx-edu',
-		logo: '../logos/opx-edu.png',
-		title: 'OPERIX Edu',
-		badge: 'SCHOOL MANAGEMENT PLATFORM',
-		desc: 'Cloud-based school management platform purpose-built for Ministry of Education standards across the Middle East. Combines academic governance with modern technology.',
-		
-	  },
-	  {
-		id: 'binabbas',
-		logo: '../logos/binabbas.png',
-		title: 'Abdullah Bin Abbas',
-		badge: 'INSTITUTIONAL PORTAL',
-		desc: 'Dedicated administrative portal mapped for institutional resource planning, community outreach tracking, and digital archive management.',
-		
-	  },
-	  {
-		id: 'hasad',
-		logo: '../logos/hasad.png',
-		title: 'Hasad',
-		badge: 'SMART COMMUNITY HUB',
-		desc: 'Real estate and property management ecosystem handling resident requests, facility maintenance logs, and community billing cycles.',
-		
-	  }
-	];
+const productsData = [
+			  {
+				id: 'opx-ops',
+				logo: logoOps, // <-- No quotes! Using the imported variable directly
+				title: 'OPERIX Operations',
+				badge: 'FLEET & WORKFORCE MATRIX',
+				desc: 'The core operations hub replacing manual logbooks. Features comprehensive ANPR parking, valet management, and real-time gig workforce deployment tracking.',
+				stats: 'ZATCA VERIFIED • 4 SCREENS'
+			  },
+			  {
+				id: 'opx-fmis',
+				logo: logoFmis,
+				title: 'OPERIX FMIS',
+				badge: 'CORPORATE LEDGER SYSTEM',
+				desc: 'Financial management ecosystem, corporate ledger reconciliation, ZATCA Phase 2 Integration Matrix, and automated budget loops.',
+				stats: 'GPS FENCE ACTIVE • 7 SCREENS'
+			  },
+			  {
+				id: 'opx-hris',
+				logo: logoHris,
+				title: 'OPERIX HRIS',
+				badge: 'HUMAN CAPITAL INFRASTRUCTURE',
+				desc: 'Complete HR automation — GPS-enforced attendance tracking, automated salary deductions, and seamless employee self-service pipelines.',
+				stats: 'CLINICAL SYNC • 12 SCREENS'
+			  },
+			  {
+				id: 'opx-care',
+				logo: logoCare,
+				title: 'OPERIX Health Care',
+				badge: 'CLINICAL MANAGEMENT CORE',
+				desc: 'Advanced hospital management ecosystem. End-to-end clinical workflow from patient intake and triage through physician consultation, pharmacy dispensary, surgical.',
+				stats: ''
+			  },
+			  {
+				id: 'opx-edu',
+				logo: logoEdu,
+				title: 'OPERIX Edu',
+				badge: 'SCHOOL MANAGEMENT PLATFORM',
+				desc: 'Cloud-based school management platform purpose-built for Ministry of Education standards across the Middle East. Combines academic governance with modern technology.',
+				stats: ''
+			  },
+			  {
+				id: 'binabbas',
+				logo: logoBinAbbas,
+				title: 'Abdullah Bin Abbas',
+				badge: 'INSTITUTIONAL PORTAL',
+				desc: 'Dedicated administrative portal mapped for institutional resource planning, community outreach tracking, and digital archive management.',
+				stats: 'VISIT LIVE PORTAL'
+			  },
+			  {
+				id: 'hasad',
+				logo: logoHasad,
+				title: 'Hasad',
+				badge: 'SMART COMMUNITY HUB',
+				desc: 'Real estate and property management ecosystem handling resident requests, facility maintenance logs, and community billing cycles.',
+				stats: ''
+			  }
+			];
 	const coreValues = [
 		{
 		  icon: <Server size={22} />, color: '#1e2d40',
