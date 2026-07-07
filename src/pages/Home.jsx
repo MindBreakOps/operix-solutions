@@ -8,13 +8,13 @@ import {
   Server, ShieldCheck, Activity, GraduationCap
 } from 'lucide-react';
 import ReviewsSection from './ReviewsSection';
-import logoOps from '../logos/opx-ops.png';
-import logoFmis from '../logos/opx-fmis.png';
-import logoHris from '../logos/opx-hris.jpg';
-import logoCare from '../logos/opx-care.jpg';
-import logoEdu from '../logos/opx-edu.png';
-import logoBinAbbas from '../logos/binabbas.png';
-import logoHasad from '../logos/hasad.png';
+import logoOps from "../logos/opx-ops.png";
+import logoFmis from "../logos/opx-fmis.png";
+import logoHris from "../logos/opx-hris.jpg";
+import logoCare from "../logos/opx-care.jpg";
+import logoEdu from "../logos/opx-edu.png";
+import logoBinAbbas from "../logos/binabbas.png";
+import logoHasad from "../logos/hasad.png";
 /* ── Shared reveal hook ───────────────────────────────────────── */
 function useReveal(threshold = 0.12) {
   const ref = useRef(null);
