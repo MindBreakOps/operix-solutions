@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Smartphone, Play, CheckCircle, Users, X, Activity, Settings, BookOpen, Globe, ChevronRight, Zap, Shield, Star } from 'lucide-react';
+import { Smartphone, Play, CheckCircle, Users, X, Activity, Settings, BookOpen, Globe, ChevronRight, Zap, Shield, Star, Home } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 /* ─────────────────────────────────────────────────────────
@@ -21,6 +21,26 @@ const translations = {
 	previewDesc: 'Recorded directly from a native iOS device.',
 	tapToWatch: 'Tap to watch',
 	apps: [
+	  {
+		id: 'hasad',
+		title: 'Hasad App',
+		subtitle: 'Smart Community Hub',
+		badge: 'Real Estate & Property',
+		accentColor: '#f43f5e', // Updated to Red
+		  accentLight: 'rgba(244,63,94,0.10)',
+		icon: <Home size={20} />,
+		desc: "Real estate and property management ecosystem handling resident requests, facility maintenance logs, and community billing cycles.",
+		accomplishments: 'Advanced software infrastructure providing smart dashboards, GIS, and digital identities to ensure the highest standards of organization and security.',
+		audience: 'Residents · Property Managers · Maintenance Teams',
+		capabilities: [
+		  'Smart Dashboards with live KPIs for units & events',
+		  'Explore, find, and export fast certification instantly',
+		  'Advanced security with precise role-based access',
+		  'Exportable reports with advanced data visualizations',
+		],
+		videoUrl: '/videos/hasad.MP4',
+		poster: '/projects/mobile-poster-hasad.jpg',
+	  },
 	  {
 		id: 'ops-hr',
 		title: 'OPERIX Hub',
@@ -46,8 +66,8 @@ const translations = {
 		title: 'OPERIX Care',
 		subtitle: 'Clinical Mobile',
 		badge: 'Clinical Operations',
-		accentColor: '#f43f5e',
-		accentLight: 'rgba(244,63,94,0.10)',
+		accentColor: '#8b5cf6', // Updated to Purple
+		  accentLight: 'rgba(139,92,246,0.10)',
 		icon: <Activity size={20} />,
 		desc: "Full clinical and hospital management on the go. Medical staff log in via their hospital workspace domain for instant access to patient data and workflows.",
 		accomplishments: 'Speeds up triage, simplifies billing, and gives Pharmacy and Blood Bank real-time data access.',
@@ -99,6 +119,26 @@ const translations = {
 	tapToWatch: 'اضغط للمشاهدة',
 	apps: [
 	  {
+		id: 'hasad ',
+		title: 'تطبيق حصاد ',
+		subtitle: 'مركز المجتمع الذكي',
+		badge: 'العقارات وإدارة الأملاك',
+		accentColor: '#f43f5e', // Updated to Red
+		  accentLight: 'rgba(244,63,94,0.10)',
+		icon: <Home size={20} />,
+		desc: 'إدارة رقمية متكاملة لمجتمعك السكني. نظام بيئي متكامل للتعامل مع طلبات السكان، وسجلات الصيانة، ودورات الفوترة.',
+		accomplishments: 'بنية تحتية برمجية متطورة توفر لوحات قياس ذكية، خرائط جغرافية (GIS)، وهويات رقمية لضمان أعلى معايير التنظيم والأمان.',
+		audience: 'السكان · مديرو العقارات · فرق الصيانة',
+		capabilities: [
+		  'لوحة قيادة ذكية بمؤشرات أداء حية للوحدات والمرافق',
+		  'استكشاف وإصدار وطباعة الشهادات المعتمدة فوراً',
+		  'أمان متقدم مع تحكم دقيق في صلاحيات المستخدمين',
+		  'تقارير وتحليلات قابلة للتصدير بمرئيات بيانية متطورة',
+		],
+		videoUrl: '/videos/Hasad.MP4',
+		poster: '/projects/mobile-poster-hasad.jpg',
+	  },
+	  {
 		id: 'ops-hr',
 		title: 'أوبيريكس هب',
 		subtitle: 'العمليات والموارد',
@@ -123,8 +163,8 @@ const translations = {
 		title: 'أوبيريكس كير',
 		subtitle: 'الرعاية السريرية',
 		badge: 'العمليات السريرية',
-		accentColor: '#f43f5e',
-		accentLight: 'rgba(244,63,94,0.10)',
+		accentColor: '#8b5cf6', // Updated to Purple
+		  accentLight: 'rgba(139,92,246,0.10)',
 		icon: <Activity size={20} />,
 		desc: 'إدارة سريرية ومستشفيات شاملة أثناء التنقل. يسجل الطاقم الطبي دخوله عبر نطاق مساحة عمل المستشفى.',
 		accomplishments: 'يسرع فرز المرضى ويبسط الفوترة ويمنح الأقسام المتخصصة وصولاً فورياً.',
