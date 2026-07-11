@@ -79,10 +79,10 @@ export default function Projects() {
 	  id: 'fmis',
 	  titleEn: 'OPERIX FMIS',
 	  titleAr: 'أوبيريكس للإدارة المالية',
-	  subEn: 'Corporate Ledger System',
-	  subAr: 'نظام السجلات المالية للشركات',
-	  descEn: 'Financial management ecosystem, corporate ledger reconciliation, ZATCA Phase 2 Integration Matrix, and automated budget loops.',
-	  descAr: 'نظام إدارة مالية متكامل يشمل التسويات المحاسبية للشركات، متوافق بالكامل مع متطلبات المرحلة الثانية لهيئة الزكاة والدخل (ZATCA).',
+	  subEn: 'Finance & Retail ERP',
+	  subAr: 'نظام إدارة المالية والتجزئة',
+	  descEn: 'Complete financial management ecosystem, corporate ledger reconciliation, Retail & POS operations, and ZATCA Phase 2 E-Invoicing integration.',
+	  descAr: 'نظام متكامل لإدارة الشؤون المالية، وتسوية السجلات، وعمليات التجزئة ونقاط البيع، مع ربط إلكتروني متوافق مع المرحلة الثانية لهيئة الزكاة والضريبة والجمارك (ZATCA).',
 	  url: 'https://www.fmis.operix-solutions.online',
 	  icon: <CreditCard size={20} />,
 	  accentColor: '#10b981',
@@ -90,10 +90,74 @@ export default function Projects() {
 	  badge: <div className="flex items-center gap-1.5"><ShieldCheck size={12} /><span>ZATCA VERIFIED</span></div>,
 	  image: '/projects/fmis.png',
 	  previews: [
-		{ url: '/projects/fmis/dash-fmis.png', titleEn: 'Executive Dashboard & P&L', titleAr: 'لوحة القيادة التنفيذية والأرباح والخسائر', descEn: 'Real-time overview of profit and loss, revenue pipelines, and pending liabilities. Provides C-level executives with immediate financial health metrics.', descAr: 'نظرة عامة لحظية على الأرباح والخسائر، وتدفقات الإيرادات، والالتزامات المعلقة. توفر للإدارة التنفيذية مؤشرات فورية للصحة المالية.' },
-		{ url: '/projects/fmis/opx-ai-fmis.png', titleEn: 'OPERIX AI Copilot Integration', titleAr: 'مساعد الذكاء الاصطناعي المدمج', descEn: 'Embedded AI assistant that analyzes financial databases, automates complex module navigation, and generates live telemetry reports on command.', descAr: 'مساعد ذكاء اصطناعي مدمج يحلل قواعد البيانات المالية، ويقوم بأتمتة التنقل المعقد بين الوحدات، ويولد تقارير لحظية عند الطلب.' },
-		{ url: '/projects/fmis/quot-fmis.png', titleEn: 'Automated Quotation Builder', titleAr: 'منشئ عروض الأسعار التلقائي', descEn: 'Streamlined proposal generation tool that maps directly to the CRM, allowing quick drafting, approval, and dispatching of corporate estimates.', descAr: 'أداة متطورة لإنشاء العروض ترتبط مباشرة بنظام إدارة علاقات العملاء (CRM)، مما يتيح صياغة واعتماد وإرسال التقديرات المالية للشركات بسرعة.' },
-		{ url: '/projects/fmis/help-fmis.png', titleEn: 'System Architecture & Help Matrix', titleAr: 'هيكلية النظام والمساعدة الذكية', descEn: 'Comprehensive, built-in documentation and mission-control mapping that guides users through GL, WBS, and Payroll engine workflows.', descAr: 'وثائق ومصفوفة توجيه شاملة مدمجة ترشد المستخدمين عبر سير عمل دفتر الأستاذ العام، وهيكلة المشاريع (WBS)، ومحرك مسيرات الرواتب.' }
+		{ 
+		  url: '/projects/fmis/dash-fmis.png', 
+		  titleEn: 'Executive Dashboard & P&L', 
+		  titleAr: 'لوحة القيادة التنفيذية والأرباح والخسائر', 
+		  descEn: 'Real-time overview of profit and loss, revenue pipelines, and pending liabilities. Provides C-level executives with immediate financial health metrics.', 
+		  descAr: 'نظرة عامة لحظية على الأرباح والخسائر، وتدفقات الإيرادات، والالتزامات المعلقة. توفر للإدارة التنفيذية مؤشرات فورية للصحة المالية.' 
+		},
+		{ 
+		  url: '/projects/fmis/opx-ai-fmis.png', 
+		  titleEn: 'OPERIX AI Copilot Integration', 
+		  titleAr: 'مساعد الذكاء الاصطناعي المدمج', 
+		  descEn: 'Embedded AI assistant that analyzes financial databases, automates complex module navigation, and generates live telemetry reports on command.', 
+		  descAr: 'مساعد ذكاء اصطناعي مدمج يحلل قواعد البيانات المالية، ويقوم بأتمتة التنقل المعقد بين الوحدات، ويولد تقارير لحظية عند الطلب.' 
+		},
+		{ 
+		  url: '/projects/fmis/quot-fmis.png', 
+		  titleEn: 'Automated Quotation Builder', 
+		  titleAr: 'منشئ عروض الأسعار التلقائي', 
+		  descEn: 'Streamlined proposal generation tool that maps directly to the CRM, allowing quick drafting, approval, and dispatching of corporate estimates.', 
+		  descAr: 'أداة متطورة لإنشاء العروض ترتبط مباشرة بنظام إدارة علاقات العملاء (CRM)، مما يتيح صياغة واعتماد وإرسال التقديرات المالية للشركات بسرعة.' 
+		},
+		{ 
+		  url: '/projects/fmis/help-fmis.png', 
+		  titleEn: 'System Architecture & Help Matrix', 
+		  titleAr: 'هيكلية النظام والمساعدة الذكية', 
+		  descEn: 'Comprehensive, built-in documentation and mission-control mapping that guides users through GL, WBS, and Payroll engine workflows.', 
+		  descAr: 'وثائق ومصفوفة توجيه شاملة مدمجة ترشد المستخدمين عبر سير عمل دفتر الأستاذ العام، وهيكلة المشاريع (WBS)، ومحرك مسيرات الرواتب.' 
+		},
+		//
+		{ 
+		  url: '/projects/fmis/fmis-gl.png', 
+		  titleEn: 'General Ledger Engine', 
+		  titleAr: 'محرك دفتر الأستاذ العام', 
+		  descEn: 'Core financial accounting engine featuring strict double-entry journal logs, custom Chart of Accounts, and real-time balance tracking.', 
+		  descAr: 'محرك المحاسبة المالية الأساسي يتميز بسجلات قيود مزدوجة صارمة، ودليل حسابات مخصص، وتتبع لحظي للأرصدة.' 
+		},
+		//
+		{ 
+		  url: '/projects/fmis/fmis-pos.png', 
+		  titleEn: 'Point of Sale (POS)', 
+		  titleAr: 'نقطة البيع (POS)', 
+		  descEn: 'Lightning-fast checkout interface with barcode scanner support, automated VAT calculation, and instant GL reconciliation.', 
+		  descAr: 'واجهة دفع سريعة تدعم ماسح الباركود، مع حساب تلقائي لضريبة القيمة المضافة، وتسوية فورية في دفتر الأستاذ العام.' 
+		},
+		//
+		{ 
+		  url: '/projects/fmis/fmis-prod.png', 
+		  titleEn: 'Smart Inventory Management', 
+		  titleAr: 'إدارة المخزون الذكية', 
+		  descEn: 'Comprehensive product registry for tracking SKUs, barcodes, unit prices, and automated low-stock reorder points.', 
+		  descAr: 'سجل منتجات شامل لتتبع رموز التخزين، والباركود، وأسعار الوحدات، ونقاط إعادة الطلب التلقائية عند انخفاض المخزون.' 
+		},
+		//
+		{ 
+		  url: '/projects/fmis/fmis-purchase.png', 
+		  titleEn: 'Purchase Orders Workflow', 
+		  titleAr: 'سير عمل أوامر الشراء', 
+		  descEn: 'Seamless procurement module to draft purchase orders, select suppliers, and replenish stock directly into the inventory system.', 
+		  descAr: 'وحدة مشتريات سلسة لصياغة أوامر الشراء، واختيار الموردين، وتجديد المخزون مباشرة في نظام إدارة المستودعات.' 
+		},
+		//
+		{ 
+		  url: '/projects/fmis/fmis-supplier.png', 
+		  titleEn: 'Supplier & Vendor Directory', 
+		  titleAr: 'دليل الموردين والبائعين', 
+		  descEn: 'Centralized database for managing vendor profiles, contact details, and procurement relationships.', 
+		  descAr: 'قاعدة بيانات مركزية لإدارة ملفات الموردين، وتفاصيل الاتصال، وعلاقات المشتريات.' 
+		}
 	  ]
 	},
 	{

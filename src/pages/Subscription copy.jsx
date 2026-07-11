@@ -2,21 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { 
   Zap, Users, Settings, Activity, FileText, 
-  Check, Plus, CreditCard, LayoutGrid, ShieldCheck, 
-  ArrowRight, ArrowLeft, Eye, Printer, Building2,
-  GraduationCap, Globe
+  Check, Plus, Minus, CreditCard, Globe, 
+  LayoutGrid, ShieldCheck, ArrowRight, ArrowLeft,
+  Eye, Printer
 } from 'lucide-react';
 
 // ─── API CONFIG ───
 const OPS_API   = 'https://script.google.com/macros/s/AKfycby7xDEoYBzGM7sAAAkX0LDTKNHo63LjbgmaC-0VLXESPFj7BSl10GE-sIqM-Ss3wE8/exec';
+const DOCS_API  = 'https://script.google.com/macros/s/AKfycbxX5si41SuQj-yhGsrexa8snsaT0VgoPw0EHo7GGE9AAbEN6uKTA4qpmA9jdQFJpEC_/exec';
 const TARGET_EMAIL = 'subscription@operix-solutions.com';
-
-const ARABIC_COUNTRIES_NO_UAE = [
-  "Saudi Arabia", "Egypt", "Jordan", "Lebanon", "Syria", 
-  "Iraq", "Kuwait", "Qatar", "Bahrain", "Oman", 
-  "Yemen", "Sudan", "Libya", "Tunisia", "Algeria", 
-  "Morocco", "Mauritania", "Somalia", "Djibouti", "Comoros", "Palestine"
-];
+const VAT_RATE  = 0.15;
 
 /* ── Shared Reveal Hook ───────────────────────────────────────── */
 function useReveal(threshold = 0.1) {
@@ -111,12 +106,12 @@ const ZATCAQRCode = () => (
 export default function Subscription() {
   const { isAr } = useLanguage();
   
+  const [billingCycle, setBillingCycle] = useState('monthly');
   const [activeView, setActiveView] = useState('modules');
+  
   const [showModal, setShowModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({ 
-	name: '', email: '', phone: '', company: '', employees: '1-50', country: 'Saudi Arabia' 
-  });
+  const [formData, setFormData] = useState({ name: '', email: '', company: '', employees: '1-50' });
   const [viewingInvoice, setViewingInvoice] = useState(null);
 
   // Prevent scrolling when modal is open
@@ -133,42 +128,32 @@ export default function Subscription() {
   // ─── MODULES ───
   const [modules, setModules] = useState({
 	hris: { 
-	  active: true, title: 'OPERIX HRIS', 
+	  active: true, price: 1500, title: 'OPERIX HRIS', 
 	  desc: 'Core human capital management, payroll & recruiting rosters.', 
 	  icon: <Users size={22} />, colorTheme: 'text-[#1e2d40]', bgTheme: 'bg-slate-100'
 	},
 	operations: { 
-	  active: true, title: 'OPERIX Operations', 
+	  active: true, price: 1200, title: 'OPERIX Operations', 
 	  desc: 'Field logistics, live ANPR capture, & gig workforce trackers.', 
 	  icon: <Settings size={22} />, colorTheme: 'text-[#1e2d40]', bgTheme: 'bg-slate-100' 
 	},
 	fmis: { 
-	  active: true, title: 'OPERIX FMIS', 
-	  desc: 'Complete financial management ecosystem, corporate ledger reconciliation, Retail & POS operations, and ZATCA Phase 2 E-Invoicing integration.', 
+	  active: true, price: 499, title: 'OPERIX FMIS (Pro)', 
+	  desc: 'Unlimited invoices, ZATCA Phase 2 integration, & ledger analytics.', 
 	  icon: <CreditCard size={22} />, colorTheme: 'text-[#c5a059]', bgTheme: 'bg-[#c5a059]/10' 
 	},
 	care: { 
-	  active: false, title: 'OPERIX Health Care', 
-	  desc: 'Advanced hospital management ecosystem. End-to-end clinical workflow from patient intake and triage through physician consultation, pharmacy dispensary, surgical.', 
+	  active: false, price: 4500, title: 'OPERIX Care (Medical)', 
+	  desc: 'Full HIS, clinical patient dashboards, & ECR nodes.', 
 	  icon: <Activity size={22} />, colorTheme: 'text-[#1e2d40]', bgTheme: 'bg-slate-100' 
 	},
-	edu: {
-	  active: false, title: 'OPERIX Edu',
-	  desc: 'Cloud-based school management platform purpose-built for Ministry of Education standards across the Middle East. Combines academic governance with modern technology.',
-	  icon: <GraduationCap size={22} />, colorTheme: 'text-[#1e2d40]', bgTheme: 'bg-slate-100'
-	},
-	hasad: {
-	  active: false, title: 'Hasad',
-	  desc: 'Real estate and property management ecosystem handling resident requests, facility maintenance logs, and community billing cycles.',
-	  icon: <Building2 size={22} />, colorTheme: 'text-[#c5a059]', bgTheme: 'bg-[#c5a059]/10'
-	},
 	website: {
-	  active: false, title: 'Corporate Website',
+	  active: false, price: 2500, title: 'Corporate Website',
 	  desc: 'High-end bespoke UI/UX, CMS integration, and premium branding.',
 	  icon: <Globe size={22} />, colorTheme: 'text-[#1e2d40]', bgTheme: 'bg-slate-100'
 	},
 	system: {
-	  active: false, title: 'Custom Architecture',
+	  active: false, price: 8500, title: 'Custom Architecture',
 	  desc: 'Bespoke operational software built to your exact specifications.',
 	  icon: <LayoutGrid size={22} />, colorTheme: 'text-[#c5a059]', bgTheme: 'bg-[#c5a059]/10'
 	}
@@ -177,28 +162,33 @@ export default function Subscription() {
   const features = {
 	hris: [isAr ? 'الخدمة الذاتية وبصمة الوجه' : 'Employee Self-Service & Face-ID', isAr ? 'أتمتة الرواتب وتصدير WPS' : 'Automated Payroll & WPS Export', isAr ? 'جدولة الورديات والدليل الشامل' : 'Shift Scheduling & Master Directory'],
 	operations: [isAr ? 'تسجيل تلقائي عبر كاميرات ANPR' : 'Live ANPR Camera Auto-Log', isAr ? 'تتبع مصفوفة أداء الفالي' : 'Valet Performance Matrix Tracking', isAr ? 'فوترة ذكية لرموز QR' : 'Automated Ticket & QR Invoicing'],
-	fmis: [isAr ? 'عدد غير محدود من الفواتير والمستخدمين' : 'Unlimited Invoices & Users', isAr ? 'تكامل كامل مع المرحلة 2 لـ ZATCA' : 'Full ZATCA Phase 2 Integration', isAr ? 'نقاط بيع متكاملة وإدارة مخزون' : 'Complete Inventory & POS Operations'],
-	care: [isAr ? 'إدارة الاستقبال والفرز الطبي' : 'Patient Intake & Triage Management', isAr ? 'صيدلية متكاملة وإدارة العمليات' : 'Pharmacy Dispensary & Surgical Workflows', isAr ? 'بيئة آمنة للأطباء والممرضين' : 'Secure Physician/Nurse Environment'],
-	edu: [isAr ? 'حوكمة أكاديمية متوافقة مع الوزارة' : 'Ministry-Standard Academic Governance', isAr ? 'بوابة إلكترونية للطلاب وأولياء الأمور' : 'Student & Parent Portals', isAr ? 'أدوات تقييم وتتبع درجات ذكية' : 'Smart Grading & Assessment Tools'],
-	hasad: [isAr ? 'بوابة لطلبات المقيمين' : 'Resident Request Portals', isAr ? 'سجلات صيانة المرافق' : 'Facility Maintenance Logs', isAr ? 'دورات فوترة المجتمع' : 'Automated Community Billing Cycles'],
+	fmis: [isAr ? 'عدد غير محدود من الفواتير' : 'Unlimited Invoices', isAr ? 'تكامل كامل مع المرحلة 2 لـ ZATCA' : 'Full ZATCA Phase 2 Integration', isAr ? 'إدارة متقدمة للخزانة' : 'Advanced FMIS & Treasury'],
+	care: [isAr ? 'تحويل الصوت إلى نص للتشخيصات' : 'Voice-to-Text Clinical Synthesis', isAr ? 'التاريخ الصحي الإلكتروني للمريض' : 'Electronic Patient Health History', isAr ? 'بيئة آمنة للأطباء والممرضين' : 'Secure Physician/Nurse Environment'],
 	website: [isAr ? 'تصميم واجهة مستخدم مخصصة' : 'Bespoke UI/UX Design', isAr ? 'تكامل إدارة المحتوى CMS' : 'Headless CMS Integration', isAr ? 'تحسين محركات البحث والأداء' : 'SEO & Performance Optimization'],
 	system: [isAr ? 'أتمتة مخصصة لسير العمل' : 'Custom Workflow Automation', isAr ? 'بنية قواعد بيانات مخصصة' : 'Dedicated Database Architecture', isAr ? 'تكامل API والخطافات' : 'API Integrations & Webhooks']
   };
 
+  const isAnnual = billingCycle === 'yearly';
   const selectedModules = Object.values(modules).filter(m => m.active);
+  const totalOriginal = selectedModules.reduce((acc, m) => acc + m.price, 0);
+  const totalDiscount = isAnnual ? totalOriginal * 0.2 : 0;
+  const subtotalAfterSale = totalOriginal - totalDiscount;
+  const vatValue = subtotalAfterSale * VAT_RATE;
+  const grandTotal = subtotalAfterSale + vatValue;
 
   const handleCheckoutSubmit = async (e) => {
 	e.preventDefault();
 	setIsSubmitting(true);
+	const cycleText = isAnnual ? 'Annual Billing' : 'Monthly Billing';
 	const selectedNames = selectedModules.map(m => m.title).join(', ');
 
-	const adminBody = `NEW ENTERPRISE SUBSCRIPTION REQUEST\n\nContact: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\nCountry: ${formData.country}\nCompany: ${formData.company}\nSize: ${formData.employees}\n\nRequested Modules: ${selectedNames}`;
+	const adminBody = `NEW ENTERPRISE SUBSCRIPTION\n\nContact: ${formData.name}\nEmail: ${formData.email}\nCompany: ${formData.company}\n\nModules: ${selectedNames}\nGrand Total: SAR ${grandTotal.toLocaleString()}`;
 
 	try {
-	  await fetch(OPS_API,  { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: 'sendEmail', to: TARGET_EMAIL, subject: `Subscription Request: ${formData.company}`, body: adminBody }) });
-	  alert(isAr ? `تم تقديم الطلب بنجاح! سيتواصل معك فريقنا قريباً.` : `Request processed successfully. Our team will contact you shortly.`);
+	  await fetch(OPS_API,  { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: 'sendEmail', to: TARGET_EMAIL, subject: `Subscription: ${formData.company}`, body: adminBody }) });
+	  alert(isAr ? `تم تقديم الطلب بنجاح!` : `Request processed successfully.`);
 	  setShowModal(false);
-	  setFormData({ name: '', email: '', phone: '', company: '', employees: '1-50', country: 'Saudi Arabia' });
+	  setFormData({ name: '', email: '', company: '', employees: '1-50' });
 	} catch {
 	  alert('Error processing request.');
 	} finally {
@@ -270,7 +260,7 @@ export default function Subscription() {
 	  {/* ─── CONFIGURATOR CONTROLS ─── */}
 	  <div className="max-w-7xl mx-auto px-4 pt-12 pb-8 no-print">
 		<Reveal>
-		  <div className="flex flex-col md:flex-row items-center justify-start gap-6 bg-white border border-slate-200 rounded-2xl p-4 shadow-sm" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
+		  <div className="flex flex-col md:flex-row items-center justify-between gap-6 bg-white border border-slate-200 rounded-2xl p-4 shadow-sm" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
 			<div className="flex gap-2 w-full md:w-auto overflow-x-auto no-scrollbar">
 			  <button onClick={() => setActiveView('modules')} className={`shrink-0 px-6 py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-colors flex items-center gap-2 ${activeView === 'modules' ? 'bg-[#1e2d40] text-[#c5a059] shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}>
 				<LayoutGrid size={15}/> {isAr ? "الوحدات التشغيلية" : "Module Configurator"}
@@ -279,6 +269,18 @@ export default function Subscription() {
 				<FileText size={15}/> {isAr ? "سجل الفواتير السابقة" : "Corporate Ledger"}
 			  </button>
 			</div>
+
+			{activeView === 'modules' && (
+			  <div className="flex bg-slate-100 p-1.5 rounded-xl border border-slate-200 shrink-0">
+				<button onClick={() => setBillingCycle('monthly')} className={`px-6 py-2.5 rounded-lg text-[11px] font-black uppercase tracking-widest transition-all ${!isAnnual ? 'bg-white shadow-sm text-[#1e2d40]' : 'text-slate-400 hover:text-slate-600'}`}>
+				  {isAr ? "دفع شهري" : "Monthly"}
+				</button>
+				<button onClick={() => setBillingCycle('yearly')} className={`px-6 py-2.5 rounded-lg text-[11px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${isAnnual ? 'bg-[#1e2d40] shadow-sm text-white' : 'text-slate-400 hover:text-slate-600'}`}>
+				  {isAr ? "دفع سنوي" : "Annual"}
+				  <span className={`text-[9px] font-black px-2 py-0.5 rounded-full ${isAnnual ? 'bg-[#c5a059] text-[#1e2d40]' : 'bg-slate-200 text-slate-500'}`}>-20%</span>
+				</button>
+			  </div>
+			)}
 		  </div>
 		</Reveal>
 	  </div>
@@ -293,7 +295,7 @@ export default function Subscription() {
 				  className={`relative bg-white rounded-3xl p-8 flex flex-col justify-between h-full transition-all duration-500 cursor-pointer overflow-hidden border-2 ${mod.active ? 'border-[#c5a059] shadow-[0_10px_40px_rgba(197,160,89,0.15)] -translate-y-1' : 'border-slate-100 hover:border-slate-300 hover:shadow-lg'}`}
 				  onClick={() => setModules(prev => ({ ...prev, [key]: { ...prev[key], active: !prev[key].active } }))}
 				>
-				  <div className="relative z-10 h-full flex flex-col">
+				  <div className="relative z-10">
 					<div className="flex justify-between items-start mb-6">
 					  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-sm ${mod.active ? 'bg-[#1e2d40] text-[#c5a059] scale-110' : `${mod.bgTheme} ${mod.colorTheme}`}`}>
 						{mod.icon}
@@ -304,8 +306,8 @@ export default function Subscription() {
 					  </div>
 					</div>
 					<h3 className="text-xl font-black text-[#1e2d40] mb-2">{mod.title}</h3>
-					<p className="text-sm text-slate-500 font-medium leading-relaxed mb-6 min-h-[42px] flex-grow">{mod.desc}</p>
-					<ul className="space-y-3 border-t border-slate-100 pt-5 mt-auto">
+					<p className="text-sm text-slate-500 font-medium leading-relaxed mb-6 min-h-[42px]">{mod.desc}</p>
+					<ul className="space-y-3 border-t border-slate-100 pt-5 mb-8">
 					  {features[key].map((f, i) => (
 						<li key={i} className="flex items-start gap-3 text-xs font-semibold text-slate-600 leading-snug">
 						  <Check size={14} className="text-[#c5a059] shrink-0 mt-0.5" strokeWidth={3} />
@@ -313,6 +315,16 @@ export default function Subscription() {
 						</li>
 					  ))}
 					</ul>
+				  </div>
+				  <div className="relative z-10 mt-auto pt-6 border-t border-slate-100 flex items-end justify-between">
+					<div className="flex flex-col">
+					  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{isAr ? "الاستثمار" : "Investment"}</span>
+					  <div className="text-3xl font-black font-mono text-[#1e2d40] leading-none">
+						<span className="text-lg text-slate-400 font-sans mr-1">SAR</span>
+						{(isAnnual ? mod.price * 0.8 : mod.price).toLocaleString()}
+					  </div>
+					</div>
+					<span className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{isAr ? "/ شهرياً" : "/ MO"}</span>
 				  </div>
 				</div>
 			  </Reveal>
@@ -378,20 +390,21 @@ export default function Subscription() {
 		  <div className="max-w-5xl mx-auto bg-[#1e2d40]/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-6 pointer-events-auto transform transition-transform duration-500">
 			<div className="flex items-center gap-6 w-full md:w-auto justify-between md:justify-start">
 			  <div className="hidden md:flex w-14 h-14 bg-white/5 rounded-xl border border-white/10 items-center justify-center shrink-0">
-				<LayoutGrid size={24} className="text-[#c5a059]" />
+				<FileText size={24} className="text-[#c5a059]" />
 			  </div>
 			  <div>
 				<p className="text-[10px] font-black uppercase tracking-widest text-[#c5a059] mb-1">
-				  {isAr ? "الوحدات المحددة" : "Selected Ecosystem"}
+				  {isAr ? "إجمالي الفاتورة (شاملة الضريبة)" : "Grand Total (Inc. 15% VAT)"}
 				</p>
-				<div className="text-xl font-black text-white leading-none">
-				  {selectedModules.length} {isAr ? 'وحدات' : 'Modules Selected'}
+				<div className="text-3xl font-black font-mono text-white leading-none">
+				  <span className="text-lg text-slate-400 font-sans mr-2">SAR</span>
+				  {grandTotal.toLocaleString()}
 				</div>
 			  </div>
 			</div>
 			<div className="flex items-center gap-4 w-full md:w-auto">
 			  <button onClick={() => setShowModal(true)} disabled={selectedModules.length === 0} className="w-full md:w-auto bg-gradient-to-r from-[#c5a059] to-[#d4af37] text-[#1e2d40] font-black px-8 py-4 rounded-xl text-[11px] uppercase tracking-widest hover:brightness-110 transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50">
-				{isAr ? "تأكيد الطلب وبدء الإعداد" : "Confirm Request & Setup"}
+				{isAr ? "إصدار عقد الاشتراك" : "Generate Subscription"}
 				{isAr ? <ArrowLeft size={16} /> : <ArrowRight size={16} />}
 			  </button>
 			</div>
@@ -403,12 +416,12 @@ export default function Subscription() {
 	  {showModal && (
 		<div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 no-print" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
 		  <div className="absolute inset-0 bg-[#060c12]/80 backdrop-blur-md" onClick={() => setShowModal(false)} />
-		  <div className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-300 p-8 max-h-[90vh] overflow-y-auto">
+		  <div className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-300 p-8">
 			 <div className="flex items-center justify-between mb-8 pb-6 border-b border-slate-100">
 			   <div>
 				 <h2 className="text-2xl font-black text-[#1e2d40]">{isAr ? "معلومات المنشأة" : "Enterprise Details"}</h2>
 				 <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mt-1">
-				   {isAr ? "إعداد النظام والتواصل" : "System Configuration & Onboarding"}
+				   {isAr ? "إصدار الفاتورة الضريبية" : "ZATCA Invoice Initialization"}
 				 </p>
 			   </div>
 			   <button onClick={() => setShowModal(false)} className="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors">
@@ -417,44 +430,19 @@ export default function Subscription() {
 			 </div>
 
 			 <form onSubmit={handleCheckoutSubmit} className="space-y-5">
-				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-				  <div>
-					<label className="block text-[10px] font-bold uppercase tracking-widest mb-2 text-slate-500">{isAr ? 'الاسم الكامل' : 'Full Name'}</label>
-					<input type="text" placeholder="John Doe" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required 
+				{[
+				  { label: isAr ? 'الاسم الكامل للمفوض' : 'Authorized Representative', field: 'name', type: 'text', placeholder: 'John Doe' },
+				  { label: isAr ? 'البريد الإلكتروني للعمل' : 'Corporate Email', field: 'email', type: 'email', placeholder: 'director@enterprise.com' },
+				  { label: isAr ? 'الكيان التجاري' : 'Registered Entity Name', field: 'company', type: 'text', placeholder: 'Enterprise Corp LTD' },
+				].map(({ label, field, type, placeholder }) => (
+				  <div key={field}>
+					<label className="block text-[10px] font-bold uppercase tracking-widest mb-2 text-slate-500">{label}</label>
+					<input type={type} placeholder={placeholder} value={formData[field]} onChange={e => setFormData({ ...formData, [field]: e.target.value })} required 
 						   className="w-full px-4 py-3.5 rounded-xl border border-slate-200 text-sm font-semibold outline-none transition-all focus:border-[#c5a059] bg-slate-50 text-[#1e2d40]"/>
 				  </div>
-				  <div>
-					<label className="block text-[10px] font-bold uppercase tracking-widest mb-2 text-slate-500">{isAr ? 'البريد الإلكتروني للعمل' : 'Corporate Email'}</label>
-					<input type="email" placeholder="director@enterprise.com" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} required 
-						   className="w-full px-4 py-3.5 rounded-xl border border-slate-200 text-sm font-semibold outline-none transition-all focus:border-[#c5a059] bg-slate-50 text-[#1e2d40]"/>
-				  </div>
-				</div>
-
-				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-				  <div>
-					<label className="block text-[10px] font-bold uppercase tracking-widest mb-2 text-slate-500">{isAr ? 'رقم الهاتف' : 'Phone Number'}</label>
-					<input type="tel" placeholder="+966 500 000 000" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} required 
-						   className="w-full px-4 py-3.5 rounded-xl border border-slate-200 text-sm font-semibold outline-none transition-all focus:border-[#c5a059] bg-slate-50 text-[#1e2d40]"/>
-				  </div>
-				  <div>
-					<label className="block text-[10px] font-bold uppercase tracking-widest mb-2 text-slate-500">{isAr ? 'الدولة' : 'Country'}</label>
-					<select value={formData.country} onChange={e => setFormData({ ...formData, country: e.target.value })} 
-							className="w-full px-4 py-3.5 rounded-xl border border-slate-200 text-sm font-semibold outline-none transition-all focus:border-[#c5a059] bg-slate-50 text-[#1e2d40]">
-					  {ARABIC_COUNTRIES_NO_UAE.map(country => (
-						<option key={country} value={country}>{country}</option>
-					  ))}
-					</select>
-				  </div>
-				</div>
-
-				<div>
-				  <label className="block text-[10px] font-bold uppercase tracking-widest mb-2 text-slate-500">{isAr ? 'الكيان التجاري' : 'Registered Entity Name'}</label>
-				  <input type="text" placeholder="Enterprise Corp LTD" value={formData.company} onChange={e => setFormData({ ...formData, company: e.target.value })} required 
-						 className="w-full px-4 py-3.5 rounded-xl border border-slate-200 text-sm font-semibold outline-none transition-all focus:border-[#c5a059] bg-slate-50 text-[#1e2d40]"/>
-				</div>
-
+				))}
 				<button type="submit" disabled={isSubmitting} className="w-full bg-[#1e2d40] text-white px-10 py-4 rounded-xl font-black text-[11px] uppercase tracking-widest hover:bg-[#2a3f5a] transition-all mt-4">
-				  {isSubmitting ? (isAr ? 'جاري التوثيق...' : 'PROCESSING...') : (isAr ? 'تأكيد طلب الاشتراك' : 'SUBMIT SUBSCRIPTION REQUEST')}
+				  {isSubmitting ? (isAr ? 'جاري التوثيق...' : 'AUTHENTICATING...') : (isAr ? 'إصدار الفاتورة المعتمدة' : 'DISPATCH ZATCA INVOICE')}
 				</button>
 			 </form>
 		  </div>

@@ -229,9 +229,9 @@ const productsData = [
 				id: 'opx-fmis',
 				logo: logoFmis,
 				title: 'OPERIX FMIS',
-				badge: 'CORPORATE LEDGER SYSTEM',
-				desc: 'Financial management ecosystem, corporate ledger reconciliation, ZATCA Phase 2 Integration Matrix, and automated budget loops.',
-				stats: 'GPS FENCE ACTIVE • 7 SCREENS'
+				badge: 'FINANCE & RETAIL ERP',
+				desc: 'Complete financial management ecosystem, corporate ledger reconciliation, Retail & POS operations, and ZATCA Phase 2 E-Invoicing integration.',
+				stats: 'ZATCA V2 READY • MULTI-BRANCH'
 			  },
 			  {
 				id: 'opx-hris',
