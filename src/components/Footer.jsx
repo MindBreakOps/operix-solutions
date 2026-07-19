@@ -58,6 +58,7 @@ export default function Footer() {
 	{ to: '/mobile-apps',  label: isAr ? 'تطبيقات الجوال' : 'Mobile Apps' },
 	{ to: '/clients',      label: isAr ? 'العملاء والشركاء' : 'Clients & Partners' },
 	{ to: '/news',         label: isAr ? 'الأخبار' : 'News' },
+	{ to: '/qa',           label: isAr ? 'الأسئلة الشائعة' : 'Q&A' },
 	{ to: 'https://www.sudan.operix-solutions.com', label: isAr ? 'أوبيريكس 249' : 'OPERIX 249', isExternal: true }
   ];
 

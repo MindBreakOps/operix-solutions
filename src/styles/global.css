@@ -9,7 +9,11 @@
 }
 
 /* ─── 3. GLOBAL DOCUMENT RESTORATION ─── */
-html, body {
+html {
+  @apply m-0 p-0;
+}
+
+body {
   @apply max-w-full overflow-x-hidden m-0 p-0;
   background-color: var(--color-bg);
   color: var(--color-navy);

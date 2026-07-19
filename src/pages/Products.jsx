@@ -2,947 +2,705 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { 
   Users, Settings, Activity, CreditCard, ExternalLink, 
-  Building2, Globe, Landmark, ShieldCheck, 
+  Building2, Globe, Landmark, ShieldCheck, Shield,
   ImageIcon, X, ChevronRight, ChevronLeft, Info, GraduationCap,
-  Play, Zap, ArrowUpRight, Monitor
+  Play, Zap, ArrowUpRight, Monitor, CheckCircle, Mail, Phone, Briefcase, Send
 } from 'lucide-react';
 
-export default function Projects() {
+// Import Logos
+import logoOps from "../logos/opx-ops.png";
+import logoFmis from "../logos/opx-fmis.png";
+import logoHris from "../logos/opx-hris.png";
+import logoCare from "../logos/opx-care.jpg";
+import logoEdu from "../logos/opx-edu.png";
+import logoBinAbbas from "../logos/binabbas.png";
+import logoHasad from "../logos/hasad.png";
+
+const OPS_API = 'https://script.google.com/macros/s/AKfycby7xDEoYBzGM7sAAAkX0LDTKNHo63LjbgmaC-0VLXESPFj7BSl10GE-sIqM-Ss3wE8/exec';
+const TARGET_EMAIL = 'info@operix-solutions.com';
+
+/* ── REVEAL HOOK ───────────────────────────────────────── */
+function useReveal(threshold = 0.12) {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); io.disconnect(); } },
+      { threshold, rootMargin: '0px 0px -40px 0px' }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [threshold]);
+  return [ref, visible];
+}
+
+function Reveal({ as: Tag = 'div', delay = 0, className = '', children, style = {}, ...rest }) {
+  const [ref, visible] = useReveal();
+  return (
+    <Tag ref={ref} className={className} style={{
+      opacity: visible ? 1 : 0,
+      transform: visible ? 'translateY(0)' : 'translateY(28px)',
+      transition: `opacity 0.75s cubic-bezier(0.22,1,0.36,1) ${delay}ms, transform 0.75s cubic-bezier(0.22,1,0.36,1) ${delay}ms`,
+      willChange: 'opacity, transform',
+      ...style
+    }} {...rest}>
+      {children}
+    </Tag>
+  );
+}
+
+/* ── ANIMATED COUNTER ────────────────────────────────── */
+function StatCounter({ target, duration = 1600, suffix = "" }) {
+  const [val, setVal] = useState(0);
+  const [ref, visible] = useReveal();
+  useEffect(() => {
+    if (!visible) return;
+    let start = null;
+    const step = (ts) => {
+      if (!start) start = ts;
+      const p = Math.min((ts - start) / duration, 1);
+      setVal(Math.floor(p * target));
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [visible, target, duration]);
+  return <span ref={ref} className="tabular-nums">{val.toLocaleString()}{suffix}</span>;
+}
+
+/* ── INFINITE MARQUEE ────────────────────────────────── */
+function InfiniteMarquee({ items }) {
+  return (
+    <div className="w-full overflow-hidden py-12 bg-transparent" dir="ltr">
+      <div className="marquee-content flex items-center gap-12 whitespace-nowrap animate-marquee-scroll">
+        {[...items, ...items, ...items].map((item, idx) => (
+          <div key={idx} className="flex items-center gap-4 px-8 py-5 bg-white/5 border border-white/10 rounded-2xl group hover:bg-white/10 transition-all duration-500">
+            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-lg overflow-hidden p-2.5">
+              <img src={item.logo} className="w-full h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-500" alt="Partner" />
+            </div>
+            <span className="text-[12px] font-black uppercase tracking-widest text-slate-400 group-hover:text-[#d4af37] transition-colors">{item.name}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── MULTI-STEP LEAD FORM ────────────────────────────── */
+function LeadForm({ isAr }) {
+  const [step, setStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '', company: '', email: '', modules: [], scale: 'Standard', requirements: ''
+  });
+
+  const modules = [
+    { id: 'fmis', label: isAr ? 'نظام FMIS' : 'FMIS Financials' },
+    { id: 'hris', label: isAr ? 'نظام HRIS' : 'HRIS Human Capital' },
+    { id: 'ops', label: isAr ? 'نظام OPS' : 'OPS Operations' },
+    { id: 'care', label: isAr ? 'نظام Care' : 'Care Healthcare' },
+    { id: 'edu', label: isAr ? 'نظام Edu' : 'Edu Education' },
+  ];
+
+  const handleNext = () => setStep(prev => prev + 1);
+  const handlePrev = () => setStep(prev => prev - 1);
+
+  const toggleModule = (label) => {
+    setFormData(prev => ({
+      ...prev,
+      modules: prev.modules.includes(label)
+        ? prev.modules.filter(m => m !== label)
+        : [...prev.modules, label]
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    const body = `NEW CONTACT LEAD\n\nName: ${formData.name}\nEmail: ${formData.email}\nCompany: ${formData.company}\nModules: ${formData.modules.join(', ')}\nScale: ${formData.scale}\nRequirements: ${formData.requirements || 'None'}`;
+
+    try {
+      await fetch(OPS_API, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'sendEmail', to: TARGET_EMAIL, subject: `New Lead: ${formData.company || formData.name}`, body })
+      });
+      setSubmitted(true);
+    } catch {
+      alert(isAr ? 'حدث خطأ. يرجى المحاولة لاحقاً.' : 'An error occurred. Please try again.');
+    } finally { setIsSubmitting(false); }
+  };
+
+  if (submitted) {
+    return (
+      <div className="w-full max-w-2xl mx-auto bg-white rounded-[2.5rem] p-20 text-center space-y-6 shadow-2xl border border-slate-100">
+        <div className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-8 border-2 border-emerald-100">
+          <CheckCircle size={48} className="text-emerald-500" />
+        </div>
+        <h3 className="text-3xl font-black font-serif text-[#1e2d40]">{isAr ? 'تم الإرسال بنجاح' : 'Dispatched Successfully'}</h3>
+        <p className="text-slate-500 font-medium">{isAr ? 'سيتواصل معك مهندسونا قريباً للتشاور.' : 'Our engineers will contact you shortly for a technical consultation.'}</p>
+        <button onClick={() => setSubmitted(false)} className="text-[#d4af37] font-black uppercase tracking-widest text-xs hover:underline">{isAr ? 'إرسال طلب آخر' : 'Send Another Request'}</button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full max-w-2xl mx-auto bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200 border border-slate-100 overflow-hidden relative group">
+      <div className="absolute top-0 left-0 h-1.5 bg-[#d4af37]/20 w-full">
+        <div className="h-full bg-[#d4af37] transition-all duration-500" style={{ width: `${(step/3) * 100}%` }} />
+      </div>
+
+      <div className="p-10 md:p-14">
+        {step === 1 && (
+          <Reveal className="space-y-8">
+            <div className="space-y-2">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#d4af37]">Step 01 / 03</span>
+              <h3 className="text-3xl font-black font-serif text-[#1e2d40]">{isAr ? 'من أنت؟' : 'Identity'}</h3>
+              <p className="text-sm text-slate-400 font-medium">{isAr ? 'أخبرنا قليلاً عن مؤسستك.' : 'Tell us about your enterprise.'}</p>
+            </div>
+            <div className="space-y-4">
+              <input value={formData.company} onChange={e => setFormData({...formData, company: e.target.value})} type="text" placeholder={isAr ? 'اسم المنشأة' : 'Company Name'} className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-[#d4af37] focus:bg-white transition-all outline-none text-sm font-bold text-[#1e2d40]" />
+              <input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} type="text" placeholder={isAr ? 'اسمك' : 'Contact Person'} className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-[#d4af37] focus:bg-white transition-all outline-none text-sm font-bold text-[#1e2d40]" />
+              <input value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} type="email" placeholder={isAr ? 'البريد الإلكتروني' : 'Official Email'} className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-[#d4af37] focus:bg-white transition-all outline-none text-sm font-bold text-[#1e2d40]" />
+            </div>
+            <button disabled={!formData.company || !formData.email} onClick={handleNext} className="w-full py-5 bg-[#1e2d40] text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-[#d4af37] hover:text-[#1e2d40] disabled:opacity-50 transition-all active:scale-95 shadow-xl shadow-slate-200 flex items-center justify-center gap-2">
+              {isAr ? 'التالي' : 'CONTINUE'} <ArrowUpRight size={16} />
+            </button>
+          </Reveal>
+        )}
+
+        {step === 2 && (
+          <Reveal className="space-y-8">
+            <div className="space-y-2">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#d4af37]">Step 02 / 03</span>
+              <h3 className="text-3xl font-black font-serif text-[#1e2d40]">{isAr ? 'ماذا تحتاج؟' : 'Module Selection'}</h3>
+              <p className="text-sm text-slate-400 font-medium">{isAr ? 'اختر الأنظمة التي ترغب في تفعيلها.' : 'Select the modules you wish to deploy.'}</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {modules.map(m => (
+                <div key={m.id} onClick={() => toggleModule(m.label)} className={`flex items-center gap-3 p-4 rounded-2xl border cursor-pointer transition-all ${formData.modules.includes(m.label) ? 'border-[#d4af37] bg-[#d4af37]/5 ring-1 ring-[#d4af37]' : 'bg-slate-50 border-slate-100 hover:border-slate-200'}`}>
+                  <div className={`w-5 h-5 rounded flex items-center justify-center border ${formData.modules.includes(m.label) ? 'bg-[#d4af37] border-[#d4af37]' : 'border-slate-300 bg-white'}`}>
+                    {formData.modules.includes(m.label) && <CheckCircle size={14} className="text-white" />}
+                  </div>
+                  <span className="text-xs font-bold text-[#1e2d40]">{m.label}</span>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-4">
+              <button onClick={handlePrev} className="flex-1 py-5 bg-slate-50 text-slate-400 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-100 transition-all">{isAr ? 'السابق' : 'BACK'}</button>
+              <button onClick={handleNext} className="flex-[2] py-5 bg-[#1e2d40] text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-[#d4af37] hover:text-[#1e2d40] transition-all shadow-xl shadow-slate-200">{isAr ? 'التالي' : 'CONTINUE'}</button>
+            </div>
+          </Reveal>
+        )}
+
+        {step === 3 && (
+          <form onSubmit={handleSubmit}>
+            <Reveal className="space-y-8">
+              <div className="space-y-2">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#d4af37]">Step 03 / 03</span>
+                <h3 className="text-3xl font-black font-serif text-[#1e2d40]">{isAr ? 'حجم النشر' : 'Project Scope'}</h3>
+                <p className="text-sm text-slate-400 font-medium">{isAr ? 'حدد النطاق التشغيلي لشركتك.' : 'Define your operational footprint.'}</p>
+              </div>
+              <div className="space-y-4">
+                <select value={formData.scale} onChange={e => setFormData({...formData, scale: e.target.value})} className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none text-sm font-bold text-[#1e2d40]">
+                  <option>50-100 Employees</option>
+                  <option>100-500 Employees</option>
+                  <option>500+ Employees</option>
+                </select>
+                <textarea value={formData.requirements} onChange={e => setFormData({...formData, requirements: e.target.value})} placeholder={isAr ? 'متطلبات إضافية' : 'Additional Requirements'} className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl h-32 outline-none text-sm font-bold text-[#1e2d40]" />
+              </div>
+              <div className="flex gap-4">
+                <button type="button" onClick={handlePrev} className="flex-1 py-5 bg-slate-50 text-slate-400 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-100 transition-all">{isAr ? 'السابق' : 'BACK'}</button>
+                <button type="submit" disabled={isSubmitting} className="flex-[2] py-5 bg-[#d4af37] text-[#1e2d40] rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-[#1e2d40] hover:text-white transition-all shadow-2xl shadow-[#d4af37]/20 flex items-center justify-center gap-2">
+                  {isSubmitting ? (isAr ? 'جاري الإرسال...' : 'SENDING...') : (isAr ? 'إرسال الطلب' : 'SUBMIT REQUEST')} <Send size={16} />
+                </button>
+              </div>
+            </Reveal>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default function Products() {
   const { isAr } = useLanguage();
   
   const [activePreview, setActivePreview] = useState(null);
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
-  const [hoveredCard, setHoveredCard] = useState(null);
-  const [heroVisible, setHeroVisible] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
 
-  // Swipe state
-  const [touchStart, setTouchStart] = useState(null);
-  const [touchEnd, setTouchEnd] = useState(null);
-  const minSwipeDistance = 50;
-  const thumbnailRef = useRef(null);
+  const translations = {
+    en: {
+      builtFor: 'BUILT FOR',
+      workspaceDomain: 'Workspace Domain',
+      loginText1: 'All apps enforce a strict two-step auth: users resolve their unique ',
+      loginText2: ' before accessing the secure login portal.',
+      launchPreview: 'Watch Preview',
+    },
+    ar: {
+      builtFor: 'مصمم من أجل',
+      workspaceDomain: 'نطاق مساحة العمل',
+      loginText1: 'تطبق جميع التطبيقات مصادقة من خطوتين: يجب إدخال ',
+      loginText2: ' قبل الوصول إلى بوابة الدخول الآمنة.',
+      launchPreview: 'مشاهدة العرض',
+    }
+  };
 
-  useEffect(() => {
-	const t = setTimeout(() => setHeroVisible(true), 60);
-	return () => clearTimeout(t);
-  }, []);
+  const t = translations[isAr ? 'ar' : 'en'];
 
-  useEffect(() => {
-	if (activePreview) {
-	  document.body.style.overflow = 'hidden';
-	  setImgLoaded(false);
-	} else {
-	  document.body.style.overflow = 'unset';
-	}
-	return () => { document.body.style.overflow = 'unset'; };
-  }, [activePreview]);
-
-  // Scroll active thumbnail into view
-  useEffect(() => {
-	if (!thumbnailRef.current) return;
-	const active = thumbnailRef.current.querySelector('[data-active="true"]');
-	if (active) active.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-  }, [currentImgIndex]);
-
-  // ─── TIER 1: OPERIX CORE ECOSYSTEM ───
+  // ─── DATA RESTORATION ───
   const corePlatforms = [
-	{
-	  id: 'operations',
-	  titleEn: 'OPERIX Operations',
-	  titleAr: 'أوبيريكس لإدارة العمليات',
-	  subEn: 'Fleet & Workforce Matrix',
-	  subAr: 'إدارة أسطول العمليات والقوى العاملة',
-	  descEn: 'The core operations hub replacing manual logbooks. Features comprehensive ANPR parking, valet management, and real-time gig workforce deployment tracking.',
-	  descAr: 'محور العمليات الأساسي الذي يحل محل دفاتر السجلات اليدوية. إدارة متكاملة لمواقف السيارات بكاميرات التعرف الذكي (ANPR)، وتوجيه القوى العاملة.',
-	  url: 'https://www.ops.operix-solutions.online',
-	  icon: <Settings size={20} />,
-	  accentColor: '#ef4444',
-	  badgeBg: 'bg-[#1e2d40]/90',
-	  badge: <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /><span>LIVE TELEMETRY</span></div>,
-	  image: '/projects/ops.png',
-	  previews: [
-		{ url: '/projects/ops/exe-dash.png', titleEn: 'Executive Command Center', titleAr: 'مركز القيادة التنفيذية', descEn: 'High-level administrative hub for C-Suite approvals, IT operations, and identity access management across the entire enterprise.', descAr: 'مركز إداري رفيع المستوى لاعتمادات الإدارة التنفيذية، وعمليات تقنية المعلومات، وإدارة هويات الوصول عبر المؤسسة.' },
-		{ url: '/projects/ops/ops-dash.mp4', titleEn: 'Enterprise Operations Matrix', titleAr: 'مصفوفة عمليات المؤسسة', descEn: 'The central nervous system of the operations floor. Provides direct access to ANPR scanners, task hubs, inventory control, and fleet tracking modules.', descAr: 'العصب المركزي لطابق العمليات. يوفر وصولاً مباشراً لماسحات ANPR، ومراكز المهام، والتحكم في المخزون، ووحدات تتبع الأسطول.' },
-		{ url: '/projects/ops/ai-email-ops.png', titleEn: 'AI-Powered Communications Core', titleAr: 'مركز الاتصالات المدعوم بالذكاء الاصطناعي', descEn: 'Smart email drafting utilizing generative AI. Features pre-configured corporate templates for official notices, updates, and HR compliance letters.', descAr: 'صياغة ذكية لرسائل البريد الإلكتروني باستخدام الذكاء الاصطناعي التوليدي. يحتوي على قوالب مؤسسية مسبقة الإعداد للإشعارات الرسمية والتحديثات.' },
-		{ url: '/projects/ops/analyticsandreports-ops.png', titleEn: 'Advanced Analytics & Reporting', titleAr: 'التحليلات المتقدمة والتقارير', descEn: 'Dynamic data visualization and custom report generation. Filter vast datasets across the enterprise and export directly to Excel or secure PDF formats.', descAr: 'تصوير مرئي ديناميكي للبيانات وإنشاء تقارير مخصصة. تصفية مجموعات البيانات الضخمة عبر المؤسسة وتصديرها مباشرة بتنسيقات إكسل أو PDF آمنة.' },
-		{ url: '/projects/ops/crm-ops.png', titleEn: 'CRM & Lead Pipeline Matrix', titleAr: 'مصفوفة إدارة علاقات العملاء (CRM)', descEn: 'Centralized marketing workspace tracking ad spend, campaign ROI, and lead conversion funnels in real-time.', descAr: 'مساحة عمل تسويقية مركزية لتتبع الإنفاق الإعلاني، وعائد الاستثمار للحملات، ومسارات تحويل العملاء المحتملين في الوقت الفعلي.' },
-		{ url: '/projects/ops/doc-generateandsendemail-ops.png', titleEn: 'Automated Document Generator', titleAr: 'منشئ المستندات المؤسسية الآلي', descEn: 'Instantly generate official employment offers, contracts, and internal memos complete with dynamic variables and secure ledger archiving.', descAr: 'إنشاء فوري لعروض العمل الرسمية والعقود والمذكرات الداخلية مع متغيرات ديناميكية وأرشفة آمنة في السجل.' },
-		{ url: '/projects/ops/external-standaloneapps-ops.png', titleEn: 'Decentralized Portals & QR Gateway', titleAr: 'البوابات اللامركزية ورموز الاستجابة السريعة', descEn: 'Manage public-facing touchpoints and standalone apps for gig workers, field staff, and VIP valet clients via generated access links and QR codes.', descAr: 'إدارة نقاط الاتصال العامة والتطبيقات المستقلة للعاملين المستقلين والموظفين الميدانيين وعملاء خدمة صف السيارات (Valet) عبر روابط وصول ورموز QR.' },
-		{ url: '/projects/ops/facilitandtraining-ops.png', titleEn: 'Facility Configuration & Academy Hub', titleAr: 'تهيئة المرافق وإدارة الأكاديميات', descEn: 'Spin up and configure complex project environments, set daily operational targets, and manage internal training course capacities.', descAr: 'إنشاء وتهيئة بيئات مشاريع معقدة، وتحديد أهداف التشغيل اليومية، وإدارة السعة الاستيعابية للدورات التدريبية الداخلية.' },
-		{ url: '/projects/ops/hr-ops.png', titleEn: 'Master HR & Roster Directory', titleAr: 'الدليل الشامل للموارد البشرية والورديات', descEn: 'Global administrative view of human capital. Track shift assignments, monitor active timesheets, and execute top-level personnel overrides.', descAr: 'عرض إداري شامل لرأس المال البشري. تتبع المهام والورديات، ومراقبة سجلات الحضور النشطة، وتنفيذ الإجراءات الإدارية العليا للموظفين.' },
-		{ url: '/projects/ops/it-ops.png', titleEn: 'IT IAM & Infrastructure Control', titleAr: 'عمليات تقنية المعلومات وإدارة الهويات', descEn: 'Secure Identity and Access Management (IAM) panel. Provision user roles, manage system permissions, and monitor core infrastructure health.', descAr: 'لوحة آمنة لإدارة الهويات والوصول (IAM). منح أدوار المستخدمين، وإدارة صلاحيات النظام، ومراقبة صحة البنية التحتية الأساسية.' },
-		{ url: '/projects/ops/performance-ops.png', titleEn: 'Live Operational KPI Telemetry', titleAr: 'القياس اللحظي لمؤشرات الأداء (KPIs)', descEn: 'High-level overview of global enterprise metrics, tracking ANPR traffic flow, active subscribers, and operational revenue in real time.', descAr: 'نظرة عامة رفيعة المستوى على مقاييس المؤسسة، تتبع تدفق حركة المرور (ANPR)، والمشتركين النشطين، والإيرادات التشغيلية في الوقت الفعلي.' },
-		{ url: '/projects/ops/setshift-ops.png', titleEn: 'Geofenced Shift Orchestration', titleAr: 'إدارة الورديات بنطاق جغرافي (Geofencing)', descEn: 'Pinpoint workforce deployment using interactive mapping and strict GPS radius limits to guarantee accurate on-site field staff attendance.', descAr: 'التوجيه الدقيق للقوى العاملة باستخدام الخرائط التفاعلية وحدود نطاق جغرافي صارمة لضمان دقة حضور الموظفين الميدانيين في الموقع.' }
-	  ]
-	},
-	{
-	  id: 'fmis',
-	  titleEn: 'OPERIX FMIS',
-	  titleAr: 'أوبيريكس للإدارة المالية',
-	  subEn: 'Finance & Retail ERP',
-	  subAr: 'نظام إدارة المالية والتجزئة',
-	  descEn: 'Complete financial management ecosystem, corporate ledger reconciliation, Retail & POS operations, and ZATCA Phase 2 E-Invoicing integration.',
-	  descAr: 'نظام متكامل لإدارة الشؤون المالية، وتسوية السجلات، وعمليات التجزئة ونقاط البيع، مع ربط إلكتروني متوافق مع المرحلة الثانية لهيئة الزكاة والضريبة والجمارك (ZATCA).',
-	  url: 'https://www.fmis.operix-solutions.online',
-	  icon: <CreditCard size={20} />,
-	  accentColor: '#10b981',
-	  badgeBg: 'bg-[#c9a84c]/95',
-	  badge: <div className="flex items-center gap-1.5"><ShieldCheck size={12} /><span>ZATCA VERIFIED</span></div>,
-	  image: '/projects/fmis.png',
-	  previews: [
-		{ 
-		  url: '/projects/fmis/dash-fmis.png', 
-		  titleEn: 'Executive Dashboard & P&L', 
-		  titleAr: 'لوحة القيادة التنفيذية والأرباح والخسائر', 
-		  descEn: 'Real-time overview of profit and loss, revenue pipelines, and pending liabilities. Provides C-level executives with immediate financial health metrics.', 
-		  descAr: 'نظرة عامة لحظية على الأرباح والخسائر، وتدفقات الإيرادات، والالتزامات المعلقة. توفر للإدارة التنفيذية مؤشرات فورية للصحة المالية.' 
-		},
-		{ 
-		  url: '/projects/fmis/opx-ai-fmis.png', 
-		  titleEn: 'OPERIX AI Copilot Integration', 
-		  titleAr: 'مساعد الذكاء الاصطناعي المدمج', 
-		  descEn: 'Embedded AI assistant that analyzes financial databases, automates complex module navigation, and generates live telemetry reports on command.', 
-		  descAr: 'مساعد ذكاء اصطناعي مدمج يحلل قواعد البيانات المالية، ويقوم بأتمتة التنقل المعقد بين الوحدات، ويولد تقارير لحظية عند الطلب.' 
-		},
-		{ 
-		  url: '/projects/fmis/quot-fmis.png', 
-		  titleEn: 'Automated Quotation Builder', 
-		  titleAr: 'منشئ عروض الأسعار التلقائي', 
-		  descEn: 'Streamlined proposal generation tool that maps directly to the CRM, allowing quick drafting, approval, and dispatching of corporate estimates.', 
-		  descAr: 'أداة متطورة لإنشاء العروض ترتبط مباشرة بنظام إدارة علاقات العملاء (CRM)، مما يتيح صياغة واعتماد وإرسال التقديرات المالية للشركات بسرعة.' 
-		},
-		{ 
-		  url: '/projects/fmis/help-fmis.png', 
-		  titleEn: 'System Architecture & Help Matrix', 
-		  titleAr: 'هيكلية النظام والمساعدة الذكية', 
-		  descEn: 'Comprehensive, built-in documentation and mission-control mapping that guides users through GL, WBS, and Payroll engine workflows.', 
-		  descAr: 'وثائق ومصفوفة توجيه شاملة مدمجة ترشد المستخدمين عبر سير عمل دفتر الأستاذ العام، وهيكلة المشاريع (WBS)، ومحرك مسيرات الرواتب.' 
-		},
-		//
-		{ 
-		  url: '/projects/fmis/fmis-gl.png', 
-		  titleEn: 'General Ledger Engine', 
-		  titleAr: 'محرك دفتر الأستاذ العام', 
-		  descEn: 'Core financial accounting engine featuring strict double-entry journal logs, custom Chart of Accounts, and real-time balance tracking.', 
-		  descAr: 'محرك المحاسبة المالية الأساسي يتميز بسجلات قيود مزدوجة صارمة، ودليل حسابات مخصص، وتتبع لحظي للأرصدة.' 
-		},
-		//
-		{ 
-		  url: '/projects/fmis/fmis-pos.png', 
-		  titleEn: 'Point of Sale (POS)', 
-		  titleAr: 'نقطة البيع (POS)', 
-		  descEn: 'Lightning-fast checkout interface with barcode scanner support, automated VAT calculation, and instant GL reconciliation.', 
-		  descAr: 'واجهة دفع سريعة تدعم ماسح الباركود، مع حساب تلقائي لضريبة القيمة المضافة، وتسوية فورية في دفتر الأستاذ العام.' 
-		},
-		//
-		{ 
-		  url: '/projects/fmis/fmis-prod.png', 
-		  titleEn: 'Smart Inventory Management', 
-		  titleAr: 'إدارة المخزون الذكية', 
-		  descEn: 'Comprehensive product registry for tracking SKUs, barcodes, unit prices, and automated low-stock reorder points.', 
-		  descAr: 'سجل منتجات شامل لتتبع رموز التخزين، والباركود، وأسعار الوحدات، ونقاط إعادة الطلب التلقائية عند انخفاض المخزون.' 
-		},
-		//
-		{ 
-		  url: '/projects/fmis/fmis-purchase.png', 
-		  titleEn: 'Purchase Orders Workflow', 
-		  titleAr: 'سير عمل أوامر الشراء', 
-		  descEn: 'Seamless procurement module to draft purchase orders, select suppliers, and replenish stock directly into the inventory system.', 
-		  descAr: 'وحدة مشتريات سلسة لصياغة أوامر الشراء، واختيار الموردين، وتجديد المخزون مباشرة في نظام إدارة المستودعات.' 
-		},
-		//
-		{ 
-		  url: '/projects/fmis/fmis-supplier.png', 
-		  titleEn: 'Supplier & Vendor Directory', 
-		  titleAr: 'دليل الموردين والبائعين', 
-		  descEn: 'Centralized database for managing vendor profiles, contact details, and procurement relationships.', 
-		  descAr: 'قاعدة بيانات مركزية لإدارة ملفات الموردين، وتفاصيل الاتصال، وعلاقات المشتريات.' 
-		}
-	  ]
-	},
-	{
-	  id: 'hris',
-	  titleEn: 'OPERIX HRIS',
-	  titleAr: 'أوبيريكس لإدارة الموارد البشرية',
-	  subEn: 'Human Capital Infrastructure',
-	  subAr: 'بنية رأس المال البشري',
-	  descEn: 'Complete HR automation — GPS-enforced attendance tracking, automated salary deductions, and seamless employee self-service pipelines.',
-	  descAr: 'أتمتة كاملة للموارد البشرية — تسجيل الحضور والغياب بنطاق الحماية الجغرافي (GPS)، ومحرك احتساب الاستقطاعات التلقائي للرواتب.',
-	  url: 'https://www.hris.operix-solutions.online',
-	  icon: <Users size={20} />,
-	  accentColor: '#6366f1',
-	  badgeBg: 'bg-emerald-700/90',
-	  badge: <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white animate-ping" /><span>GPS FENCE ACTIVE</span></div>,
-	  image: '/projects/hris.png',
-	  previews: [
-		{ url: '/projects/hris/ai-scanner-hris.png', titleEn: 'AI-Powered CV Scanner', titleAr: 'الماسح الضوئي للسير الذاتية بالذكاء الاصطناعي', descEn: 'Automated recruitment engine utilizing Edge AI to instantly parse, score, and extract data from applicant CVs, mapping them directly to open requisitions.', descAr: 'محرك توظيف آلي يعتمد على الذكاء الاصطناعي الطرفي لقراءة السير الذاتية واستخراج البيانات منها وتقييمها فورياً، مع ربطها مباشرة بالوظائف الشاغرة.' },
-		{ url: '/projects/hris/resutl-ats-hris.png', titleEn: 'AI Scan Results & Match Analysis', titleAr: 'نتائج المسح الضوئي وتحليل التطابق', descEn: 'Detailed breakdown of candidate profiles, showcasing AI-generated skill gap analysis and automated role matching probabilities.', descAr: 'تحليل مفصل لملفات المرشحين، يعرض الفجوات المهارية المستخرجة بالذكاء الاصطناعي واحتماليات التطابق التلقائي مع الأدوار الوظيفية.' },
-		{ url: '/projects/hris/emp-pro-hris.png', titleEn: 'Master Employee Profiles', titleAr: 'الملفات الشاملة للموظفين', descEn: 'Centralized digital twin of the workforce. Stores identity documents, contract financials, and live disciplinary or attendance records in one secure vault.', descAr: 'توأمة رقمية مركزية للقوى العاملة. تحفظ مستندات الهوية، والبيانات المالية للعقود، والسجلات الحية للحضور والانضباط في خزانة آمنة واحدة.' },
-		{ url: '/projects/hris/pipline-hris.png', titleEn: 'Kanban Recruitment Pipeline', titleAr: 'مسار التوظيف وإدارة المرشحين', descEn: 'Visual drag-and-drop applicant tracking system (ATS). Seamlessly move candidates from initial screening to final offer with automated status triggers.', descAr: 'نظام تتبع للمتقدمين (ATS) مرئي يعمل بالسحب والإفلات. ينقل المرشحين بسلاسة من الفرز الأولي إلى العرض النهائي مع مشغلات حالة تلقائية.' },
-		{ url: '/projects/hris/visa-mgm-hris.png', titleEn: 'Muqeem Visa Management', titleAr: 'إدارة تأشيرات مقيم', descEn: 'Direct API integration for tracking expatriate Iqama expiries, managing exit/entry visas, and ensuring 100% governmental compliance.', descAr: 'ربط واجهة برمجة التطبيقات (API) مباشر لتتبع انتهاء إقامات الوافدين، وإدارة تأشيرات الخروج والعودة، وضمان الامتثال الحكومي بنسبة 100%.' },
-		{ url: '/projects/hris/doc-hris.png', titleEn: 'Corporate Document Builder', titleAr: 'منشئ المستندات والخطابات الرسمية', descEn: 'Automated letterhead generator for official corporate correspondence, warnings, and salary certificates, stored in an immutable ledger.', descAr: 'منشئ خطابات آلي للمراسلات الرسمية للشركة، والإنذارات، وشهادات الرواتب، محفوظة في سجل غير قابل للتعديل.' },
-		{ url: '/projects/hris/external-apps-hris.png', titleEn: 'External Freelance Portals', titleAr: 'بوابات العمل الحر الخارجية', descEn: 'Secure, passcode-protected public gateways for gig workers and external applicants to submit credentials without accessing the core system.', descAr: 'بوابات عامة آمنة ومحمية بكلمة مرور تتيح للمستقلين والمتقدمين الخارجيين تقديم بياناتهم دون الحاجة للوصول إلى النظام الأساسي.' }
-	  ]
-	},
-	{
-	  id: 'care',
-	  titleEn: 'OPERIX Health Care',
-	  titleAr: 'أوبيريكس كير للرعاية الطبية',
-	  subEn: 'Clinical Management Core',
-	  subAr: 'منظومة الإدارة السريرية',
-	  descEn: 'Advanced hospital management ecosystem. End-to-end clinical workflow from patient intake and triage through physician consultation, pharmacy dispensary, surgical operations, blood bank, and full financial treasury.',
-	  descAr: 'منظومة متكاملة لإدارة المستشفيات. سير عمل سريري شامل من استقبال المريض والفرز وصولاً إلى الاستشارة الطبية، والصيدلية، وغرف العمليات، وبنك الدم، والخزانة المالية.',
-	  url: 'https://www.care.operix-solutions.online',
-	  icon: <Activity size={20} />,
-	  accentColor: '#f43f5e',
-	  badgeBg: 'bg-rose-600/90',
-	  badge: <div className="flex items-center gap-1.5"><Activity size={12} className="animate-pulse" /><span>CLINICAL SYNC</span></div>,
-	  image: '/projects/care.png',
-	  previews: [
-		{ url: '/projects/care/admin-care.png', titleEn: 'Command Center — Admin Console', titleAr: 'مركز القيادة — لوحة الإدارة', descEn: 'Enterprise analytics and access control hub. Real-time counters for active visits, pending prescriptions, and surgeries. Houses the Account Approvals queue, a full Access & Security Registry with role-based clearances, and Quick Portals to instantly navigate any clinical department.', descAr: 'مركز تحليلات المؤسسة والتحكم في الوصول. عدادات لحظية للزيارات النشطة والوصفات المعلقة والعمليات الجراحية. يضم طابور اعتماد الحسابات، وسجل الأمان الكامل بصلاحيات مبنية على الأدوار، وبوابات سريعة للتنقل الفوري بين الأقسام السريرية.' },
-		{ url: '/projects/care/reception-care.png', titleEn: 'Front Desk — New Patient Enrollment', titleAr: 'الاستقبال — تسجيل مريض جديد', descEn: 'Patient intake form capturing full demographics: name, DOB, sex, blood group, phone, and email. One-tap "Proceed to Triage & Services" routes the registered patient into the nurse station workflow, triggering the live triage queue.', descAr: 'نموذج استقبال المريض الذي يسجل البيانات الكاملة: الاسم وتاريخ الميلاد والجنس والفصيلة الدموية والهاتف والبريد الإلكتروني. ينقل "الانتقال إلى الفرز والخدمات" المريض المسجل فوراً إلى سير عمل محطة التمريض ويُشغّل قائمة الفرز الحي.' },
-		{ url: '/projects/care/appoint-care.png', titleEn: 'Front Desk — Appointments & Scheduling', titleAr: 'الاستقبال — المواعيد والجدولة', descEn: 'Dual-panel appointment hub. Schedule new visits by selecting the patient, assigning a doctor, setting date and time slot, and noting the visit reason. The Upcoming Schedule panel confirms all booked appointments with treating physician details and one-tap Check-in buttons to activate the patient visit.', descAr: 'مركز مواعيد ثنائي اللوحات. جدّل زيارات جديدة باختيار المريض وتعيين الطبيب وتحديد التاريخ والفترة الزمنية وسبب الزيارة. لوحة الجدول القادم تؤكد جميع المواعيد المحجوزة مع بيانات الطبيب المعالج وأزرار تسجيل الوصول الفوري.' },
-		{ url: '/projects/care/doc-workspace-care.png', titleEn: 'Doctor Workspace — Consultation Waitlist', titleAr: 'بيئة عمل الطبيب — قائمة انتظار الاستشارات', descEn: 'Live triage board showing all patients awaiting the physician. Each card displays MRN, ordered services, and bypass status. Supports MRN scan-override lookup and one-click Re-sync Live Triage to pull the latest nurse queue instantly.', descAr: 'لوحة الفرز الحي التي تعرض جميع المرضى في انتظار الطبيب. كل بطاقة تعرض رقم السجل الطبي والخدمات المطلوبة وحالة التجاوز. تدعم بحث MRN بالمسح وإعادة المزامنة الفورية مع الفرز الحي من محطة التمريض.' },
-		{ url: '/projects/care/doc-care.png', titleEn: 'Doctor Workspace — Examination & Diagnosis', titleAr: 'بيئة عمل الطبيب — الفحص والتشخيص', descEn: 'Full clinical encounter workspace. Left panel shows the patient card with triage vitals and nurse bypass status. Right panel captures vitals (BP, HR, Temp, Weight), symptoms, ICD-coded diagnosis, and prescriptions from the formulary — all via voice dictation. Finalised with "Sign off & Route to Pharmacy."', descAr: 'مساحة عمل الاستشارة الكاملة. اللوحة اليسرى تعرض بيانات المريض والعلامات الحيوية وحالة تجاوز التمريض. اللوحة اليمنى تسجّل العلامات الحيوية والأعراض والتشخيص بترميز ICD والأدوية من قائمة الدواء — كل ذلك بالإملاء الصوتي. تنتهي بـ"توقيع وإحالة إلى الصيدلية".' },
-		{ url: '/projects/care/chemist-care.png', titleEn: 'Pharmacy Unit — Chemist Portal (Dispensary)', titleAr: 'وحدة الصيدلية — بوابة الصيدلاني', descEn: "MRN-driven dispensary portal. Scan or enter the patient's record number to instantly pull their active prescription. Tabs switch between Dispensary & Billing and full Inventory management for a complete pharmacist workflow in one screen.", descAr: 'بوابة صرف مُدارة برقم السجل الطبي. امسح أو أدخل الرقم لاستدعاء وصفة المريض النشطة فوراً. تبديل التبويبات بين الصرف والفوترة وإدارة المخزون الكامل — سير عمل الصيدلاني في شاشة واحدة.' },
-		{ url: '/projects/care/pharm-inven-care.png', titleEn: 'Pharmacy Unit — Master Inventory', titleAr: 'وحدة الصيدلية — المخزون الرئيسي', descEn: 'Pharmaceutical formulary management. Add medications with generic name, brand, dosage form, manufacturer, country, dates, and a three-currency pricing matrix (SDG / USD / SAR). The master inventory table lists the full catalogue with inline edit and delete controls.', descAr: 'إدارة قائمة الأدوية. أضف أدوية مع الاسم العلمي والتجاري والجرعة والمصنّع والدولة والتواريخ ومصفوفة أسعار ثلاثية (جنيه / دولار / ريال). يعرض جدول المخزون الكتالوج الكامل مع أدوات التعديل والحذف المدمجة.' },
-		{ url: '/projects/care/ops-care.png', titleEn: 'Operations OR — Surgical Board', titleAr: 'غرفة العمليات — لوحة العمليات الجراحية', descEn: 'Real-time surgical scheduling with live blood bank availability in the header by blood type. Book procedures by selecting patient, surgeon, operation name, required blood units, and notes — with voice dictation. "Verify Blood & Schedule" cross-checks inventory before confirming to prevent supply shortfalls.', descAr: 'جدولة العمليات الجراحية اللحظية مع إتاحة بنك الدم الحية في الرأس حسب فصيلة الدم. احجز إجراءً بتحديد المريض والجراح والعملية والدم المطلوب والملاحظات — بالإملاء الصوتي. "التحقق من الدم والجدولة" يراجع المخزون قبل التأكيد لتفادي النقص.' },
-		{ url: '/projects/care/bloodbank-care.png', titleEn: 'Blood Bank Operations — Live Inventory', titleAr: 'عمليات بنك الدم — المخزون الحي', descEn: 'Enterprise hemotherapy dispensing and tracking. Shows total vault capacity, critical shortage groups, and system health. Each blood type displays unit count, a colour-coded LOW STOCK / HEALTHY status bar, and Dispense / Add controls — synced directly with the Surgical OR board.', descAr: 'صرف وتتبع مستحضرات الدم. يعرض السعة الإجمالية ومجموعات النقص الحرج وصحة النظام. كل فصيلة تظهر عدد الوحدات وشريط الحالة (نقص / كافٍ) وعناصر الصرف والإضافة — متزامنة مع لوحة غرفة العمليات.' },
-		{ url: '/projects/care/inside-file-care.png', titleEn: 'Patient History — Full Clinical Record', titleAr: 'سجل المريض — الملف السريري الكامل', descEn: 'Complete longitudinal patient record. Profile card shows DOB, sex, blood type, and contact with an external document upload zone. The Clinical Timeline renders every encounter — Check Visits with vitals, Diagnosis & RX, Pathology results, and Surgical Operations with completion status. Exportable to PDF.', descAr: 'السجل الطولي الكامل للمريض. بطاقة الملف تعرض تاريخ الميلاد والجنس والفصيلة وبيانات التواصل مع منطقة رفع الوثائق. يرسم الجدول الزمني كل زيارة — الزيارات مع العلامات الحيوية، والتشخيص والوصفة، ونتائج التحاليل، والعمليات مع الحالة. قابل للتصدير PDF.' },
-		{ url: '/projects/care/financial-care.png', titleEn: 'Financial Controller — Corporate Treasury', titleAr: 'المراقب المالي — الخزانة المؤسسية', descEn: 'Live financial ledger for the facility. Displays gross revenue, payroll, and operating expenses against real-time P&L. The Log Transaction panel posts entries by type, currency (SAR / USD / SDG), amount, and memo. The Master Ledger provides a full immutable audit trail of every financial event.', descAr: 'السجل المالي الحي للمنشأة. يعرض الإيرادات والرواتب والمصاريف التشغيلية مقابل الربح والخسارة اللحظي. لوحة المعاملات ترحّل القيود حسب النوع والعملة والمبلغ والملاحظة. يوفر السجل الرئيسي مسار تدقيق كامل وغير قابل للتعديل.' },
-		{ url: '/projects/care/radio-lab-care.png', titleEn: 'Radiography Lab — Diagnostic Department', titleAr: 'مختبر الأشعة — قسم التشخيص', descEn: 'Diagnostic imaging portal. The active queue lists pending scan requests (X-Ray, MRI, CT) pulled from physician orders. Selecting a patient opens the result entry panel: clinical observations, optional image/report attachment, and "Finalize & Send to Patient File" to push the completed report into the clinical timeline.', descAr: 'بوابة التصوير التشخيصي. تسرد قائمة الانتظار طلبات الفحص المعلقة (أشعة، رنين، توموغرافي) من أوامر الطبيب. اختيار المريض يفتح لوحة إدخال النتائج مع حقل الملاحظات ومرفق اختياري وإجراء "اعتماد وإرسال لملف المريض" الذي يُدرج التقرير في الجدول السريري.' }
-	  ]
-	},
-	{
-	  id: 'edu',
-	  titleEn: 'OPERIX Edu',
-	  titleAr: 'أوبيريكس للتعليم',
-	  subEn: 'School Management Platform',
-	  subAr: 'منظومة الإدارة المدرسية',
-	  descEn: 'Cloud-based school management platform purpose-built for Ministry of Education standards across the Middle East. Combines academic governance with modern technology to empower school leaders and teachers.',
-	  descAr: 'منصة سحابية متكاملة مصممة خصيصاً لتلبي معايير وزارات التعليم في الشرق الأوسط. نجمع بين رصانة الإدارة الأكاديمية وسلاسة التقنية الحديثة لتمكين قادة المدارس والمعلمين.',
-	  url: 'https://www.edu.operix-solutions.online',
-	  icon: <GraduationCap size={20} />,
-	  accentColor: '#f59e0b',
-	  badgeBg: 'bg-[#1a3a6b]/90',
-	  badge: <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" /><span>الإصدار المؤسسي 2026</span></div>,
-	  image: '/projects/opx-edu-cover.jpeg',
-	  previews: [
-		{ url: '/projects/edu/edu-dash.png', titleEn: 'Executive Dashboard — School Command Center', titleAr: 'لوحة القيادة المدرسية — المركز التنفيذي', descEn: 'High-level administrative overview for school principals and directors. Tracks active students, class schedules, attendance rates, and academic performance KPIs in real time.', descAr: 'نظرة إدارية شاملة لمديري المدارس والقيادات التنفيذية. تتبع الطلاب النشطين، والجداول الدراسية، ومعدلات الحضور، ومؤشرات الأداء الأكاديمي في الوقت الفعلي.' },
-		{ url: '/projects/edu/edu-dox.png', titleEn: 'Dox Studio — Results, Exams & Behaviour Records', titleAr: 'Dox Studio — النتائج والاختبارات والسجلات السلوكية', descEn: 'Automated document generation engine for student results, exam attendance sheets, and behaviour records. Produces 4K-print-ready certificates fully compatible with official Ministry of Education formatting standards.', descAr: 'محرك إنشاء المستندات الآلي لنتائج الطلاب وكشوف حضور الاختبارات والسجلات السلوكية. ينتج شهادات جاهزة للطباعة بجودة 4K متوافقة تماماً مع التنسيقات الرسمية لوزارة التعليم.' },
-		{ url: '/projects/edu/edu-fees.png', titleEn: 'Financial Board — Fees, Registration & Treasury', titleAr: 'اللوحة المالية — الرسوم والتسجيل والخزانة', descEn: 'Comprehensive student registration and fee management system. Tracks tuition collection, instalment plans, outstanding balances, and generates financial summaries for the school treasury.', descAr: 'نظام شامل لتسجيل الطلاب وإدارة الرسوم الدراسية. يتتبع تحصيل الأقساط وخطط التقسيط والأرصدة المستحقة، ويولد ملخصات مالية لخزانة المدرسة.' },
-		{ url: '/projects/edu/edu-studs.png', titleEn: 'Student Registry — Master Profiles', titleAr: 'سجل الطلاب — الملفات الشاملة', descEn: 'Centralised digital registry for all enrolled students. Stores academic history, class assignments, contact information, and links directly to grade records, attendance logs, and behaviour incidents.', descAr: 'سجل رقمي مركزي لجميع الطلاب الملتحقين. يحفظ السجل الأكاديمي والتكليفات الدراسية وبيانات التواصل، ويرتبط مباشرة بسجلات الدرجات والحضور والحوادث السلوكية.' },
-		{ url: '/projects/edu/edu-par.png', titleEn: 'Parent Portal — Guardian Management', titleAr: 'بوابة أولياء الأمور — إدارة الأسرة', descEn: 'Direct linkage between student records and parent or guardian accounts. Enables streamlined communication, periodic progress report dispatch, and instant notifications for attendance and behavioural updates.', descAr: 'ربط مباشر بين بيانات الطالب وحساب ولي أمره. يتيح التواصل المنظّم وإرسال تقارير التقدم الدورية والإشعارات الفورية لتحديثات الحضور والسلوك.' },
-		{ url: '/projects/edu/edu-sub.png', titleEn: 'Academic Subjects & Curriculum Management', titleAr: 'إدارة المواد الدراسية والمنهج الأكاديمي', descEn: 'Advanced subject and curriculum configuration engine. Manage school subjects, assign teachers, set grading weights, configure semester structures, and automate cumulative GPA calculations.', descAr: 'محرك متقدم لإعداد المواد والمنهج الدراسي. إدارة المواد المدرسية وتعيين المعلمين وضبط أوزان الدرجات وهيكلة الفصول الدراسية واحتساب المعدلات التراكمية آلياً.' },
-		{ url: '/projects/edu/edu-res.png', titleEn: 'Results Engine — Academic Grade Records', titleAr: 'محرك النتائج — سجلات الدرجات الأكاديمية', descEn: 'Precise academic grade recording and result management system. Supports multi-term entries, automatic GPA computation, and one-click export of official result sheets aligned with Ministry grading frameworks.', descAr: 'نظام دقيق لتسجيل الدرجات الأكاديمية وإدارة النتائج. يدعم الإدخال متعدد الفصول والحساب التلقائي للمعدلات وتصدير كشوف النتائج الرسمية المتوافقة مع أطر تقدير وزارة التعليم بنقرة واحدة.' }
-	  ]
-	}
+    {
+      id: 'operations',
+      titleEn: 'OPERIX Operations',
+      titleAr: 'أوبيريكس لإدارة العمليات',
+      subEn: 'Fleet & Workforce Matrix',
+      subAr: 'إدارة أسطول العمليات والقوى العاملة',
+      descEn: 'The core operations hub replacing manual logbooks. Features comprehensive ANPR parking, valet management, and real-time gig workforce deployment tracking.',
+      descAr: 'محور العمليات الأساسي الذي يحل محل دفاتر السجلات اليدوية. إدارة متكاملة لمواقف السيارات بكاميرات التعرف الذكي (ANPR)، وتوجيه القوى العاملة.',
+      url: 'https://www.ops.operix-solutions.online',
+      icon: <Settings size={24} />,
+      accentColor: '#3b82f6',
+      accentLight: 'rgba(59,130,246,0.1)',
+      image: '/projects/ops.png',
+      previews: [
+        { url: '/projects/ops/exe-dash.png', titleEn: 'Executive Command Center', titleAr: 'مركز القيادة التنفيذية', descEn: 'High-level administrative hub for C-Suite approvals, IT operations, and identity access management.', descAr: 'مركز إداري رفيع المستوى لاعتمادات الإدارة التنفيذية، وعمليات تقنية المعلومات، وإدارة هويات الوصول.' },
+        { url: '/projects/ops/ops-dash.mp4', titleEn: 'Enterprise Operations Matrix', titleAr: 'مصفوفة عمليات المؤسسة', descEn: 'Direct access to ANPR scanners, task hubs, inventory control, and fleet tracking modules.', descAr: 'وصول مباشر لماسحات ANPR، ومراكز المهام، والتحكم في المخزون، ووحدات تتبع الأسطول.' },
+        { url: '/projects/ops/ai-email-ops.png', titleEn: 'AI Communications Core', titleAr: 'مركز الاتصالات الذكي', descEn: 'Generative AI email drafting with pre-configured corporate templates.', descAr: 'صياغة رسائل البريد الإلكتروني بالذكاء الاصطناعي مع قوالب مؤسسية مسبقة.' },
+        { url: '/projects/ops/analyticsandreports-ops.png', titleEn: 'Advanced Analytics', titleAr: 'التحليلات المتقدمة', descEn: 'Dynamic data visualization and custom report generation.', descAr: 'تصوير مرئي ديناميكي للبيانات وإنشاء تقارير مخصصة.' },
+        { url: '/projects/ops/crm-ops.png', titleEn: 'CRM & Pipeline', titleAr: 'إدارة علاقات العملاء', descEn: 'Marketing workspace tracking ad spend and lead conversion funnels.', descAr: 'مساحة عمل تسويقية لتتبع الإنفاق الإعلاني ومسارات التحويل.' },
+        { url: '/projects/ops/doc-generateandsendemail-ops.png', titleEn: 'Document Generator', titleAr: 'منشئ المستندات', descEn: 'Automated employment offers and internal memos with secure archiving.', descAr: 'إنشاء فوري لعروض العمل والمذكرات الداخلية مع أرشفة آمنة.' },
+        { url: '/projects/ops/external-standaloneapps-ops.png', titleEn: 'Decentralized Portals', titleAr: 'البوابات اللامركزية', descEn: 'Manage public-facing touchpoints for gig workers and VIP clients.', descAr: 'إدارة نقاط الاتصال العامة للمستقلين والعملاء المتميزين.' },
+        { url: '/projects/ops/facilitandtraining-ops.png', titleEn: 'Facility Academy', titleAr: 'إدارة المرافق والأكاديمية', descEn: 'Configure complex project environments and manage training capacities.', descAr: 'تهيئة بيئات مشاريع معقدة وإدارة السعات التدريبية.' },
+        { url: '/projects/ops/hr-ops.png', titleEn: 'Master HR Directory', titleAr: 'دليل الموارد البشرية', descEn: 'Global view of human capital and shift assignments.', descAr: 'عرض شامل لرأس المال البشري ومهام الورديات.' },
+        { url: '/projects/ops/it-ops.png', titleEn: 'IT Infrastructure Control', titleAr: 'التحكم في البنية التحتية', descEn: 'Identity and Access Management (IAM) and infrastructure monitoring.', descAr: 'إدارة هويات الوصول ومراقبة البنية التحتية.' },
+        { url: '/projects/ops/performance-ops.png', titleEn: 'Operational KPIs', titleAr: 'مؤشرات الأداء التشغيلي', descEn: 'Real-time overview of global enterprise metrics.', descAr: 'نظرة عامة لحظية على مقاييس المؤسسة العالمية.' },
+        { url: '/projects/ops/setshift-ops.png', titleEn: 'Geofenced Orchestration', titleAr: 'توزيع العمل الجغرافي', descEn: 'GPS radius limits to guarantee accurate field staff attendance.', descAr: 'حدود نطاق جغرافي لضمان دقة حضور الموظفين.' }
+      ]
+    },
+    {
+      id: 'fmis',
+      titleEn: 'OPERIX FMIS',
+      titleAr: 'أوبيريكس للإدارة المالية',
+      subEn: 'Finance & Retail ERP',
+      subAr: 'نظام إدارة المالية والتجزئة',
+      descEn: 'Complete financial management ecosystem, corporate ledger reconciliation, Retail & POS operations, and ZATCA Phase 2 integration.',
+      descAr: 'نظام متكامل لإدارة الشؤون المالية، وتسوية السجلات، وعمليات التجزئة ونقاط البيع، مع ربط ZATCA المرحلة الثانية.',
+      url: 'https://www.fmis.operix-solutions.online',
+      icon: <CreditCard size={24} />,
+      accentColor: '#10b981',
+      accentLight: 'rgba(16,185,129,0.1)',
+      image: '/projects/fmis.png',
+      previews: [
+        { url: '/projects/fmis/dash-fmis.png', titleEn: 'Executive P&L', titleAr: 'لوحة الأرباح والخسائر', descEn: 'Real-time overview of revenue pipelines and pending liabilities.', descAr: 'نظرة عامة لحظية على تدفقات الإيرادات والالتزامات المعلقة.' },
+        { url: '/projects/fmis/opx-ai-fmis.png', titleEn: 'AI Copilot Integration', titleAr: 'مساعد الذكاء الاصطناعي', descEn: 'Embedded AI assistant for financial database analysis.', descAr: 'مساعد ذكاء اصطناعي مدمج لتحليل البيانات المالية.' },
+        { url: '/projects/fmis/quot-fmis.png', titleEn: 'Quotation Builder', titleAr: 'منشئ عروض الأسعار', descEn: 'Streamlined proposal generation mapped to CRM.', descAr: 'إنشاء عروض أسعار متطور مرتبط بنظام CRM.' },
+        { url: '/projects/fmis/help-fmis.png', titleEn: 'Architecture Matrix', titleAr: 'مصفوفة هيكلية النظام', descEn: 'Built-in documentation for GL and WBS workflows.', descAr: 'وثائق مدمجة لسير عمل الأستاذ العام وهيكلة المشاريع.' },
+        { url: '/projects/fmis/fmis-gl.png', titleEn: 'General Ledger', titleAr: 'دفتر الأستاذ العام', descEn: 'Strict double-entry journal logs and balance tracking.', descAr: 'سجلات قيود مزدوجة صارمة وتتبع الأرصدة.' },
+        { url: '/projects/fmis/fmis-pos.png', titleEn: 'Point of Sale', titleAr: 'نقطة البيع', descEn: 'Lightning-fast checkout with barcode support.', descAr: 'واجهة دفع سريعة تدعم مسح الباركود.' },
+        { url: '/projects/fmis/fmis-prod.png', titleEn: 'Inventory Management', titleAr: 'إدارة المخزون', descEn: 'Tracking SKUs, barcodes, and reorder points.', descAr: 'تتبع رموز التخزين والباركود ونقاط الطلب.' },
+        { url: '/projects/fmis/fmis-purchase.png', titleEn: 'Purchase Orders', titleAr: 'أوامر الشراء', descEn: 'Seamless procurement and stock replenishment.', descAr: 'عمليات شراء وتوريد مخزون سلسة.' },
+        { url: '/projects/fmis/fmis-supplier.png', titleEn: 'Supplier Directory', titleAr: 'دليل الموردين', descEn: 'Centralized database for procurement relationships.', descAr: 'قاعدة بيانات مركزية لعلاقات المشتريات.' }
+      ]
+    },
+    {
+      id: 'hris',
+      titleEn: 'OPERIX HRIS',
+      titleAr: 'أوبيريكس للموارد البشرية',
+      subEn: 'Human Capital Infrastructure',
+      subAr: 'بنية رأس المال البشري',
+      descEn: 'Complete HR automation — GPS-enforced attendance tracking, automated salary deductions, and employee self-service pipelines.',
+      descAr: 'أتمتة كاملة للموارد البشرية — تسجيل الحضور بنطاق GPS، ومحرك احتساب الاستقطاعات التلقائي للرواتب.',
+      url: 'https://www.hris.operix-solutions.online',
+      icon: <Users size={24} />,
+      accentColor: '#6366f1',
+      accentLight: 'rgba(99,102,241,0.1)',
+      image: '/projects/hris.png',
+      previews: [
+        { url: '/projects/hris/ai-scanner-hris.png', titleEn: 'AI CV Scanner', titleAr: 'ماسح السير الذاتية', descEn: 'Edge AI parsing and scoring of applicant CVs.', descAr: 'فرز وتقييم السير الذاتية بالذكاء الاصطناعي.' },
+        { url: '/projects/hris/resutl-ats-hris.png', titleEn: 'ATS Match Analysis', titleAr: 'تحليل تطابق التوظيف', descEn: 'Skill gap analysis and role matching probabilities.', descAr: 'تحليل فجوات المهارات واحتمالات التطابق الوظيفي.' },
+        { url: '/projects/hris/emp-pro-hris.png', titleEn: 'Employee Profiles', titleAr: 'ملفات الموظفين', descEn: 'Digital twin of workforce documents and contracts.', descAr: 'توأمة رقمية لمستندات وعقود القوى العاملة.' },
+        { url: '/projects/hris/pipline-hris.png', titleEn: 'Kanban Pipeline', titleAr: 'مسار كانبان للتوظيف', descEn: 'Visual drag-and-drop applicant tracking.', descAr: 'نظام تتبع متقدم للمتقدمين بالسحب والإفلات.' },
+        { url: '/projects/hris/visa-mgm-hris.png', titleEn: 'Muqeem API', titleAr: 'ربط مقيم', descEn: 'Direct integration for visa and Iqama validities.', descAr: 'ربط مباشر لإدارة التأشيرات وصلاحية الإقامة.' },
+        { url: '/projects/hris/doc-hris.png', titleEn: 'Document Builder', titleAr: 'منشئ المستندات', descEn: 'Automated corporate letterhead and certificates.', descAr: 'إنشاء آلي للخطابات والشهادات الرسمية.' },
+        { url: '/projects/hris/external-apps-hris.png', titleEn: 'Public Gateways', titleAr: 'البوابات العامة', descEn: 'Secure portals for gig workers credentials.', descAr: 'بوابات آمنة لبيانات العاملين المستقلين.' }
+      ]
+    },
+    {
+      id: 'care',
+      titleEn: 'OPERIX Health Care',
+      titleAr: 'أوبيريكس للرعاية الطبية',
+      subEn: 'Clinical Management Core',
+      subAr: 'منظومة الإدارة السريرية',
+      descEn: 'Advanced hospital management ecosystem. End-to-end clinical workflow from intake to surgical treasury.',
+      descAr: 'منظومة متكاملة لإدارة المستشفيات. سير عمل سريري شامل من الاستقبال حتى الخزانة الجراحية.',
+      url: 'https://www.care.operix-solutions.online',
+      icon: <Activity size={24} />,
+      accentColor: '#f43f5e',
+      accentLight: 'rgba(244,63,94,0.1)',
+      image: '/projects/care.png',
+      previews: [
+        { url: '/projects/care/admin-care.png', titleEn: 'Admin Console', titleAr: 'لوحة الإدارة', descEn: 'Enterprise analytics and access control hub.', descAr: 'تحليلات المؤسسة ومركز التحكم في الوصول.' },
+        { url: '/projects/care/reception-care.png', titleEn: 'Patient Enrollment', titleAr: 'تسجيل المرضى', descEn: 'Patient intake form capturing full demographics.', descAr: 'نموذج استقبال المريض والبيانات الديموغرافية.' },
+        { url: '/projects/care/appoint-care.png', titleEn: 'Dual-panel Scheduling', titleAr: 'مركز الجدولة والمواعيد', descEn: 'Schedule and track treating physician assignments.', descAr: 'جدولة وتتبع مهام الأطباء المعالجين.' },
+        { url: '/projects/care/doc-workspace-care.png', titleEn: 'Doctor Board', titleAr: 'لوحة الطبيب', descEn: 'Live triage board showing patients awaiting consult.', descAr: 'لوحة فرز حي للمرضى في انتظار الاستشارة.' },
+        { url: '/projects/care/doc-care.png', titleEn: 'Diagnosis Workspace', titleAr: 'مساحة عمل التشخيص', descEn: 'Clinical encounter workspace with voice dictation.', descAr: 'مساحة عمل سريرية تدعم الإملاء الصوتي.' },
+        { url: '/projects/care/chemist-care.png', titleEn: 'Pharmacy Portal', titleAr: 'بوابة الصيدلية', descEn: 'MRN-driven dispensary and inventory portal.', descAr: 'بوابة صرف الأدوية والمخزون الطبي.' },
+        { url: '/projects/care/pharm-inven-care.png', titleEn: 'Master Formulary', titleAr: 'سجل الأدوية الرئيسي', descEn: 'Pharmaceutical inventory and currency matrix.', descAr: 'إدارة مخزون الأدوية ومصفوفة العملات.' },
+        { url: '/projects/care/ops-care.png', titleEn: 'Surgical Board', titleAr: 'لوحة العمليات', descEn: 'Real-time surgical scheduling with blood availability.', descAr: 'جدولة العمليات الجراحية وإتاحة الدم لحظياً.' },
+        { url: '/projects/care/bloodbank-care.png', titleEn: 'Blood Bank', titleAr: 'بنك الدم', descEn: 'Enterprise hemotherapy dispensing and tracking.', descAr: 'صرف وتتبع مستحضرات الدم للمؤسسة.' },
+        { url: '/projects/care/inside-file-care.png', titleEn: 'Clinical Timeline', titleAr: 'الجدول السريري', descEn: 'Complete longitudinal patient record and encounters.', descAr: 'السجل الطولي الكامل للمريض والزيارات.' },
+        { url: '/projects/care/financial-care.png', titleEn: 'Corporate Treasury', titleAr: 'الخزانة المؤسسية', descEn: 'Live financial ledger for the medical facility.', descAr: 'السجل المالي الحي للمنشأة الطبية.' },
+        { url: '/projects/care/radio-lab-care.png', titleEn: 'Diagnostic Lab', titleAr: 'مختبر التشخيص', descEn: 'Imaging portal for MRI, CT and X-Ray requests.', descAr: 'بوابة صور الأشعة وطلبات التشخيص.' }
+      ]
+    },
+    {
+      id: 'edu',
+      titleEn: 'OPERIX Edu',
+      titleAr: 'أوبيريكس للتعليم',
+      subEn: 'School Management Platform',
+      subAr: 'منظومة الإدارة المدرسية',
+      descEn: 'Cloud-based platform built for academic governance and school leadership empowerment.',
+      descAr: 'منصة سحابية مصممة للإدارة الأكاديمية وتمكين القيادات المدرسية.',
+      url: 'https://www.edu.operix-solutions.online',
+      icon: <GraduationCap size={24} />,
+      accentColor: '#f59e0b',
+      accentLight: 'rgba(245,158,11,0.1)',
+      image: '/projects/opx-edu-cover.jpeg',
+      previews: [
+        { url: '/projects/edu/edu-dash.png', titleEn: 'School Command Center', titleAr: 'مركز القيادة المدرسية', descEn: 'High-level overview of students, schedules and KPIs.', descAr: 'نظرة عامة على الطلاب والجداول ومؤشرات الأداء.' },
+        { url: '/projects/edu/edu-dox.png', titleEn: 'Dox Studio', titleAr: 'دوكس ستوديو', descEn: 'Automated 4K printing-ready certificates engine.', descAr: 'محرك آلي لإنشاء شهادات جاهزة للطباعة 4K.' },
+        { url: '/projects/edu/edu-fees.png', titleEn: 'Fees & Treasury', titleAr: 'الرسوم والخزانة', descEn: 'Comprehensive student registration and fee collection.', descAr: 'تسجيل الطلاب وتحصيل الرسوم المدرسية.' },
+        { url: '/projects/edu/edu-studs.png', titleEn: 'Student Registry', titleAr: 'سجل الطلاب', descEn: 'Centralized history and academic profiles.', descAr: 'سجل تاريخي مركزي للملفات الأكاديمية.' },
+        { url: '/projects/edu/edu-par.png', titleEn: 'Parent Portal', titleAr: 'بوابة أولياء الأمور', descEn: 'Direct linkage for communication and progress logs.', descAr: 'ربط مباشر للتواصل وسجلات التقدم.' },
+        { url: '/projects/edu/edu-sub.png', titleEn: 'Curriculum Engine', titleAr: 'محرك المناهج', descEn: 'Advanced subject and grading configuration.', descAr: 'إعدادات متقدمة للمواد والتقييم.' },
+        { url: '/projects/edu/edu-res.png', titleEn: 'Results Records', titleAr: 'سجلات النتائج', descEn: 'Precise academic recording and GPA computation.', descAr: 'رصد أكاديمي دقيق واحتساب المعدلات.' }
+      ]
+    }
   ];
 
-  // ─── TIER 2: CLIENT & FEATURED DEPLOYMENTS ───
-  const clientProjects = [
-	{
-	  id: 'mamey',
-	  titleEn: 'Mamey Platform',
-	  titleAr: 'منصة مامي',
-	  subEn: 'General Trading & Investment',
-	  subAr: 'التجارة العامة والاستثمار',
-	  descEn: 'A South Sudanese enterprise specializing in the import, distribution, and supply of foodstuffs, building materials, logistics, and essential services.',
-	  descAr: 'مؤسسة جنوب سودانية متخصصة في استيراد وتوزيع وتوريد المواد الغذائية ومواد البناء والخدمات اللوجستية والخدمات الأساسية.',
-	  url: 'https://mamey.vercel.app',
-	  icon: <Globe size={18} />,
-	  accentColor: '#38bdf8',
-	  image: '/projects/mamey.png'
-	},
-	{
-	  id: 'abdullah',
-	  titleEn: 'Abdullah Bin Abbas',
-	  titleAr: 'مركز عبدالله بن عباس',
-	  subEn: 'Institutional Portal',
-	  subAr: 'البوابة المؤسسية',
-	  descEn: 'Dedicated administrative portal mapped for institutional resource planning, community outreach tracking, and digital archive management.',
-	  descAr: 'بوابة إدارية مخصصة لتخطيط الموارد المؤسسية، وتتبع التواصل المجتمعي، وإدارة الأرشيف الرقمي.',
-	  url: 'https://www.bin-abbas.operix-solutions.online',
-	  icon: <Landmark size={18} />,
-	  accentColor: '#10b981',
-	  image: '/projects/abbas.png'
-	},
-	{
-	  id: 'Community Hub',
-	  titleEn: 'Hasad',
-	  titleAr: 'بوابة حصاد الالكترونية',
-	  subEn: 'Smart Community Hub',
-	  subAr: 'مركز المجتمع الذكي',
-	  descEn: 'Real estate and property management ecosystem handling resident requests, facility maintenance logs, and community billing cycles.',
-	  descAr: 'منظومة إدارة العقارات والممتلكات للتعامل مع طلبات السكان، وسجلات صيانة المرافق، ودورات الفوترة المجتمعية.',
-	  url: 'https://www.hasad.operix-solutions.online/Naseem_City',
-	  icon: <Building2 size={18} />,
-	  accentColor: '#f43f5e',
-	  image: '/projects/naseem.png'
-	}
+  const specialPortals = [
+    {
+      id: 'abdullah',
+      titleEn: 'Abdullah Bin Abbas',
+      titleAr: 'مركز عبدالله بن عباس',
+      subEn: 'Institutional Portal',
+      subAr: 'البوابة المؤسسية',
+      descEn: 'Administrative portal for resource planning and community outreach tracking.',
+      descAr: 'بوابة إدارية لتخطيط الموارد وتتبع التواصل المجتمعي.',
+      url: 'https://www.bin-abbas.operix-solutions.online',
+      icon: <Landmark size={24} />,
+      accentColor: '#10b981',
+      accentLight: 'rgba(16,185,129,0.1)',
+      image: '/projects/abbas.png',
+      previews: []
+    },
+    {
+      id: 'hasad',
+      titleEn: 'Hasad Hub',
+      titleAr: 'مركز حصاد الذكي',
+      subEn: 'Smart Community Platform',
+      subAr: 'منصة المجتمع الذكي',
+      descEn: 'Real estate management handling resident requests and billing cycles.',
+      descAr: 'إدارة العقارات للتعامل مع طلبات السكان ودورات الفوترة.',
+      url: 'https://www.hasad.operix-solutions.online/Naseem_City',
+      icon: <Building2 size={24} />,
+      accentColor: '#f43f5e',
+      accentLight: 'rgba(244,63,94,0.1)',
+      image: '/projects/naseem.png',
+      previews: []
+    },
+    {
+      id: 'mamey',
+      titleEn: 'Mamey Platform',
+      titleAr: 'منصة مامي التجارية',
+      subEn: 'General Trading & Logistics',
+      subAr: 'التجارة العامة والخدمات اللوجستية',
+      descEn: 'A specialized platform for the supply of foodstuffs and building materials.',
+      descAr: 'منصة متخصصة لتوريد المواد الغذائية ومواد البناء واللوجستيات.',
+      url: 'https://mamey.vercel.app',
+      icon: <Globe size={24} />,
+      accentColor: '#38bdf8',
+      accentLight: 'rgba(56,189,248,0.1)',
+      image: '/projects/mamey.png',
+      previews: []
+    }
+  ];
+
+  const allProducts = [...corePlatforms, ...specialPortals];
+  const totalScreens = corePlatforms.reduce((a, p) => a + p.previews.length, 0);
+
+  const partners = [
+    { name: 'Abdullah Bin Abbas', logo: logoBinAbbas },
+    { name: 'Hasad Community', logo: logoHasad },
+    { name: 'OPERIX HRIS', logo: logoHris },
+    { name: 'OPERIX Care', logo: logoCare },
+    { name: 'OPERIX FMIS', logo: logoFmis },
+    { name: 'OPERIX OPS', logo: logoOps }
   ];
 
   // ─── MODAL NAV ───
   const openPreview = useCallback((platform) => {
-	setActivePreview(platform);
-	setCurrentImgIndex(0);
+    setActivePreview(platform);
+    setCurrentImgIndex(0);
   }, []);
 
   const nextImg = useCallback(() => {
-	if (activePreview) {
-	  setImgLoaded(false);
-	  setCurrentImgIndex((prev) => (prev + 1) % activePreview.previews.length);
-	}
+    if (activePreview) {
+      setImgLoaded(false);
+      setCurrentImgIndex((prev) => (prev + 1) % activePreview.previews.length);
+    }
   }, [activePreview]);
 
   const prevImg = useCallback(() => {
-	if (activePreview) {
-	  setImgLoaded(false);
-	  setCurrentImgIndex((prev) => (prev === 0 ? activePreview.previews.length - 1 : prev - 1));
-	}
+    if (activePreview) {
+      setImgLoaded(false);
+      setCurrentImgIndex((prev) => (prev === 0 ? activePreview.previews.length - 1 : prev - 1));
+    }
   }, [activePreview]);
 
   useEffect(() => {
-	const onKey = (e) => {
-	  if (!activePreview) return;
-	  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextImg();
-	  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevImg();
-	  if (e.key === 'Escape') setActivePreview(null);
-	};
-	window.addEventListener('keydown', onKey);
-	return () => window.removeEventListener('keydown', onKey);
+    const onKey = (e) => {
+      if (!activePreview) return;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextImg();
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevImg();
+      if (e.key === 'Escape') setActivePreview(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
   }, [activePreview, nextImg, prevImg]);
 
-  const handleTouchStart = (e) => { setTouchEnd(null); setTouchStart(e.targetTouches[0].clientX); };
-  const handleTouchMove = (e) => { setTouchEnd(e.targetTouches[0].clientX); };
-  const handleTouchEnd = () => {
-	if (!touchStart || !touchEnd) return;
-	const dist = touchStart - touchEnd;
-	if (dist > minSwipeDistance) nextImg();
-	if (dist < -minSwipeDistance) prevImg();
-  };
-
-  const totalScreens = corePlatforms.reduce((a, p) => a + p.previews.length, 0);
-
   return (
-	<div className="opx-products w-full font-sans bg-[#f0f2f5] min-h-screen" dir={isAr ? 'rtl' : 'ltr'}>
+    <div className="w-full bg-[#fdfdfd] min-h-screen font-sans selection:bg-[#d4af37]/30" dir={isAr ? 'rtl' : 'ltr'}>
 
-	  <style>{`
-		/* ── Keyframes ── */
-		@keyframes fadeUp {
-		  from { opacity: 0; transform: translateY(28px); }
-		  to   { opacity: 1; transform: translateY(0); }
-		}
-		@keyframes fadeIn {
-		  from { opacity: 0; } to { opacity: 1; }
-		}
-		@keyframes popIn {
-		  from { opacity: 0; transform: scale(0.94) translateY(10px); }
-		  to   { opacity: 1; transform: scale(1) translateY(0); }
-		}
-		@keyframes imgReveal {
-		  from { opacity: 0; transform: scale(1.03); }
-		  to   { opacity: 1; transform: scale(1); }
-		}
-		@keyframes shimmerGold {
-		  0%   { background-position: -200% center; }
-		  100% { background-position: 200% center; }
-		}
-		@keyframes borderGlow {
-		  0%, 100% { box-shadow: 0 0 0 0 rgba(212,175,55,0); }
-		  50%       { box-shadow: 0 0 0 3px rgba(212,175,55,0.25); }
-		}
-		@keyframes scanLine {
-		  0%   { transform: translateY(0%); opacity: 0.4; }
-		  100% { transform: translateY(100%); opacity: 0; }
-		}
-		@keyframes floatDot {
-		  0%, 100% { transform: translateY(0px); }
-		  50%       { transform: translateY(-6px); }
-		}
+      <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-33.33%); }
+        }
+        .animate-marquee-scroll {
+          animation: marquee 30s linear infinite;
+        }
+        .animate-marquee-scroll:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
 
-		/* ── Gold text shimmer ── */
-		.gold-shimmer {
-		  background: linear-gradient(90deg, #b8860b 0%, #f3de9a 35%, #d4af37 60%, #b8860b 100%);
-		  background-size: 250% auto;
-		  color: transparent;
-		  -webkit-background-clip: text;
-		  background-clip: text;
-		  animation: shimmerGold 6s linear infinite;
-		}
+      {/* ══════════════════════════════════════
+           HERO (Cinematic UX)
+      ══════════════════════════════════════ */}
+      <section className="relative overflow-hidden bg-[#1e2d40] pt-40 pb-32 md:pt-48 md:pb-40 border-b border-white/5">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[#d4af37]/10 rounded-full blur-[120px] pointer-events-none animate-pulse" />
 
-		/* ── Core platform card ── */
-		.core-card {
-		  transition: transform 0.35s cubic-bezier(0.16,1,0.3,1),
-					  box-shadow 0.35s cubic-bezier(0.16,1,0.3,1),
-					  border-color 0.25s ease;
-		}
-		.core-card:hover {
-		  transform: translateY(-4px);
-		  box-shadow: 0 24px 60px rgba(0,0,0,0.10), 0 8px 20px rgba(0,0,0,0.06);
-		}
-		.core-card:hover .card-cover img {
-		  transform: scale(1.06);
-		}
-		.card-cover img {
-		  transition: transform 0.55s cubic-bezier(0.16,1,0.3,1);
-		}
+        <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
+          <Reveal>
+            <span className="inline-flex items-center gap-2 bg-[#d4af37]/10 border border-[#d4af37]/30 text-[#d4af37] px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] mb-8">
+              <Shield size={12} fill="currentColor" />
+              {isAr ? 'هندسة الأنظمة المؤسسية' : 'Enterprise Systems Architecture'}
+            </span>
+          </Reveal>
 
-		/* ── Preview button shimmer line ── */
-		.preview-btn {
-		  position: relative;
-		  overflow: hidden;
-		}
-		.preview-btn::after {
-		  content: '';
-		  position: absolute;
-		  inset: 0;
-		  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
-		  transform: translateX(-100%);
-		  transition: transform 0.5s ease;
-		}
-		.preview-btn:hover::after { transform: translateX(100%); }
+          <Reveal delay={100}>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black font-serif text-white tracking-tight leading-[0.9] mb-10">
+              {isAr ? <>كل شاشة<br /><span className="text-[#d4af37]">تروي قصة .</span></> : <>Every Screen<br /><span className="text-[#d4af37]">Tells a Story .</span></>}
+            </h1>
+          </Reveal>
 
-		/* ── Client card ── */
-		.client-card {
-		  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1),
-					  box-shadow 0.3s ease;
-		}
-		.client-card:hover {
-		  transform: translateY(-3px);
-		  box-shadow: 0 16px 48px rgba(0,0,0,0.09);
-		}
+          <Reveal delay={200}>
+            <p className="text-[#94a3b8] text-lg md:text-xl font-medium max-w-2xl mx-auto mb-14 leading-relaxed">
+              {isAr
+                ? 'استكشف مصفوفة الأنظمة المستضافة والنشطة ضمن منظومة أوبيريكس للحلول المتكاملة.'
+                : 'Explore the matrix of live, deployed platforms within the OPERIX Solutions ecosystem.'}
+            </p>
+          </Reveal>
 
-		/* ── Thumbnail strip scrollbar ── */
-		.thumb-strip { scrollbar-width: thin; scrollbar-color: #d4af37 #0f1621; }
-		.thumb-strip::-webkit-scrollbar { height: 3px; }
-		.thumb-strip::-webkit-scrollbar-track { background: #0f1621; }
-		.thumb-strip::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 2px; }
+          <Reveal delay={300} className="flex flex-wrap justify-center gap-6">
+            <button onClick={() => openPreview(corePlatforms[0])} className="group px-10 py-5 bg-[#d4af37] text-[#1e2d40] rounded-2xl font-black text-sm uppercase tracking-widest transition-all hover:bg-white hover:scale-105 active:scale-95 shadow-2xl shadow-[#d4af37]/20 flex items-center gap-3">
+              <Play size={20} fill="currentColor" />
+              {isAr ? 'مشاهدة العرض' : 'WATCH SHOWREEL'}
+            </button>
+            <a href="#quote-form" className="px-10 py-5 bg-white/5 border border-white/20 text-white rounded-2xl font-black text-sm uppercase tracking-widest transition-all hover:bg-white/10 flex items-center gap-3">
+              {isAr ? 'طلب عرض سعر' : 'GET A QUOTE'}
+              <ChevronRight size={20} />
+            </a>
+          </Reveal>
+        </div>
+      </section>
 
-		/* ── Progress bar fill ── */
-		.progress-fill {
-		  transition: width 0.3s cubic-bezier(0.4,0,0.2,1);
-		}
+      {/* ══════════════════════════════════════
+           STATS
+      ══════════════════════════════════════ */}
+      <section className="py-24 bg-white border-b border-slate-100">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
+          {[
+            { n: 9, s: '', label: isAr ? 'وحدة متكاملة' : 'System Modules' },
+            { n: totalScreens, s: '+', label: isAr ? 'شاشة نشطة' : 'Active Screens' },
+            { n: 41, s: '+', label: isAr ? 'مشروع مؤسسي' : 'Enterprise Projects' },
+            { n: 99.9, s: '%', label: isAr ? 'وقت التشغيل' : 'Uptime SLA' }
+          ].map((s, i) => (
+            <div key={i} className="text-center space-y-2">
+              <div className="text-5xl md:text-6xl font-black font-serif text-[#1e2d40]">
+                <StatCounter target={s.n} suffix={s.s} />
+              </div>
+              <div className="text-[11px] font-black uppercase tracking-[0.2em] text-[#d4af37]">{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
 
-		/* ── Scan line on hover ── */
-		.scan-wrap { overflow: hidden; }
-		.scan-wrap:hover .scan-line { animation: scanLine 1.2s ease-in-out infinite; }
-		.scan-line {
-		  position: absolute; left: 0; right: 0; top: 0; height: 40%;
-		  background: linear-gradient(to bottom, rgba(255,255,255,0.04), transparent);
-		  pointer-events: none; z-index: 2;
-		  animation: none;
-		}
+      {/* ══════════════════════════════════════
+           MARQUEE (Navy Section)
+      ══════════════════════════════════════ */}
+      <section className="bg-[#1e2d40] py-24 relative overflow-hidden border-y border-white/5">
+        <div className="absolute inset-0 pointer-events-none opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #d4af37 0%, transparent 50%)' }} />
 
-		/* ── Hero stat float ── */
-		.float-stat { animation: floatDot 3s ease-in-out infinite; }
-		.float-stat:nth-child(2) { animation-delay: 0.8s; }
-		.float-stat:nth-child(3) { animation-delay: 1.6s; }
+        <Reveal>
+          <div className="text-center mb-12 relative z-10">
+            <span className="text-[12px] font-black text-[#d4af37] uppercase tracking-[0.6em]">{isAr ? 'منظومة أوبيريكس' : 'THE OPERIX ECOSYSTEM'}</span>
+            <div className="h-1 w-24 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent mx-auto mt-6 rounded-full opacity-40" />
+          </div>
+          <InfiniteMarquee items={partners} />
+        </Reveal>
+      </section>
 
-		/* ── Reduced motion ── */
-		@media (prefers-reduced-motion: reduce) {
-		  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-		}
-	  `}</style>
+      {/* ══════════════════════════════════════
+           PRODUCT SHOWCASE
+      ══════════════════════════════════════ */}
+      <section className="py-40 space-y-40">
+        {allProducts.map((sys, idx) => {
+          const isEven = idx % 2 === 0;
+          return (
+            <Reveal key={sys.id} className="max-w-7xl mx-auto px-6">
+              <div className={`flex flex-col lg:items-center gap-16 lg:gap-24 ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'}`}>
 
-	  {/* ══════════════════════════════════════
-		   HERO
-	  ══════════════════════════════════════ */}
-	  <div className="relative overflow-hidden bg-[#111827]">
-		{/* Layered background */}
-		<div className="absolute inset-0 pointer-events-none">
-		  <div style={{ background: 'radial-gradient(ellipse 70% 60% at 50% 0%, #d4af3718 0%, transparent 70%)' }} className="absolute inset-0" />
-		  <div style={{ background: 'radial-gradient(ellipse 40% 40% at 20% 80%, #1e2d4030 0%, transparent 60%)' }} className="absolute inset-0" />
-		  {/* Grid lines */}
-		  <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
-			<defs>
-			  <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
-				<path d="M 48 0 L 0 0 0 48" fill="none" stroke="#d4af37" strokeWidth="0.5"/>
-			  </pattern>
-			</defs>
-			<rect width="100%" height="100%" fill="url(#grid)" />
-		  </svg>
-		</div>
+                <div className="flex-1 relative group cursor-pointer" onClick={() => sys.previews.length > 0 && openPreview(sys)}>
+                  <div className="absolute inset-0 bg-slate-100 rounded-[3rem] -rotate-2 scale-[0.98] group-hover:rotate-0 transition-transform duration-700" />
+                  <div className="relative z-10 rounded-[3rem] overflow-hidden border-8 border-white shadow-2xl shadow-slate-200/50">
+                    <img src={sys.image} className="w-full h-auto object-cover group-hover:scale-110 transition-transform duration-1000" alt={sys.titleEn} />
+                    {sys.previews.length > 0 && (
+                      <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl text-[#1e2d40]">
+                          <ImageIcon size={32} />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {sys.previews.length > 0 && (
+                    <div className="absolute -bottom-6 -right-6 lg:-right-10 p-6 bg-white rounded-3xl shadow-2xl border border-slate-50 flex items-center gap-4 z-20">
+                      <div className="w-12 h-12 rounded-2xl bg-slate-900 text-[#d4af37] flex items-center justify-center">
+                        <Monitor size={24} />
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{isAr ? 'معاينة' : 'INTERACTIVE'}</div>
+                        <div className="text-sm font-black text-[#1e2d40]">{sys.previews.length} {isAr ? 'شاشات' : 'Screens'}</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
 
-		<div
-		  className="relative z-10 max-w-6xl mx-auto px-6 py-20 md:py-28"
-		  style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'none' : 'translateY(20px)', transition: 'opacity 0.7s ease, transform 0.7s ease' }}
-		>
-		  {/* Eyebrow */}
-		  <div className="flex justify-center mb-6">
-			<span
-			  className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-[#d4af37] bg-[#d4af37]/10 border border-[#d4af37]/25 px-4 py-2 rounded-full"
-			  style={{ animation: heroVisible ? 'fadeUp 0.5s 0.1s both' : 'none' }}
-			>
-			  <Zap size={10} fill="currentColor" />
-			  {isAr ? "البنية التحتية السحابية لأوبيريكس" : "OPERIX Cloud Infrastructure"}
-			</span>
-		  </div>
+                <div className="flex-1 space-y-10">
+                  <div className="space-y-4">
+                    <span className="text-[11px] font-black uppercase tracking-[0.3em] text-[#d4af37]">{isAr ? sys.subAr : sys.subEn}</span>
+                    <h2 className="text-5xl md:text-6xl font-black font-serif text-[#1e2d40] leading-[0.9]">{isAr ? sys.titleAr : sys.titleEn}</h2>
+                  </div>
+                  <p className="text-xl text-slate-500 leading-relaxed font-medium">{isAr ? sys.descAr : sys.descEn}</p>
 
-		  {/* Headline */}
-		  <h1
-			className="text-center font-serif font-black leading-[1.1] mb-6"
-			style={{ fontSize: 'clamp(2.2rem, 6vw, 4.5rem)', animation: heroVisible ? 'fadeUp 0.6s 0.18s both' : 'none' }}
-		  >
-			<span className="gold-shimmer">
-			  {isAr ? "مصفوفة الأنظمة المستضافة" : "Deployed Systems Matrix"}
-			</span>
-		  </h1>
+                  <div className="space-y-4 border-t border-slate-100 pt-10">
+                    <div className="flex items-center gap-3">
+                      <CheckCircle size={20} className="text-emerald-500" />
+                      <span className="text-sm font-bold text-[#1e2d40]">{isAr ? 'ربط سحابي فوري' : 'Real-time Cloud Integration'}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle size={20} className="text-emerald-500" />
+                      <span className="text-sm font-bold text-[#1e2d40]">{isAr ? 'أمان بمستوى بنكي' : 'Bank-grade Operational Security'}</span>
+                    </div>
+                  </div>
 
-		  {/* Sub */}
-		  <p
-			className="text-center text-[#94a3b8] text-sm md:text-base font-medium max-w-2xl mx-auto mb-12 leading-relaxed"
-			style={{ animation: heroVisible ? 'fadeUp 0.6s 0.26s both' : 'none' }}
-		  >
-			{isAr
-			  ? "بوابة تفاعلية للوصول المباشر إلى المنصات الرقمية المستضافة والنشطة ضمن منظومة أوبيريكس للحلول المتكاملة، ومشاريع العملاء البارزة."
-			  : "Interactive gateway to the live OPERIX ecosystem — cloud platforms, real-time operational environments, and featured client deployments."}
-		  </p>
+                  <div className="flex flex-wrap gap-4 pt-4">
+                    <a href={sys.url} target="_blank" rel="noreferrer" className="px-8 py-4 bg-[#1e2d40] text-white rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-[#d4af37] hover:text-[#1e2d40] transition-all">
+                      {isAr ? 'دخول المنصة' : 'LAUNCH PLATFORM'} <ArrowUpRight size={16} />
+                    </a>
+                    {sys.previews.length > 0 && (
+                      <button onClick={() => openPreview(sys)} className="px-8 py-4 bg-slate-50 text-slate-400 rounded-2xl font-black text-xs uppercase tracking-widest border border-slate-100 hover:bg-white hover:border-[#d4af37] hover:text-[#d4af37] transition-all">
+                        {isAr ? 'استعراض الواجهات' : 'PREVIEW UI'}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          );
+        })}
+      </section>
 
-		  {/* Stats row */}
-		  <div
-			className="flex flex-wrap justify-center gap-6 md:gap-10"
-			style={{ animation: heroVisible ? 'fadeUp 0.6s 0.34s both' : 'none' }}
-		  >
-			{[
-			  { n: corePlatforms.length, label: isAr ? 'منصة أساسية' : 'Core Platforms' },
-			  { n: totalScreens, label: isAr ? 'شاشة نظام' : 'System Screens' },
-			  { n: clientProjects.length, label: isAr ? 'مشروع عميل' : 'Client Projects' }
-			].map((s, i) => (
-			  <div key={i} className="float-stat text-center">
-				<div className="text-3xl md:text-4xl font-black text-white font-serif leading-none">{s.n}+</div>
-				<div className="text-[10px] font-bold uppercase tracking-widest text-[#475569] mt-1">{s.label}</div>
-			  </div>
-			))}
-		  </div>
-		</div>
-	  </div>
+      {/* ══════════════════════════════════════
+           CONVERSION
+      ══════════════════════════════════════ */}
+      <section id="quote-form" className="py-40 bg-slate-50/50 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-6 text-center mb-20 space-y-6">
+          <Reveal>
+            <span className="text-[11px] font-black uppercase tracking-[0.4em] text-[#d4af37]">{isAr ? 'طلب تفعيل الأنظمة' : 'INITIALIZE DEPLOYMENT'}</span>
+            <h2 className="text-5xl md:text-6xl font-black font-serif text-[#1e2d40]">{isAr ? 'ابدأ التحول الرقمي .' : 'Start Your Journey .'}</h2>
+            <p className="text-[#94a3b8] font-medium max-w-xl mx-auto">{isAr ? 'أدخل مواصفات مؤسستك أدناه لجدولة جلسة استشارية فنية.' : 'Provide your enterprise specifications below to consult with our implementation architects.'}</p>
+          </Reveal>
+        </div>
+        <LeadForm isAr={isAr} />
+      </section>
 
-	  {/* ══════════════════════════════════════
-		   CONTENT AREA
-	  ══════════════════════════════════════ */}
-	  <div className="max-w-6xl mx-auto px-6 py-16 space-y-24">
+      {/* ══════════════════════════════════════
+           PREVIEW MODAL
+      ══════════════════════════════════════ */}
+      {activePreview && activePreview.previews.length > 0 && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-[#04080e]/98 backdrop-blur-3xl" onClick={() => setActivePreview(null)} />
+          <div className="relative w-full max-w-7xl max-h-[90vh] bg-[#0d1520] rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden flex flex-col z-10">
 
-		{/* ─── TIER 1: CORE PLATFORMS ─── */}
-		<section>
-		  {/* Section header */}
-		  <div className="flex items-center gap-4 mb-10" style={{ animation: 'fadeUp 0.5s 0.1s both' }}>
-			<div className="flex-1 h-px bg-gradient-to-r from-[#d4af37]/40 to-transparent" />
-			<span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#d4af37] whitespace-nowrap px-1">
-			  {isAr ? "أنظمة أوبيريكس الأساسية" : "Core OPERIX Ecosystem"}
-			</span>
-			<div className="flex-1 h-px bg-gradient-to-l from-[#d4af37]/40 to-transparent" />
-		  </div>
+            <div className="p-6 md:p-8 flex items-center justify-between border-b border-white/5">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-xl" style={{ background: activePreview.accentColor }}>{activePreview.icon}</div>
+                <div>
+                  <h4 className="font-serif font-black text-white text-xl">{isAr ? activePreview.titleAr : activePreview.titleEn}</h4>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">{isAr ? 'معاينة النظام' : 'SYSTEM PREVIEW'}</span>
+                </div>
+              </div>
+              <button onClick={() => setActivePreview(null)} className="w-12 h-12 rounded-full bg-white/5 text-white flex items-center justify-center hover:bg-red-500 transition-all"><X size={24} /></button>
+            </div>
 
-		  {/* Cards grid */}
-		  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-			{corePlatforms.map((sys, idx) => (
-			  <div
-				key={sys.id}
-				className="core-card bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-sm"
-				style={{ animation: `fadeUp 0.55s ${0.15 + idx * 0.07}s both` }}
-				onMouseEnter={() => setHoveredCard(sys.id)}
-				onMouseLeave={() => setHoveredCard(null)}
-			  >
-				{/* Cover image */}
-				<div
-				  className="card-cover scan-wrap h-52 sm:h-60 relative overflow-hidden bg-slate-100 cursor-pointer"
-				  onClick={() => window.open(sys.url, '_blank')}
-				>
-				  <img
-					src={sys.image}
-					alt={sys.titleEn}
-					className="w-full h-full object-cover object-left-top"
-				  />
-				  {/* Scan line */}
-				  <div className="scan-line" />
-				  {/* Dark overlay on hover */}
-				  <div
-					className="absolute inset-0 transition-opacity duration-300"
-					style={{
-					  background: `linear-gradient(to top, ${sys.accentColor}22 0%, transparent 60%)`,
-					  opacity: hoveredCard === sys.id ? 1 : 0
-					}}
-				  />
-				  {/* Badge */}
-				  <div className={`absolute top-3 ${isAr ? 'left-3' : 'right-3'} ${sys.badgeBg} backdrop-blur border border-white/10 text-white text-[9px] font-black uppercase tracking-widest px-2.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg`}>
-					{sys.badge}
-				  </div>
-				  {/* Screen count */}
-				  {sys.previews.length > 0 && (
-					<div className={`absolute bottom-3 ${isAr ? 'left-3' : 'right-3'} bg-black/60 backdrop-blur text-white text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1.5`}>
-					  <Monitor size={9} /> {sys.previews.length} {isAr ? 'شاشة' : 'screens'}
-					</div>
-				  )}
-				  {/* Subtle top accent line */}
-				  <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(90deg, transparent, ${sys.accentColor}, transparent)` }} />
-				</div>
+            <div className="flex-1 flex flex-col lg:flex-row min-h-0">
+              <div className="flex-1 bg-black relative flex items-center justify-center p-4 group">
+                {activePreview.previews[currentImgIndex].url.endsWith('.mp4') ? (
+                  <video key={currentImgIndex} src={activePreview.previews[currentImgIndex].url} controls autoPlay muted loop className="max-w-full max-h-full object-contain" />
+                ) : (
+                  <img key={currentImgIndex} src={activePreview.previews[currentImgIndex].url} className="max-w-full max-h-full object-contain shadow-2xl" alt="Preview" />
+                )}
+                <button onClick={prevImg} className="absolute left-6 w-14 h-14 rounded-full bg-white/10 text-white flex items-center justify-center backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all hover:bg-[#d4af37] hover:text-[#1e2d40]"><ChevronLeft size={32} /></button>
+                <button onClick={nextImg} className="absolute right-6 w-14 h-14 rounded-full bg-white/10 text-white flex items-center justify-center backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all hover:bg-[#d4af37] hover:text-[#1e2d40]"><ChevronRight size={32} /></button>
+              </div>
 
-				{/* Body */}
-				<div className="p-6 flex flex-col gap-4">
-				  {/* Identity row */}
-				  <div className="flex items-start gap-3">
-					<div
-					  className="w-9 h-9 rounded-xl flex items-center justify-center text-white shrink-0 shadow-md"
-					  style={{ background: sys.accentColor }}
-					>
-					  {sys.icon}
-					</div>
-					<div className="flex-1 min-w-0">
-					  <h3 className="font-black text-[#0f172a] text-base leading-snug">
-						{isAr ? sys.titleAr : sys.titleEn}
-					  </h3>
-					  <p className="text-[10px] font-bold uppercase tracking-widest mt-0.5" style={{ color: sys.accentColor }}>
-						{isAr ? sys.subAr : sys.subEn}
-					  </p>
-					</div>
-				  </div>
-
-				  {/* Description */}
-				  <p className="text-[13px] text-slate-500 leading-relaxed font-medium line-clamp-2 flex-grow" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
-					{isAr ? sys.descAr : sys.descEn}
-				  </p>
-
-				  {/* Actions */}
-				  <div className="flex items-center gap-2.5 pt-3 border-t border-slate-100">
-					<a
-					  href={sys.url}
-					  target="_blank"
-					  rel="noopener noreferrer"
-					  className="flex-1 flex justify-center items-center gap-1.5 text-white py-2.5 rounded-xl font-black text-[10px] tracking-wider uppercase transition-all duration-200 hover:brightness-110 active:scale-95 shadow-sm"
-					  style={{ background: `linear-gradient(135deg, #1e2d40, #0f172a)` }}
-					>
-					  {isAr ? "دخول المنصة" : "Launch"} <ArrowUpRight size={11} />
-					</a>
-
-					{sys.previews.length > 0 && (
-					  <button
-						onClick={() => openPreview(sys)}
-						className="preview-btn flex-1 flex justify-center items-center gap-1.5 py-2.5 rounded-xl font-black text-[10px] tracking-wider uppercase transition-all duration-200 active:scale-95 border"
-						style={{
-						  background: `${sys.accentColor}14`,
-						  borderColor: `${sys.accentColor}35`,
-						  color: sys.accentColor
-						}}
-						onMouseEnter={e => {
-						  e.currentTarget.style.background = sys.accentColor;
-						  e.currentTarget.style.color = '#fff';
-						  e.currentTarget.style.borderColor = sys.accentColor;
-						}}
-						onMouseLeave={e => {
-						  e.currentTarget.style.background = `${sys.accentColor}14`;
-						  e.currentTarget.style.color = sys.accentColor;
-						  e.currentTarget.style.borderColor = `${sys.accentColor}35`;
-						}}
-					  >
-						<ImageIcon size={11} /> {isAr ? "استعراض النظام" : "Preview UI"}
-					  </button>
-					)}
-				  </div>
-				</div>
-			  </div>
-			))}
-		  </div>
-		</section>
-
-		{/* ─── TIER 2: CLIENT PROJECTS ─── */}
-		<section>
-		  <div className="flex items-center gap-4 mb-10" style={{ animation: 'fadeUp 0.5s 0.1s both' }}>
-			<div className="flex-1 h-px bg-gradient-to-r from-slate-300 to-transparent" />
-			<span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 whitespace-nowrap px-1">
-			  {isAr ? "مشاريع وتطبيقات العملاء" : "Featured Client Deployments"}
-			</span>
-			<div className="flex-1 h-px bg-gradient-to-l from-slate-300 to-transparent" />
-		  </div>
-
-		  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-			{clientProjects.map((proj, idx) => (
-			  <div
-				key={proj.id}
-				className="client-card bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-sm flex flex-col"
-				style={{ animation: `fadeUp 0.5s ${0.1 + idx * 0.08}s both` }}
-			  >
-				{/* Cover */}
-				<div
-				  className="h-40 relative overflow-hidden bg-slate-100 cursor-pointer"
-				  onClick={() => window.open(proj.url, '_blank')}
-				>
-				  <img
-					src={proj.image}
-					alt={proj.titleEn}
-					className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
-				  />
-				  {/* Top accent */}
-				  <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(90deg, transparent, ${proj.accentColor}, transparent)` }} />
-				</div>
-
-				{/* Body */}
-				<div className="p-5 flex flex-col flex-grow">
-				  {/* Floating icon (elevated from image) */}
-				  <div
-					className="w-9 h-9 rounded-xl flex items-center justify-center text-white -mt-9 mb-3 shadow-lg border-2 border-white relative z-10 shrink-0"
-					style={{ background: proj.accentColor }}
-				  >
-					{proj.icon}
-				  </div>
-				  <h3 className="font-black text-[#0f172a] text-base leading-snug">
-					{isAr ? proj.titleAr : proj.titleEn}
-				  </h3>
-				  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-0.5 mb-3">
-					{isAr ? proj.subAr : proj.subEn}
-				  </p>
-				  <p className="text-[12px] text-slate-500 leading-relaxed flex-grow" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
-					{isAr ? proj.descAr : proj.descEn}
-				  </p>
-				  <div className="mt-4 pt-4 border-t border-slate-100">
-					<a
-					  href={proj.url}
-					  target="_blank"
-					  rel="noopener noreferrer"
-					  className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest transition-colors duration-200 hover:opacity-70"
-					  style={{ color: proj.accentColor }}
-					>
-					  {isAr ? "زيارة الموقع المباشر" : "Visit Live Portal"}
-					  <ExternalLink size={13} />
-					</a>
-				  </div>
-				</div>
-			  </div>
-			))}
-		  </div>
-		</section>
-	  </div>
-
-	  {/* ══════════════════════════════════════
-		   PREVIEW MODAL
-	  ══════════════════════════════════════ */}
-	  {activePreview && activePreview.previews.length > 0 && (
-		<div
-		  className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-5 lg:p-8"
-		  style={{ animation: 'fadeIn 0.18s ease both' }}
-		>
-		  {/* Backdrop */}
-		  <div
-			className="absolute inset-0 bg-[#04080e]/96 backdrop-blur-lg"
-			onClick={() => setActivePreview(null)}
-		  />
-
-		  {/* Modal shell */}
-		  <div
-			className="relative w-full max-w-[1380px] max-h-[93vh] flex flex-col z-10 bg-[#0d1520] rounded-2xl border border-slate-700/60 shadow-2xl overflow-hidden"
-			style={{ animation: 'popIn 0.28s cubic-bezier(0.16,1,0.3,1) both' }}
-		  >
-
-			{/* ── TOP BAR ── */}
-			<div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-800 shrink-0">
-			  <div className="flex items-center gap-3">
-				{/* Color dot matching product accent */}
-				<div
-				  className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs shadow-md"
-				  style={{ background: activePreview.accentColor }}
-				>
-				  {activePreview.icon}
-				</div>
-				<div>
-				  <span className="font-black text-white text-sm leading-none block">
-					{isAr ? activePreview.titleAr : activePreview.titleEn}
-				  </span>
-				  <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-500">
-					{isAr ? "استعراض واجهة النظام" : "System UI Preview"}
-				  </span>
-				</div>
-			  </div>
-
-			  {/* Right controls */}
-			  <div className="flex items-center gap-2">
-				{/* Progress indicator */}
-				<div className="hidden sm:flex items-center gap-2">
-				  <div className="w-28 h-1 bg-slate-800 rounded-full overflow-hidden">
-					<div
-					  className="progress-fill h-full rounded-full"
-					  style={{
-						background: activePreview.accentColor,
-						width: `${((currentImgIndex + 1) / activePreview.previews.length) * 100}%`
-					  }}
-					/>
-				  </div>
-				  <span className="text-[10px] font-mono font-black text-slate-500">
-					{currentImgIndex + 1}<span className="text-slate-700 mx-0.5">/</span>{activePreview.previews.length}
-				  </span>
-				</div>
-
-				{/* Launch */}
-				<a
-				  href={activePreview.url}
-				  target="_blank"
-				  rel="noopener noreferrer"
-				  className="hidden sm:flex items-center gap-1.5 text-[9px] font-black uppercase tracking-wider text-white px-3 py-1.5 rounded-lg border border-slate-700 hover:border-[#d4af37] hover:text-[#d4af37] transition-all"
-				>
-				  <ExternalLink size={10} /> {isAr ? "دخول المنصة" : "Launch"}
-				</a>
-
-				{/* Close */}
-				<button
-				  onClick={() => setActivePreview(null)}
-				  className="w-8 h-8 rounded-lg bg-slate-800/80 border border-slate-700 text-slate-400 flex items-center justify-center hover:bg-red-600/80 hover:text-white hover:border-red-500 transition-all"
-				>
-				  <X size={14} strokeWidth={2.5} />
-				</button>
-			  </div>
-			</div>
-
-			{/* ── MAIN CONTENT ── */}
-			<div className="flex flex-col lg:flex-row flex-1 min-h-0 gap-0">
-
-			  {/* LEFT: media viewer */}
-			  <div
-				className="relative flex-1 bg-[#060c14] flex flex-col min-h-[260px] lg:min-h-0"
-				onTouchStart={handleTouchStart}
-				onTouchMove={handleTouchMove}
-				onTouchEnd={handleTouchEnd}
-			  >
-				{/* Media area */}
-				<div className="flex-1 flex items-center justify-center p-4 relative group cursor-grab active:cursor-grabbing overflow-hidden">
-
-				  {/* Loading skeleton */}
-				  {!imgLoaded && (
-					<div className="absolute inset-4 rounded-xl bg-slate-800/60 animate-pulse" />
-				  )}
-
-				  {activePreview.previews[currentImgIndex].url.endsWith('.mp4') ? (
-					<video
-					  key={`v-${currentImgIndex}`}
-					  src={activePreview.previews[currentImgIndex].url}
-					  controls autoPlay muted loop
-					  onLoadedData={() => setImgLoaded(true)}
-					  className="max-w-full max-h-full object-contain rounded-xl shadow-2xl"
-					  style={{ animation: 'imgReveal 0.3s ease both' }}
-					/>
-				  ) : (
-					<img
-					  key={`i-${currentImgIndex}`}
-					  src={activePreview.previews[currentImgIndex].url}
-					  alt="System Preview"
-					  onLoad={() => setImgLoaded(true)}
-					  className="max-w-full max-h-full object-contain rounded-xl shadow-2xl pointer-events-none"
-					  style={{ animation: 'imgReveal 0.3s ease both', opacity: imgLoaded ? 1 : 0, transition: 'opacity 0.2s ease' }}
-					/>
-				  )}
-
-				  {/* Nav arrows */}
-				  <button
-					onClick={(e) => { e.stopPropagation(); prevImg(); }}
-					className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/50 hover:bg-[#d4af37] text-white flex items-center justify-center transition-all duration-200 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 border border-white/10 hover:border-[#d4af37] shadow-xl z-10 active:scale-90"
-				  >
-					{isAr ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-				  </button>
-				  <button
-					onClick={(e) => { e.stopPropagation(); nextImg(); }}
-					className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/50 hover:bg-[#d4af37] text-white flex items-center justify-center transition-all duration-200 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 border border-white/10 hover:border-[#d4af37] shadow-xl z-10 active:scale-90"
-				  >
-					{isAr ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
-				  </button>
-				</div>
-
-				{/* Thumbnail strip */}
-				<div
-				  ref={thumbnailRef}
-				  className="thumb-strip flex gap-2 overflow-x-auto px-4 py-3 border-t border-slate-800/80 shrink-0"
-				>
-				  {activePreview.previews.map((p, i) => (
-					<button
-					  key={i}
-					  data-active={i === currentImgIndex}
-					  onClick={() => { setImgLoaded(false); setCurrentImgIndex(i); }}
-					  className="shrink-0 w-16 h-10 rounded-lg overflow-hidden border-2 transition-all duration-200 active:scale-95"
-					  style={{
-						borderColor: i === currentImgIndex ? activePreview.accentColor : 'rgba(71,85,105,0.5)',
-						opacity: i === currentImgIndex ? 1 : 0.4,
-						transform: i === currentImgIndex ? 'scale(1.05)' : 'scale(1)',
-						boxShadow: i === currentImgIndex ? `0 0 12px ${activePreview.accentColor}40` : 'none'
-					  }}
-					>
-					  {p.url.endsWith('.mp4') ? (
-						<video src={p.url} className="w-full h-full object-cover object-top pointer-events-none" muted />
-					  ) : (
-						<img src={p.url} alt="" className="w-full h-full object-cover object-top pointer-events-none" />
-					  )}
-					</button>
-				  ))}
-				</div>
-			  </div>
-
-			  {/* RIGHT: description panel */}
-			  <div className="lg:w-80 xl:w-96 bg-[#0a111b] border-t lg:border-t-0 lg:border-l border-slate-800 flex flex-col max-h-[36vh] lg:max-h-full shrink-0">
-
-				{/* Module info */}
-				<div className="p-5 border-b border-slate-800 shrink-0">
-				  <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.16em] text-slate-600 mb-2.5">
-					<Info size={9} style={{ color: activePreview.accentColor }} /> {isAr ? "الوحدة الحالية" : "Current Module"}
-				  </span>
-				  <h4
-					key={currentImgIndex}
-					className="font-serif font-black text-lg leading-tight"
-					style={{
-					  color: activePreview.accentColor,
-					  animation: 'fadeUp 0.22s ease both',
-					  direction: isAr ? 'rtl' : 'ltr'
-					}}
-				  >
-					{isAr ? activePreview.previews[currentImgIndex].titleAr : activePreview.previews[currentImgIndex].titleEn}
-				  </h4>
-
-				  {/* Dot nav */}
-				  <div className="flex gap-1.5 mt-3 flex-wrap">
-					{activePreview.previews.map((_, i) => (
-					  <button
-						key={i}
-						onClick={() => { setImgLoaded(false); setCurrentImgIndex(i); }}
-						className="rounded-full transition-all duration-200"
-						style={{
-						  width: i === currentImgIndex ? '20px' : '6px',
-						  height: '6px',
-						  background: i === currentImgIndex ? activePreview.accentColor : 'rgba(71,85,105,0.5)'
-						}}
-					  />
-					))}
-				  </div>
-				</div>
-
-				{/* Description */}
-				<div className="flex-1 overflow-y-auto p-5">
-				  <p
-					key={`d-${currentImgIndex}`}
-					className="text-[13px] text-slate-400 font-medium leading-relaxed"
-					style={{ animation: 'fadeIn 0.3s 0.1s ease both', direction: isAr ? 'rtl' : 'ltr' }}
-				  >
-					{isAr ? activePreview.previews[currentImgIndex].descAr : activePreview.previews[currentImgIndex].descEn}
-				  </p>
-				</div>
-
-				{/* Footer */}
-				<div className="p-4 border-t border-slate-800 shrink-0 flex items-center gap-2.5">
-				  <a
-					href={activePreview.url}
-					target="_blank"
-					rel="noopener noreferrer"
-					className="flex-1 flex justify-center items-center gap-1.5 text-white py-2 rounded-xl font-black text-[10px] tracking-wider uppercase transition-all hover:brightness-110 active:scale-95"
-					style={{ background: activePreview.accentColor }}
-				  >
-					{isAr ? "دخول المنصة" : "Launch"} <ExternalLink size={10} />
-				  </a>
-				  <button onClick={prevImg} className="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 transition-all active:scale-90">
-					{isAr ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
-				  </button>
-				  <button onClick={nextImg} className="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 transition-all active:scale-90">
-					{isAr ? <ChevronLeft size={15} /> : <ChevronRight size={15} />}
-				  </button>
-				</div>
-			  </div>
-			</div>
-		  </div>
-		</div>
-	  )}
-	</div>
+              <div className="lg:w-96 bg-[#0a111b] p-8 md:p-12 border-t lg:border-t-0 lg:border-l border-white/5 flex flex-col">
+                <div className="mb-10">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-[#d4af37] mb-2 block">Module {currentImgIndex + 1} / {activePreview.previews.length}</span>
+                  <h5 className="text-2xl font-black font-serif text-white mb-6 leading-tight">{isAr ? activePreview.previews[currentImgIndex].titleAr : activePreview.previews[currentImgIndex].titleEn}</h5>
+                  <p className="text-sm text-slate-400 leading-relaxed font-medium">{isAr ? activePreview.previews[currentImgIndex].descAr : activePreview.previews[currentImgIndex].descEn}</p>
+                </div>
+                <div className="mt-auto space-y-4">
+                  <div className="flex gap-2 overflow-x-auto pb-4 no-scrollbar">
+                    {activePreview.previews.map((_, i) => (
+                      <button key={i} onClick={() => setCurrentImgIndex(i)} className={`w-3 h-3 rounded-full transition-all ${i === currentImgIndex ? 'bg-[#d4af37] w-8' : 'bg-white/10 hover:bg-white/20'}`} />
+                    ))}
+                  </div>
+                  <a href={activePreview.url} target="_blank" rel="noreferrer" className="w-full py-5 bg-[#d4af37] text-[#1e2d40] rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-transform active:scale-95">
+                    {isAr ? 'دخول المنصة' : 'LAUNCH PLATFORM'} <ExternalLink size={16} />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

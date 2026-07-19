@@ -18,6 +18,7 @@ import Legal from './pages/Legal';
 import Contact from './pages/Contact';
 import Subscription from './pages/Subscription';
 import MobileApps from './pages/MobileApps';
+import QA from './pages/QA';
 
 // Admin Gateways
 import CmsLogin from './pages/CmsLogin';
@@ -59,6 +60,7 @@ export default function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/subscription" element={<Subscription />} />
               <Route path="/mobile-apps" element={<MobileApps />} />
+              <Route path="/qa" element={<QA />} />
             </Route>
 
             {/* SECURE INTERNAL ADMINISTRATIVE PORTALS */}

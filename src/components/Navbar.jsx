@@ -4,7 +4,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { 
   Globe, Menu, X, LogIn, 
   Home, Info, Briefcase, Package, 
-  Users, Newspaper, Phone, Shield, Eye, Smartphone 
+  Users, Newspaper, Phone, Shield, Eye, Smartphone, HelpCircle
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -17,13 +17,11 @@ export default function Navbar() {
 	{ path: '/', label: t.navHome || 'Home', icon: Home },
 	{ path: '/about', label: t.navAbout || 'About Us', icon: Info },
 	{ path: '/services', label: t.navServices || 'Our Services', icon: Briefcase },
-	{ path: '/vision', label: t.navVision || 'Our Vision', icon: Eye },
 	{ path: '/products', label: t.navProducts || 'Our Products', icon: Package },
 	{ path: '/mobile-apps', label: t.navMobileApps || 'Mobile Apps', icon: Smartphone },
 	{ path: '/clients', label: t.navClients || 'Clients', icon: Users },
 	{ path: '/news', label: t.navNews || 'News', icon: Newspaper },
-	{ path: '/contact', label: t.navContact || 'Contact', icon: Phone },
-	{ path: '/Legal', label: t.navLegal || 'Legal', icon: Shield },
+	{ path: '/qa', label: t.navQA || 'Q&A', icon: HelpCircle },
   ];
 
   return (
