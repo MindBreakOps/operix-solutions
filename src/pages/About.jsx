@@ -329,7 +329,7 @@ export default function About() {
 				role="Co-Founder" roleAr="المؤسس الشريك"
 				initials="AA" dark={false} isAr={isAr}
 				email="asim.aljmaan@operix-solutions.com"
-				portfolio="https://www.operix-solutions.online/portfolio-AsimAljmaan/"
+				portfolio="https://founder.operix-solutions.com"
 				quote="The story began during Asim's college years. He dreamt of building an ERP ecosystem so intuitive that anyone—regardless of their technical background—could understand and use it, completely eliminating the steep learning curves of legacy systems. The goal: a fully integrated circle where whatever you need is already inside, interconnected, and customizable."
 				quoteAr="بدأت القصة منذ سنوات خلال دراسة عاصم الجامعية. كان يحلم ببناء منظومة ERP سهلة الاستخدام لدرجة أن أي شخص - بغض النظر عن خبرته التقنية - يمكنه فهمها واستخدامها. كان الهدف بناء دائرة متكاملة ومترابطة: كل ما تحتاجه تجده بالداخل وقابل للتخصيص."
 			  />
@@ -495,7 +495,7 @@ export default function About() {
 				<div className="text-[9px] text-slate-400 font-black uppercase tracking-widest">Live Sync Uptime</div>
 			  </div>
 			  <a
-				href="https://www.operix-solutions.online/portfolio-AsimAljmaan/"
+				href="https://founder.operix-solutions.com"
 				target="_blank" rel="noreferrer"
 				className="inline-flex items-center gap-2 bg-[#1e2d40] hover:bg-[#d4af37] text-white hover:text-[#1e2d40] px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 shadow-sm active:scale-95 group/link"
 			  >
